@@ -1,99 +1,132 @@
-import { motion } from "framer-motion";
+import { useState } from "react";
 import ArtistsSection from "../components/ArtistsSection";
+import PageHeader from "@/components/site/PageHeader";
+import Notice from "@/components/site/Notice";
+import { btn } from "@/lib/ui";
+import { contact } from "@/data/site";
+import { submitJSON } from "@/lib/submit";
+import { usePageMeta } from "@/lib/usePageMeta";
+
+// Si VITE_CONTACT_ENDPOINT está configurado, el formulario envía de verdad.
+// Si no, arma el mail en la aplicación de correo del usuario (no simula un envío).
+const CONTACT_ENDPOINT = (import.meta.env.VITE_CONTACT_ENDPOINT as string | undefined)?.trim() ?? "";
+
+const subjects = [
+  { value: "Colaboración", label: "Colaboración" },
+  { value: "Studio", label: "Studio: sonido, visuales o diseño" },
+  { value: "Booking", label: "Booking / DJ set" },
+  { value: "Demo", label: "Demo / música" },
+  { value: "Otro", label: "Otro" },
+];
+
+const field = "w-full bg-transparent border-b border-border py-2 text-sm focus:outline-none focus:border-foreground transition-colors rounded-none";
 
 export default function Contact() {
+  usePageMeta({ title: "Contacto", description: "Contacto con BADDER: colaboraciones, Studio, bookings y demos." });
+  const [form, setForm] = useState({ name: "", email: "", subject: subjects[0].value, message: "" });
+  const [state, setState] = useState<"idle" | "sending" | "sent" | "error">("idle");
+  const [error, setError] = useState("");
+
+  const valid = form.name.trim() && /\S+@\S+\.\S+/.test(form.email) && form.message.trim();
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!valid) {
+      setState("error");
+      setError("Completá nombre, un mail válido y el mensaje.");
+      return;
+    }
+    if (!CONTACT_ENDPOINT) {
+      const body = `${form.message}\n\n— ${form.name} (${form.email})`;
+      window.location.href = `mailto:${contact.email}?subject=${encodeURIComponent(`[${form.subject}] ${form.name}`)}&body=${encodeURIComponent(body)}`;
+      return;
+    }
+    setState("sending");
+    const r = await submitJSON(CONTACT_ENDPOINT, form);
+    if (r.ok) setState("sent");
+    else {
+      setState("error");
+      setError(r.error ?? "No se pudo enviar.");
+    }
+  };
+
   return (
-    <main className="bg-background min-h-screen pt-32 pb-16 overflow-hidden">
+    <main className="bg-background min-h-screen pt-32 pb-0 overflow-hidden">
       <div className="px-6 md:px-16 max-w-6xl mx-auto">
+        <PageHeader kicker="Contacto / Colaboraciones / Bookings" title="Contact" />
 
-        {/* ENCABEZADO */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-24 border-b border-border pb-16"
-        >
-          <div className="font-mono-tight text-muted-foreground tracking-widest uppercase mb-4 text-xs">
-            Direct Line / Inquiries
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 mb-16">
+          <div className="flex flex-col gap-10">
+            <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
+              Para colaboraciones, trabajos de Studio, bookings o para mostrarnos lo que hacés, escribinos por Instagram o por mail.
+            </p>
+            <dl className="flex flex-col gap-6">
+              <div>
+                <dt className="font-mono-tight text-muted-foreground mb-1">Mail</dt>
+                <dd>
+                  <a href={`mailto:${contact.email}`} className="text-foreground hover:text-muted-foreground break-all">
+                    {contact.email}
+                  </a>
+                </dd>
+              </div>
+              <div>
+                <dt className="font-mono-tight text-muted-foreground mb-1">Instagram</dt>
+                <dd>
+                  <a href={contact.instagramUrl} target="_blank" rel="noreferrer" className="text-foreground hover:text-muted-foreground">
+                    {contact.instagramHandle} ↗
+                  </a>
+                </dd>
+              </div>
+              <div>
+                <dt className="font-mono-tight text-muted-foreground mb-1">Base</dt>
+                <dd className="text-foreground">{contact.location}</dd>
+              </div>
+            </dl>
           </div>
-          <h1 className="font-serif text-5xl md:text-8xl text-foreground tracking-wider leading-none">
-            Contact
-          </h1>
-        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-32 mb-32">
-
-          {/* INFO & REDES */}
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="flex flex-col gap-12"
-          >
-            <div>
-              <h2 className="font-serif text-3xl mb-4 uppercase tracking-wide">Information</h2>
-              <p className="font-mono text-sm text-muted-foreground leading-relaxed max-w-md">
-                Para colaboraciones, servicios de estudio creativo, dirección de arte audiovisual o consultas generales, envíanos un mensaje directo o utiliza el terminal.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-8 font-mono-tight text-sm tracking-widest uppercase">
-              <div>
-                <span className="text-muted-foreground block mb-2 text-[10px]">Email</span>
-                <a href="mailto:contact@badderexperience.com" className="hover:text-muted-foreground transition-colors text-foreground">contact@badderexperience.com</a>
-              </div>
-              <div>
-                <span className="text-muted-foreground block mb-2 text-[10px]">Instagram</span>
-                <a href="https://instagram.com/badder.experience" target="_blank" rel="noreferrer" className="hover:text-muted-foreground transition-colors text-foreground">@badder.experience</a>
-              </div>
-              <div>
-                <span className="text-muted-foreground block mb-2 text-[10px]">Location</span>
-                <span className="text-foreground">La Plata, Buenos Aires, ARG</span>
-              </div>
-            </div>
-          </motion.div>
-
-          {/* FORMULARIO BRUTALISTA */}
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-          >
-            <form className="flex flex-col gap-8" onSubmit={(e) => e.preventDefault()}>
-              <div className="flex flex-col gap-2">
-                <label htmlFor="name" className="font-mono-tight text-[10px] tracking-widest uppercase text-muted-foreground">Nombre / Entidad</label>
-                <input type="text" id="name" className="bg-transparent border-b border-border py-2 font-mono text-sm focus:outline-none focus:border-foreground transition-colors rounded-none" placeholder="Ingresa tu nombre..." />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label htmlFor="email" className="font-mono-tight text-[10px] tracking-widest uppercase text-muted-foreground">Email</label>
-                <input type="email" id="email" className="bg-transparent border-b border-border py-2 font-mono text-sm focus:outline-none focus:border-foreground transition-colors rounded-none" placeholder="tu@email.com" />
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label htmlFor="subject" className="font-mono-tight text-[10px] tracking-widest uppercase text-muted-foreground">Asunto</label>
-                <select id="subject" className="bg-transparent border-b border-border py-2 font-mono text-sm focus:outline-none focus:border-foreground transition-colors appearance-none rounded-none text-foreground/80 cursor-pointer">
-                  <option value="collab" className="bg-background">Colaboración</option>
-                  <option value="services" className="bg-background">Servicios de Estudio / Visuales</option>
-                  <option value="booking" className="bg-background">Bookings / DJ Set</option>
-                  <option value="other" className="bg-background">Otro</option>
+          {state === "sent" ? (
+            <Notice title="Mensaje enviado" tone="success">
+              Recibimos tu mensaje. Te respondemos a {form.email}.
+            </Notice>
+          ) : (
+            <form className="flex flex-col gap-7" onSubmit={submit} noValidate>
+              {!CONTACT_ENDPOINT && (
+                <p className="font-mono-tight text-muted-foreground leading-relaxed">
+                  Al enviar se abre tu aplicación de correo con el mensaje listo. El envío se hace desde ahí.
+                </p>
+              )}
+              <label className="flex flex-col gap-1">
+                <span className="font-mono-tight text-muted-foreground">Nombre / proyecto</span>
+                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={field} autoComplete="name" />
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="font-mono-tight text-muted-foreground">Mail</span>
+                <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={field} autoComplete="email" />
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="font-mono-tight text-muted-foreground">Asunto</span>
+                <select value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} className={`${field} appearance-none cursor-pointer`}>
+                  {subjects.map((s) => (
+                    <option key={s.value} value={s.value} className="bg-background">
+                      {s.label}
+                    </option>
+                  ))}
                 </select>
-              </div>
-
-              <div className="flex flex-col gap-2">
-                <label htmlFor="message" className="font-mono-tight text-[10px] tracking-widest uppercase text-muted-foreground">Mensaje</label>
-                <textarea id="message" rows={4} className="bg-transparent border-b border-border py-2 font-mono text-sm focus:outline-none focus:border-foreground transition-colors resize-none rounded-none" placeholder="Escribe tu mensaje..."></textarea>
-              </div>
-
-              <button type="submit" className="border border-foreground bg-foreground text-background font-mono-tight text-xs uppercase tracking-widest py-4 hover:bg-transparent hover:text-foreground transition-colors duration-300 mt-4">
-                Enviar Mensaje
+              </label>
+              <label className="flex flex-col gap-1">
+                <span className="font-mono-tight text-muted-foreground">Mensaje</span>
+                <textarea rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className={`${field} resize-none`} />
+              </label>
+              {state === "error" && <Notice title="No se pudo enviar" tone="error">{error}</Notice>}
+              <button type="submit" disabled={state === "sending"} className={btn.primary}>
+                {state === "sending" ? "Enviando…" : CONTACT_ENDPOINT ? "Enviar mensaje" : "Escribir mail"}
               </button>
             </form>
-          </motion.div>
+          )}
         </div>
       </div>
 
-      {/* ARTISTAS DE BADDER */}
-      <div className="bg-muted/5 border-t border-border pt-8 pb-16" id="bookings">
+      <div className="border-t border-border" id="bookings">
         <ArtistsSection />
       </div>
     </main>

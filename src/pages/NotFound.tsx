@@ -1,23 +1,29 @@
-import { useLocation } from "react-router-dom";
-import { useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
+import PageHeader from "@/components/site/PageHeader";
+import { btn } from "@/lib/ui";
+import { mainSections } from "@/data/site";
+import { usePageMeta } from "@/lib/usePageMeta";
 
 const NotFound = () => {
-  const location = useLocation();
-
-  useEffect(() => {
-    console.error("404 Error: User attempted to access non-existent route:", location.pathname);
-  }, [location.pathname]);
+  const { pathname } = useLocation();
+  usePageMeta({ title: "No encontrado" });
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-muted-foreground">Oops! Page not found</p>
-        <a href="/" className="text-primary underline hover:text-primary/90">
-          Return to Home
-        </a>
+    <main className="bg-background min-h-screen pt-32 pb-16">
+      <div className="px-6 md:px-16 max-w-6xl mx-auto">
+        <PageHeader kicker={`404 / ${pathname}`} title="Señal perdida" intro="Esta página no existe o se movió. Probá desde alguna de las secciones." />
+        <div className="flex flex-wrap gap-3">
+          <Link to="/" className={btn.primary}>
+            Volver al inicio
+          </Link>
+          {mainSections.slice(1).map((s) => (
+            <Link key={s.path} to={s.path} className={btn.secondary}>
+              {s.label}
+            </Link>
+          ))}
+        </div>
       </div>
-    </div>
+    </main>
   );
 };
 

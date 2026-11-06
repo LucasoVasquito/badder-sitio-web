@@ -379,3 +379,29 @@
   96% { opacity: 0.18; }
   97% { opacity: 0; }
 }
+
+/* Foco visible para navegación por teclado (señal: cobalto) */
+@layer base {
+  :focus-visible {
+    outline: 1px solid hsl(var(--cobalt));
+    outline-offset: 3px;
+  }
+}
+
+/* Menos movimiento: se frenan grano, marquesinas y pulsos */
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  .animate-marquee,
+  .animate-pulse,
+  .hover-glitch:hover {
+    animation: none !important;
+  }
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}

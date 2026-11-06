@@ -1,45 +1,179 @@
+// Catálogo de BADDER.
+//
+// REGLA: un producto solo se puede comprar si `verified: true`, `status: "AVAILABLE"`,
+// tiene `price` y stock (> 0). Todo lo que no cumpla eso se muestra como archivo o no se muestra.
+// Ver CONTENIDO.md → "Shop" para cargar productos nuevos.
+
+export type ProductKind = "physical" | "digital";
+export type ProductCategory = "APPAREL" | "PRINT" | "EDITORIAL" | "DIGITAL";
+/**
+ * AVAILABLE   → a la venta (requiere verified, precio y stock)
+ * COMING SOON → anunciado, no se puede comprar
+ * SOLD OUT    → agotado, no se puede comprar
+ * ARCHIVE     → pieza histórica de un drop anterior; se muestra como archivo
+ */
+export type ProductStatus = "AVAILABLE" | "COMING SOON" | "SOLD OUT" | "ARCHIVE";
+
+export interface ProductVariant {
+  sku: string;
+  size?: string;
+  color?: string;
+  stock: number;
+}
+
 export interface Product {
-    id: number;
-    name: string;
-    category: string;
-    image: string;
-    status: "AVAILABLE" | "SOLD OUT" | "COMING SOON" | "UNAVAILABLE";
-    price: number;
-    description: string;
-  }
-  
-  export const products: Product[] = [
-    { 
-      id: 1, 
-      name: "BUNKER 001 TEE", 
-      category: "MERCH", 
-      image: "/drop3/foto (4).webp", 
-      status: "SOLD OUT",
-      price: 25000,
-      description: "Remera de algodón pesado 24/1. Corte boxy fit, hombros caídos. Estampa en serigrafía en frente y espalda. Grifa lateral tejida. Talles del S al XL."
-    },
-    { 
-      id: 2, 
-      name: "NOISE HOODIE", 
-      category: "MERCH", 
-      image: "/drop3/foto (31).webp", 
-      status: "COMING SOON",
-      price: 48000,
-      description: "Buzo canguro de frisa invisible premium. Estampa en serigrafía de alto relieve en el frente. Capucha forrada y grifa lateral."
-    },
-    { 
-      id: 3, 
-      name: "BADDER ZINE VOL.1", 
-      category: "EDITORIAL", 
-      image: "/drop2/foto (1).webp", 
-      status: "UNAVAILABLE",
-      price: 8000,
-      description: "Primera edición de nuestro fanzine impreso. 24 páginas a color con fotografía de archivo, diseño gráfico y textos sobre la cultura de club local."
-    },
-    { id: 4, name: "ACID SAMPLE PACK", category: "DIGITAL", image: "/drop1/foto (5).webp", status: "AVAILABLE", price: 5000, description: "Colección de 50+ loops y one-shots de 303. Sonidos crudos y procesados, listos para usar en Ableton, FL Studio o cualquier DAW. Formato WAV 24-bit." },
-    { id:5, name: "EXTASYS TEE", category: "MERCH", image: "/drop2/foto (11).webp", status: "AVAILABLE", price: 22000, description: "Remera de algodón 24/1. Corte regular. Estampa en serigrafía al agua, tacto cero. Diseño inspirado en la gráfica de los 90s." },
-    { id: 6, name: "ROSSET POSTER", category: "PRINT", image: "/flyers/foto 4.webp", status: "SOLD OUT", price: 7500, description: "Póster impreso en papel ilustración de 300gr. Tamaño A3. Edición limitada y numerada de 50 unidades. No se vuelve a imprimir." },
-    { id: 7, name: "GLITCH ASSETS", category: "DIGITAL", image: "/drop3/foto (40).webp", status: "UNAVAILABLE", price: 0, description: "Pack de texturas y assets visuales en alta resolución para VJs y diseñadores. Formatos PNG y MP4." },
-    { id: 8, name: "BLUE CLIFFORD KNIT", category: "MERCH", image: "/drop3/foto (28).webp", status: "SOLD OUT", price: 65000, description: "Buzo tejido de hilo de algodón. Diseño custom-fit con intarsia en el frente y espalda. Producido en unidades ultra limitadas." },
-  ];
-  
+  id: number;
+  name: string;
+  kind: ProductKind;
+  category: ProductCategory;
+  status: ProductStatus;
+  /** true solo cuando BADDER confirmó nombre, precio, stock y ficha. */
+  verified: boolean;
+  /** false = no aparece en el sitio (datos de ejemplo pendientes de confirmar). */
+  listed: boolean;
+  /** La primera imagen es la portada. */
+  images: string[];
+  /** Precio en ARS. Se muestra solo si el producto está verificado. */
+  price?: number;
+  description?: string;
+  materials?: string;
+  printing?: string;
+  collection?: { name: string; season: string };
+  /** Créditos de diseño (tomados del lookbook de la colección). */
+  credits?: string;
+  /** Indumentaria: una variante por talle/color con su stock. */
+  variants?: ProductVariant[];
+  /** Productos sin variantes. */
+  stock?: number;
+  /** Texto original del catálogo anterior, sin verificar. No se muestra. */
+  unverifiedNotes?: string;
+}
+
+export const products: Product[] = [
+  // --- Prendas de drops anteriores (archivo) ---
+  {
+    id: 1,
+    name: "BUNKER 001 TEE",
+    kind: "physical",
+    category: "APPAREL",
+    status: "ARCHIVE",
+    verified: false,
+    listed: true,
+    images: ["/drop3/foto (4).webp"],
+    collection: { name: "DROP 3", season: "SS25" },
+    credits: "Lucas Nicolas Bengochea",
+    unverifiedNotes:
+      "Catálogo anterior: SOLD OUT, $25.000. Remera de algodón pesado 24/1. Corte boxy fit, hombros caídos. Estampa en serigrafía en frente y espalda. Grifa lateral tejida. Talles del S al XL.",
+  },
+  {
+    id: 2,
+    name: "NOISE HOODIE",
+    kind: "physical",
+    category: "APPAREL",
+    status: "ARCHIVE",
+    verified: false,
+    listed: true,
+    images: ["/drop3/foto (31).webp"],
+    collection: { name: "DROP 3", season: "SS25" },
+    credits: "Lucas Nicolas Bengochea",
+    unverifiedNotes:
+      "Catálogo anterior: COMING SOON, $48.000. Buzo canguro de frisa invisible premium. Estampa en serigrafía de alto relieve en el frente. Capucha forrada y grifa lateral.",
+  },
+  {
+    id: 5,
+    name: "EXTASYS TEE",
+    kind: "physical",
+    category: "APPAREL",
+    status: "ARCHIVE",
+    verified: false,
+    listed: true,
+    images: ["/drop2/foto (11).webp", "/drop2/foto (1).webp", "/drop2/foto (21).webp"],
+    collection: { name: "DROP 2", season: "FW24" },
+    credits: "Javier Almiron",
+    unverifiedNotes:
+      "Catálogo anterior: AVAILABLE, $22.000. Remera de algodón 24/1. Corte regular. Estampa en serigrafía al agua, tacto cero. Diseño inspirado en la gráfica de los 90s.",
+  },
+  {
+    id: 8,
+    name: "BLUE CLIFFORD KNIT",
+    kind: "physical",
+    category: "APPAREL",
+    status: "ARCHIVE",
+    verified: false,
+    listed: true,
+    images: ["/drop3/foto (28).webp", "/drop3/foto (27).webp"],
+    collection: { name: "DROP 3", season: "SS25" },
+    credits: "Juan Francisco Arias - Lucas Nicolas Bengochea",
+    unverifiedNotes:
+      "Catálogo anterior: SOLD OUT, $65.000. Buzo tejido de hilo de algodón. Diseño custom-fit con intarsia en el frente y espalda. Producido en unidades ultra limitadas.",
+  },
+
+  // --- Artículos de ejemplo del catálogo anterior: ocultos hasta confirmar que existen ---
+  {
+    id: 3,
+    name: "BADDER ZINE VOL.1",
+    kind: "physical",
+    category: "EDITORIAL",
+    status: "COMING SOON",
+    verified: false,
+    listed: false,
+    images: ["/drop2/foto (1).webp"],
+    unverifiedNotes:
+      "Catálogo anterior: UNAVAILABLE, $8.000. Primera edición de nuestro fanzine impreso. 24 páginas a color con fotografía de archivo, diseño gráfico y textos sobre la cultura de club local.",
+  },
+  {
+    id: 4,
+    name: "ACID SAMPLE PACK",
+    kind: "digital",
+    category: "DIGITAL",
+    status: "COMING SOON",
+    verified: false,
+    listed: false,
+    images: ["/drop1/foto (5).webp"],
+    unverifiedNotes:
+      "Catálogo anterior: AVAILABLE, $5.000. Colección de 50+ loops y one-shots de 303. Formato WAV 24-bit.",
+  },
+  {
+    id: 6,
+    name: "ROSSET POSTER",
+    kind: "physical",
+    category: "PRINT",
+    status: "SOLD OUT",
+    verified: false,
+    listed: false,
+    images: ["/flyers/foto 4.webp"],
+    unverifiedNotes:
+      "Catálogo anterior: SOLD OUT, $7.500. Póster A3 en papel ilustración 300gr. Edición limitada y numerada de 50 unidades.",
+  },
+  {
+    id: 7,
+    name: "GLITCH ASSETS",
+    kind: "digital",
+    category: "DIGITAL",
+    status: "COMING SOON",
+    verified: false,
+    listed: false,
+    images: ["/drop3/foto (40).webp"],
+    unverifiedNotes: "Catálogo anterior: UNAVAILABLE. Pack de texturas y assets visuales para VJs y diseñadores.",
+  },
+
+  // --- Remeras nuevas: completar con datos reales y pasar verified a true ---
+  // {
+  //   id: 9,
+  //   name: "NOMBRE REAL",
+  //   kind: "physical",
+  //   category: "APPAREL",
+  //   status: "AVAILABLE",
+  //   verified: true,
+  //   listed: true,
+  //   images: ["/shop/remera-1/frente.webp", "/shop/remera-1/espalda.webp"],
+  //   price: 0,
+  //   description: "…",
+  //   materials: "…",
+  //   printing: "…",
+  //   variants: [
+  //     { sku: "R1-NEGRO-S", size: "S", color: "Negro", stock: 0 },
+  //     { sku: "R1-NEGRO-M", size: "M", color: "Negro", stock: 0 },
+  //   ],
+  // },
+];

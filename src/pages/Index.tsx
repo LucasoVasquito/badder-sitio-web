@@ -105,7 +105,7 @@ const Index = () => {
 
   return (
     <div className="noise-overlay bg-background min-h-screen">
-      <Navigation activeSection={activeSection} onNavigate={handleNavigate} /> 
+      <Navigation /> {/* el menú ya no recibe props (Index.tsx no tiene ruta) */}
       <section id="hero" ref={heroRef}><HeroSection /></section>
       <section id="about" ref={aboutRef}><AboutSection /></section>
       <section id="badder-4ever" ref={badderForeverRef}><BadderForeverSection /></section>

@@ -1,118 +1,43 @@
-import { useState, useRef, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import { Play, Square, SkipForward, ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useCartStore } from "@/store/cartStore";
+import { useCartCount } from "@/store/cartStore";
+import { usePlayerStore } from "@/store/playerStore";
+import { playlist } from "@/data/audio";
 
-// 🎧 1. TU PLAYLIST:
-const playlist = [
-  {
-    artist: "Anguis",
-    title: "Club Motion",
-    audio: "/audio/Anguis - Club Motion (Preview).mp3",
-    cover: "/audio/cover (1).webp"
-  },
-  {
-    artist: "Anguis",
-    title: "Dope Energy",
-    audio: "/audio/Anguis - Dope Energy (Preview).mp3",
-    cover: "/audio/cover (2).webp"
-  },
-  {
-    artist: "Anguis",
-    title: "Power Up",
-    audio: "/audio/Anguis - Power Up (Preview).mp3",
-    cover: "/audio/cover (3).webp"
-  },
-  {
-    artist: "Anguis",
-    title: "Talk Like That",
-    audio: "/audio/Anguis - Talk Like That (Preview).mp3",
-    cover: "/audio/cover (4).webp"
-  },
-  {
-    artist: "Uriel  Galeano",
-    title: "Beeacks Breck Me",
-    audio: "/audio/Beeacks Breck Me.mp3",
-    cover: "/audio/cover (5).webp"
-  },
-  {
-    artist: "Uriel  Galeano",
-    title: "Devil Voice",
-    audio: "/audio/Devil Voice.mp3",
-    cover: "/audio/cover (5).webp"
-  },
-  {
-    artist: "Uriel  Galeano",
-    title: "Uesa",
-    audio: "/audio/Uesa.mp3",
-    cover: "/audio/cover (5).webp"
-  },
-  {
-    artist: "Uriel  Galeano",
-    title: "Not Rules EP (Incl. Agustin Barbei Psychokiller Remix)",
-    audio: "/audio/Uriel Galeano - Not Rules EP (Incl. Agustin Barbei Psychokiller Remix).mp3",
-    cover: "/audio/cover (6).webp"
-  },
-];
-
+// Se monta una sola vez en App (fuera de <Routes>), así el audio sigue sonando entre páginas.
 export default function FloatingPlayer() {
-  const [isPlaying, setIsPlaying] = useState(false);
-  
-  // EL PRIMER CAMBIO MÁGICO: Cuando entrás a la web, elige un número al azar de entrada
-  const [currentIndex, setCurrentIndex] = useState(() => 
-    Math.floor(Math.random() * playlist.length)
-  ); 
-  
+  const { index: currentIndex, isPlaying, toggle: togglePlay, next: nextTrack, setPlaying, markFailed, error } = usePlayerStore();
   const audioRef = useRef<HTMLAudioElement>(null);
-  const cartItemCount = useCartStore((state) => state.items.length);
+  const cartItemCount = useCartCount();
   const currentTrack = playlist[currentIndex];
 
-  const togglePlay = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current.play();
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
-
-  // EL SEGUNDO CAMBIO MÁGICO: El botón Next ahora tira los dados
-  const nextTrack = () => {
-    setCurrentIndex((prevIndex) => {
-      // Si solo hay un tema en la lista, no hacemos el loop infinito
-      if (playlist.length <= 1) return prevIndex;
-      
-      let newIndex;
-      // Sigue tirando los dados hasta que toque un tema DISTINTO al actual
-      do {
-        newIndex = Math.floor(Math.random() * playlist.length);
-      } while (newIndex === prevIndex);
-      
-      return newIndex;
-    });
-  };
-
+  // El estado manda; el <audio> lo sigue. Si el navegador bloquea play(), volvemos a pausa.
   useEffect(() => {
-    if (isPlaying && audioRef.current) {
-      audioRef.current.play();
-    }
-  }, [currentIndex, isPlaying]);
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlaying) audio.play().catch(() => setPlaying(false));
+    else audio.pause();
+  }, [currentIndex, isPlaying, setPlaying]);
 
   return (
     <>
-    <div className="fixed bottom-4 left-4 md:bottom-6 md:left-6 z-50 flex items-center gap-2 md:gap-3">
+    <div className="fixed bottom-4 left-4 md:bottom-6 md:left-6 z-50 flex items-center gap-2 md:gap-3" role="region" aria-label="Reproductor BADDER">
       
       <audio 
         ref={audioRef} 
         src={currentTrack.audio} 
         onEnded={nextTrack} 
+        onError={() => {
+          // Solo cuenta como fallo si se intentó cargar (preload="none" no dispara error al montar)
+          if (audioRef.current?.currentSrc) markFailed(currentIndex);
+        }}
         preload="none" 
       />
 
       <button 
         onClick={togglePlay}
+        aria-label={isPlaying ? "Pausar" : `Reproducir ${currentTrack.artist} — ${currentTrack.title}`}
         className="flex items-center justify-center w-12 h-12 shrink-0 bg-background/40 backdrop-blur-md border border-foreground/30 text-foreground hover:bg-foreground hover:text-background transition-all duration-300"
       >
         {isPlaying ? (
@@ -122,10 +47,16 @@ export default function FloatingPlayer() {
         )}
       </button>
 
-      {/* ACÁ ESTÁ EL MEDIA QUERY MÁGICO: max-w-[65vw] en celu, md:max-w-[400px] en PC */}
+      {error && !isPlaying && (
+        <span role="status" className="font-mono-tight text-muted-foreground bg-background/70 border border-border px-2 py-1 max-w-[calc(100vw-9.5rem)] truncate">
+          {error}
+        </span>
+      )}
+
+      {/* En celu deja libre el lugar del botón del carrito; en PC hasta 400px */}
       <div 
         className={`overflow-hidden transition-all duration-500 flex items-center gap-2 md:gap-3 ${
-          isPlaying ? "max-w-[65vw] md:max-w-[400px] opacity-100" : "max-w-0 opacity-0"
+          isPlaying ? "max-w-[calc(100vw-9.5rem)] md:max-w-[400px] opacity-100" : "max-w-0 opacity-0"
         }`}
       >
         <img
@@ -151,6 +82,8 @@ export default function FloatingPlayer() {
               onClick={nextTrack}
               className="p-2 -mr-2 text-muted-foreground hover:text-foreground transition-colors shrink-0"
               title="Siguiente Track Random"
+              aria-label="Siguiente track"
+              tabIndex={isPlaying ? 0 : -1}
             >
               <SkipForward className="w-5 h-5 md:w-4 md:h-4" />
             </button>
@@ -162,6 +95,7 @@ export default function FloatingPlayer() {
     {/* BOTÓN DEL CARRITO FLOTANTE (Esquina inferior derecha) */}
     <Link 
       to="/cart"
+      aria-label={`Carrito${cartItemCount > 0 ? ` (${cartItemCount})` : ""}`}
       className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 flex items-center justify-center w-12 h-12 shrink-0 bg-background/40 backdrop-blur-md border border-foreground/30 text-foreground hover:bg-foreground hover:text-background transition-all duration-300 group"
     >
       <ShoppingBag className="w-5 h-5 fill-transparent group-hover:fill-current transition-colors" strokeWidth={1.5} />

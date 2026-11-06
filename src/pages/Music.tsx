@@ -1,266 +1,195 @@
 import { motion } from "framer-motion";
-import PresskitsSection from "../components/PresskitsSection";
+import { Link } from "react-router-dom";
+import PageHeader from "@/components/site/PageHeader";
+import PlayButton from "@/components/home/PlayButton";
+import { releases, djSets, sessions } from "@/data/music";
+import { artists } from "@/data/people";
+import { findTrackByAudio } from "@/store/playerStore";
+import { usePageMeta } from "@/lib/usePageMeta";
+import type { VideoEntry } from "@/data/visuals";
 
-const latestReleases = [
-  { title: "Not Rules EP", artist: "Uriel Galeano", cover: "/audio/cover (6).webp", type: "RELEASE" },
-  { title: "Club Motion", artist: "Anguis", cover: "/audio/cover (1).webp", type: "TRACK" },
-  { title: "Dope Energy", artist: "Anguis", cover: "/audio/cover (2).webp", type: "TRACK" },
-  { title: "Power Up", artist: "Anguis", cover: "/audio/cover (3).webp", type: "TRACK" },
+const sections = [
+  { id: "releases", label: "Releases" },
+  { id: "dj-sets", label: "DJ Sets" },
+  { id: "sessions", label: "Sessions" },
+  { id: "artists", label: "Artists" },
 ];
 
-const urielTracks = [
-  { title: "Not Rules EP", artist: "Uriel Galeano", cover: "/audio/cover (6).webp", type: "EP" },
-  { title: "Psychokiller Remix", artist: "Uriel Galeano", cover: "/audio/cover (5).webp", type: "REMIX" },
-  { title: "Devil Voice", artist: "Uriel Galeano", cover: "/audio/cover (4).webp", type: "TRACK" },
-  { title: "Uesa", artist: "Uriel Galeano", cover: "/audio/cover (3).webp", type: "TRACK" },
-];
+function SectionTitle({ id, n, title, count }: { id: string; n: string; title: string; count: number }) {
+  return (
+    <div className="flex items-end justify-between gap-4 border-b border-border pb-4 mb-8">
+      <h2 id={`${id}-title`} className="font-serif text-3xl md:text-5xl uppercase text-foreground leading-none">
+        <span className="font-mono-tight text-cobalt align-top mr-3">{n}</span>
+        {title}
+      </h2>
+      <span className="font-mono-tight text-muted-foreground">{String(count).padStart(2, "0")}</span>
+    </div>
+  );
+}
 
-const anguisTracks = [
-  { title: "Club Motion", artist: "Anguis", cover: "/audio/cover (1).webp", type: "TRACK" },
-  { title: "Dope Energy", artist: "Anguis", cover: "/audio/cover (2).webp", type: "TRACK" },
-  { title: "Power Up", artist: "Anguis", cover: "/audio/cover (3).webp", type: "TRACK" },
-  { title: "Talk Like That", artist: "Anguis", cover: "/audio/cover (4).webp", type: "TRACK" },
-];
-
-const recommendedPlaylists = [
-  { title: "Badder Selects", desc: "Curated techno, industrial, and experimental loops.", cover: "/flyers/foto 5.webp" },
-  { title: "Club Trax", desc: "High-energy club tools for the late hours.", cover: "/flyers/foto 6.webp" },
-  { title: "Audio Archive Sessions", desc: "Live sets, podcast guest mixes, and soundscapes.", cover: "/flyers/foto 7.webp" },
-];
+function VideoCard({ v, large = false }: { v: VideoEntry; large?: boolean }) {
+  return (
+    <a href={v.url} target="_blank" rel="noopener noreferrer" className="group block">
+      <div className="relative aspect-video overflow-hidden bg-black border border-border">
+        <img src={v.thumb} alt={v.title} loading="lazy" className="w-full h-full object-cover opacity-85 transition-all duration-700 group-hover:opacity-100 group-hover:scale-[1.03]" />
+        <span className="absolute bottom-2 right-2 bg-background/80 font-mono-tight text-foreground px-2 py-1">▶ {v.duration}</span>
+      </div>
+      <div className="mt-3 font-mono-tight text-muted-foreground flex flex-wrap gap-x-3">
+        <span>{v.date}</span>
+        <span>YouTube ↗</span>
+      </div>
+      <h3 className={`mt-1 text-foreground leading-snug group-hover:text-foreground/70 transition-colors ${large ? "font-serif text-2xl md:text-3xl uppercase" : "text-sm"}`}>
+        {v.title}
+      </h3>
+      {(v.master || v.edition) && (
+        <div className="mt-2 font-mono-tight text-muted-foreground leading-relaxed">
+          {v.master && <div>Master: {v.master}</div>}
+          {v.edition && <div>Edición: {v.edition}</div>}
+        </div>
+      )}
+    </a>
+  );
+}
 
 export default function Music() {
+  usePageMeta({ title: "Music", description: "Releases, DJ sets, sesiones y artistas vinculados a BADDER." });
+
   return (
     <main className="bg-background min-h-screen pt-32 pb-16 overflow-hidden">
-      <div className="px-6 md:px-16 max-w-6xl mx-auto mb-32 flex flex-col gap-32">
-        
-        {/* Encabezado */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="border-b border-border pb-16 mb-8"
-        >
-          <div className="font-mono-tight text-muted-foreground tracking-widest uppercase mb-4 text-xs">
-            Badder Records / Audio Archive
-          </div>
-          <h1 className="font-ethnocentric text-5xl md:text-8xl text-foreground tracking-wider leading-none">
-            Music
-          </h1>
-        </motion.div>
+      <div className="px-6 md:px-16 max-w-6xl mx-auto">
+        <PageHeader kicker="Releases / DJ sets / Sessions / Artists" title="Music">
+          <nav aria-label="Secciones de Music" className="mt-8 flex flex-wrap gap-2">
+            {sections.map((s) => (
+              <a key={s.id} href={`#${s.id}`} className="font-mono-tight border border-border px-3 py-2 text-muted-foreground hover:text-foreground hover:border-foreground/50 transition-colors">
+                {s.label}
+              </a>
+            ))}
+          </nav>
+        </PageHeader>
 
-        {/* Releases / Tracks Grid */}
-        <section>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="font-serif text-4xl md:text-5xl text-foreground mb-12 tracking-wide"
-          >
-            Latest Releases
-          </motion.h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-            {latestReleases.map((release, i) => (
-              <motion.a
-                href="#"
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
+        {/* RELEASES */}
+        <section id="releases" aria-labelledby="releases-title" className="scroll-mt-24 mb-20 md:mb-28">
+          <SectionTitle id="releases" n="01" title="Releases" count={releases.length} />
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+            {releases.map((r, i) => (
+              <motion.article
+                key={r.id}
+                initial={{ opacity: 0, y: 12 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="group block cursor-pointer"
+                transition={{ delay: (i % 3) * 0.05 }}
               >
-                <div className="relative aspect-square overflow-hidden border border-border bg-black mb-4">
-                  <img 
-                    src={release.cover} 
-                    alt={release.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 group-hover:opacity-80 transition-all duration-700" 
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                  />
-                  {/* Etiqueta de tipo */}
-                  <div className="absolute top-2 right-2 z-10 bg-background/90 backdrop-blur-sm border border-border px-2 py-1">
-                    <span className="font-mono-tight text-[9px] text-foreground tracking-[0.2em] uppercase">
-                      {release.type}
-                    </span>
+                <div className="relative aspect-square overflow-hidden bg-black border border-border">
+                  <img src={r.cover} alt={`${r.artist} — ${r.title}`} loading="lazy" className="w-full h-full object-cover" />
+                  <span className="absolute top-2 left-2 bg-background/90 border border-border px-2 py-1 font-mono-tight text-foreground">{r.type}</span>
+                </div>
+                <div className="mt-3 font-mono-tight text-muted-foreground flex flex-wrap gap-x-3">
+                  <span>{r.artist}</span>
+                  {r.year && <span>{r.year}</span>}
+                  {r.note && <span>{r.note}</span>}
+                </div>
+                <h3 className="mt-1 font-serif text-2xl uppercase text-foreground leading-tight">{r.title}</h3>
+
+                <ol className="mt-4 border-t border-border">
+                  {r.tracks.map((t, n) => {
+                    const idx = findTrackByAudio(t.audio);
+                    return (
+                      <li key={t.title} className="flex items-center gap-3 py-2 border-b border-border/60">
+                        <span className="font-mono-tight text-muted-foreground w-5">{String(n + 1).padStart(2, "0")}</span>
+                        <span className="flex-1 min-w-0 text-sm text-foreground truncate">{t.title}</span>
+                        {t.preview && <span className="font-mono-tight text-muted-foreground">Preview</span>}
+                        {idx >= 0 ? (
+                          <PlayButton trackIndex={idx} className="!w-9 !h-9" />
+                        ) : (
+                          <span className="font-mono-tight text-muted-foreground">Sin audio</span>
+                        )}
+                      </li>
+                    );
+                  })}
+                </ol>
+
+                {r.links.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-4">
+                    {r.links.map((l) => (
+                      <a key={l.url} href={l.url} target="_blank" rel="noopener noreferrer" className="font-mono-tight text-foreground border-b border-foreground/40 pb-0.5">
+                        {l.label} ↗
+                      </a>
+                    ))}
                   </div>
-                </div>
-
-                <h3 className="font-serif text-xl tracking-wide uppercase truncate text-foreground group-hover:text-muted-foreground transition-colors">
-                  {release.title}
-                </h3>
-                <p className="font-mono-tight text-[11px] text-muted-foreground tracking-[0.15em] uppercase mt-2">
-                  {release.artist}
-                </p>
-              </motion.a>
+                )}
+              </motion.article>
             ))}
           </div>
         </section>
 
-        {/* Sección Uriel Galeano */}
-        <section>
-          <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-12">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="font-dash text-4xl md:text-5xl text-foreground tracking-wide"
-            >
-              Uriel Galeano
-            </motion.h2>
-            <motion.a
-              href="#"
-              onClick={(e) => e.preventDefault()}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-foreground hover:text-muted-foreground transition-colors sm:mb-2"
-            >
-              [ VER MAS CONTENIDO ↗ ]
-            </motion.a>
+        {/* DJ SETS */}
+        <section id="dj-sets" aria-labelledby="dj-sets-title" className="scroll-mt-24 mb-20 md:mb-28">
+          <SectionTitle id="dj-sets" n="02" title="DJ Sets" count={djSets.length} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-12">
+            {djSets.map((v, i) => (
+              <div key={v.id} className={i === 0 ? "md:col-span-2" : ""}>
+                <VideoCard v={v} large={i === 0} />
+              </div>
+            ))}
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-            {urielTracks.map((track, i) => (
-              <motion.a
-                href="#"
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="group block cursor-pointer"
-              >
-                <div className="relative aspect-square overflow-hidden border border-border bg-black mb-4">
-                  <img 
-                    src={track.cover} 
-                    alt={track.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 group-hover:opacity-80 transition-all duration-700" 
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                  />
-                  <div className="absolute top-2 right-2 z-10 bg-background/90 backdrop-blur-sm border border-border px-2 py-1">
-                    <span className="font-mono-tight text-[9px] text-foreground tracking-[0.2em] uppercase">
-                      {track.type}
-                    </span>
+        </section>
+
+        {/* SESSIONS */}
+        <section id="sessions" aria-labelledby="sessions-title" className="scroll-mt-24 mb-20 md:mb-28">
+          <SectionTitle id="sessions" n="03" title="Sessions" count={sessions.length} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {sessions.map((v) => (
+              <VideoCard key={v.id} v={v} large />
+            ))}
+          </div>
+          <p className="mt-8 font-mono-tight text-muted-foreground">
+            Motion, visualizers y más registros en el{" "}
+            <Link to="/archive?filter=video" className="text-foreground underline underline-offset-4">
+              archivo de video →
+            </Link>
+          </p>
+        </section>
+
+        {/* ARTISTS */}
+        <section id="artists" aria-labelledby="artists-title" className="scroll-mt-24">
+          <SectionTitle id="artists" n="04" title="Artists" count={artists.length} />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            {artists.map((a) => {
+              const own = releases.filter((r) => r.artist === a.name);
+              return (
+                <article key={a.id} className="grid grid-cols-5 gap-5">
+                  {a.presskit && (
+                    <a href={a.presskit.url} target="_blank" rel="noopener noreferrer" className="col-span-2 group block">
+                      <div className="aspect-[4/5] overflow-hidden border border-border bg-black">
+                        <img src={a.presskit.cover} alt={`Presskit de ${a.name}`} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+                      </div>
+                    </a>
+                  )}
+                  <div className={a.presskit ? "col-span-3" : "col-span-5"}>
+                    <h3 className="font-serif text-3xl uppercase text-foreground leading-none">{a.name}</h3>
+                    <p className="mt-2 font-mono-tight text-muted-foreground">{a.roles}</p>
+                    {own.length > 0 && (
+                      <ul className="mt-4 text-sm text-muted-foreground space-y-1">
+                        {own.map((r) => (
+                          <li key={r.id}>
+                            <span className="font-mono-tight mr-2">{r.type}</span>
+                            <span className="text-foreground">{r.title}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                    {a.presskit && (
+                      <a href={a.presskit.url} target="_blank" rel="noopener noreferrer" className="mt-5 inline-block font-mono-tight text-foreground border-b border-foreground/40 pb-1 hover:border-foreground">
+                        Presskit / Booking ↗
+                      </a>
+                    )}
+                    {a.presskit && <p className="mt-3 font-mono-tight text-muted-foreground">Diseño presskit: {a.presskit.design}</p>}
                   </div>
-                </div>
-
-                <h3 className="font-serif text-xl tracking-wide uppercase truncate text-foreground group-hover:text-muted-foreground transition-colors">
-                  {track.title}
-                </h3>
-                <p className="font-mono-tight text-[11px] text-muted-foreground tracking-[0.15em] uppercase mt-2">
-                  {track.artist}
-                </p>
-              </motion.a>
-            ))}
+                </article>
+              );
+            })}
           </div>
         </section>
-
-        {/* Sección Anguis */}
-        <section>
-          <div className="flex flex-col sm:flex-row justify-between sm:items-end gap-4 mb-12">
-            <motion.h2
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="font-righteous text-4xl md:text-5xl text-foreground tracking-wide"
-            >
-              Anguis
-            </motion.h2>
-            <motion.a
-              href="#"
-              onClick={(e) => e.preventDefault()}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.1 }}
-              className="font-mono text-xs font-bold uppercase tracking-[0.2em] text-foreground hover:text-muted-foreground transition-colors sm:mb-2"
-            >
-              [ VER MAS CONTENIDO ↗ ]
-            </motion.a>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
-            {anguisTracks.map((track, i) => (
-              <motion.a
-                href="#"
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="group block cursor-pointer"
-              >
-                <div className="relative aspect-square overflow-hidden border border-border bg-black mb-4">
-                  <img 
-                    src={track.cover} 
-                    alt={track.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 group-hover:opacity-80 transition-all duration-700" 
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                  />
-                  <div className="absolute top-2 right-2 z-10 bg-background/90 backdrop-blur-sm border border-border px-2 py-1">
-                    <span className="font-mono-tight text-[9px] text-foreground tracking-[0.2em] uppercase">
-                      {track.type}
-                    </span>
-                  </div>
-                </div>
-
-                <h3 className="font-serif text-xl tracking-wide uppercase truncate text-foreground group-hover:text-muted-foreground transition-colors">
-                  {track.title}
-                </h3>
-                <p className="font-mono-tight text-[11px] text-muted-foreground tracking-[0.15em] uppercase mt-2">
-                  {track.artist}
-                </p>
-              </motion.a>
-            ))}
-          </div>
-        </section>
-
-        {/* Playlists Recomendadas */}
-        <section>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="font-serif text-4xl md:text-5xl text-foreground mb-12 tracking-wide"
-          >
-            Playlists Recomendadas
-          </motion.h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-10">
-            {recommendedPlaylists.map((playlist, i) => (
-              <motion.a
-                href="#"
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.15 }}
-                className="group block cursor-pointer border border-border bg-secondary/10 p-6 hover:border-foreground/30 transition-colors"
-              >
-                <div className="relative aspect-video overflow-hidden border border-border bg-black mb-6">
-                  <img 
-                    src={playlist.cover} 
-                    alt={playlist.title} 
-                    className="w-full h-full object-cover group-hover:scale-105 group-hover:opacity-80 transition-all duration-700" 
-                    onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                  />
-                </div>
-                <h3 className="font-serif text-2xl tracking-wide uppercase text-foreground group-hover:text-muted-foreground transition-colors mb-3">
-                  {playlist.title}
-                </h3>
-                <p className="font-mono text-xs text-muted-foreground leading-relaxed">
-                  {playlist.desc}
-                </p>
-              </motion.a>
-            ))}
-          </div>
-        </section>
-
-      </div>
-
-      {/* BOOKINGS / PRESSKITS */}
-      <div className="bg-muted/5 border-t border-border pt-16 pb-16" id="bookings">
-        <PresskitsSection />
       </div>
     </main>
   );

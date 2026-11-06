@@ -1,10 +1,7 @@
 import { motion } from "framer-motion";
+import { crewNames as names } from "@/data/credits";
 
-const names = [
-  "Uriel Galeano", "Lucas Nicolás Bengochea", "Juan Francisco Arias", "Javier Almiron",
-  "Tomas Sessa", "Nahuel Matías Bengochea", "Francisco Anguis",
-  "Facundo Luis Coppa", "Agustin Galeazzi"
-];
+
 
 export default function CreditsSection() {
   return (
