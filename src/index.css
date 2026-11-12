@@ -1,0 +1,407 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&display=swap');
+
+@font-face {
+  font-family: 'DASH Early';
+  src: url('/DASH-Early.otf') format('opentype'),
+       url('/DASH-Early.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Righteous';
+  src: url('/Righteous-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ethnocentric';
+  src: url('/Ethnocentric-Regular.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Milk and Honey';
+  src: url('/Milk And Honey.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Akira Expanded';
+  src: url('/Akira Expanded Demo.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Eurostile Extended';
+  src: url('/EurostileExtendedBlack.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Pure Energy';
+  src: url('/Pure Energy - Demo.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Tenada';
+  src: url('/Tenada.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Microgramma';
+  src: url('/Microgramma D Extended Bold.otf') format('opentype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Seagram';
+  src: url('/Seagram tfb.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Cyberpunks';
+  src: url('/Cyberpunks.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hit Me Punk';
+  src: url('/Hit me, punk! 01.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 0%;
+    --foreground: 0 0% 100%;
+    --card: 0 0% 4%;
+    --card-foreground: 0 0% 100%;
+    --popover: 0 0% 4%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 0 0% 100%;
+    --primary-foreground: 0 0% 0%;
+    --secondary: 0 0% 8%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 55%;
+    --accent: 225 100% 55%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 85% 50%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 225 100% 55%;
+    --radius: 0px;
+
+    --cobalt: 225 100% 55%;
+    --red-aggressive: 0 85% 50%;
+    --burgundy: 345 60% 25%;
+
+    --font-serif: 'Playfair Display', Georgia, serif;
+    --font-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    --font-mono: 'SF Mono', 'Fira Code', monospace;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+}
+
+/* Noise overlay */
+@layer base {
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    right: -50%;
+    bottom: -50%;
+    width: 200%;
+    height: 200%;
+    background: transparent url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.95' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E") repeat;
+    pointer-events: none;
+    z-index: 9999;
+    animation: grain 0.5s steps(6) infinite;
+  }
+}
+
+@layer utilities {
+  @keyframes grain {
+    0%, 100% { transform: translate(0, 0) }
+    10% { transform: translate(-5%, -10%) }
+    30% { transform: translate(3%, -15%) }
+    50% { transform: translate(12%, 9%) }
+    70% { transform: translate(9%, 4%) }
+    90% { transform: translate(-1%, 7%) }
+  }
+
+  .font-serif {
+    font-family: var(--font-serif);
+  }
+  .font-mono-tight {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+
+  .text-cobalt {
+    color: hsl(var(--cobalt));
+  }
+  .text-red-aggressive {
+    color: hsl(var(--red-aggressive));
+  }
+  .text-burgundy {
+    color: hsl(var(--burgundy));
+  }
+  .bg-cobalt {
+    background-color: hsl(var(--cobalt));
+  }
+
+  /* Marquee */
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .animate-marquee {
+    animation: marquee 20s linear infinite;
+  }
+
+  /* Glitch */
+  @keyframes glitch {
+    0% { clip-path: inset(40% 0 61% 0); transform: translate(-2px, 2px); }
+    20% { clip-path: inset(92% 0 1% 0); transform: translate(1px, -1px); }
+    40% { clip-path: inset(43% 0 1% 0); transform: translate(-1px, 3px); }
+    60% { clip-path: inset(25% 0 58% 0); transform: translate(3px, 1px); }
+    80% { clip-path: inset(54% 0 7% 0); transform: translate(-3px, -2px); }
+    100% { clip-path: inset(58% 0 43% 0); transform: translate(2px, -3px); }
+  }
+
+  .hover-glitch:hover {
+    animation: glitch 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+  }
+
+  /* CRT scanlines */
+  .crt-scanlines::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.15) 2px,
+      rgba(0,0,0,0.15) 4px
+    );
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .crt-scanlines:hover::after {
+    opacity: 1;
+  }
+
+  /* Halftone filter */
+  .halftone {
+    filter: grayscale(100%) contrast(1.5);
+    transition: filter 0.4s ease;
+  }
+  .halftone:hover {
+    filter: grayscale(0%) contrast(1);
+  }
+
+  /* Plastic wrap bg */
+  .plastic-wrap {
+    background: 
+      radial-gradient(ellipse at 20% 50%, rgba(255,255,255,0.03) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 20%, rgba(255,255,255,0.02) 0%, transparent 40%),
+      radial-gradient(ellipse at 60% 80%, rgba(255,255,255,0.015) 0%, transparent 60%);
+  }
+
+  /* Wavy grid */
+  .wavy-grid {
+    background-image: 
+      linear-gradient(rgba(100,20,50,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(100,20,50,0.08) 1px, transparent 1px);
+    background-size: 40px 40px;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(0 0% 0%);
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(0 0% 20%);
+}
+
+/* Glitch typography & disruption classes */
+.font-dash {
+  font-family: 'DASH Early', sans-serif;
+}
+
+.font-righteous {
+  font-family: 'Righteous', sans-serif;
+}
+
+.font-ethnocentric {
+  font-family: 'Ethnocentric', sans-serif;
+}
+
+.font-milk-and-honey {
+  font-family: 'Milk and Honey', sans-serif;
+}
+
+.font-akira {
+  font-family: 'Akira Expanded', sans-serif;
+}
+
+.font-eurostile {
+  font-family: 'Eurostile Extended', sans-serif;
+}
+
+.font-pure-energy {
+  font-family: 'Pure Energy', sans-serif;
+}
+
+.font-tenada {
+  font-family: 'Tenada', sans-serif;
+}
+
+.font-microgramma {
+  font-family: 'Microgramma', sans-serif;
+}
+
+.glitch-text {
+  position: relative;
+  display: inline-block;
+}
+
+.glitch-text::before,
+.glitch-text::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  clip-path: inset(0 0 0 0);
+  pointer-events: none;
+}
+
+.glitch-text::before {
+  left: -2px;
+  text-shadow: 2px 0 #00ffff;
+  animation: glitch-anim-1 2s infinite linear alternate-reverse;
+}
+
+.glitch-text::after {
+  left: 2px;
+  text-shadow: -2px 0 #ff007c;
+  animation: glitch-anim-2 2s infinite linear alternate-reverse;
+}
+
+@keyframes glitch-anim-1 {
+  0% { clip-path: inset(20% 0 70% 0); }
+  10% { clip-path: inset(80% 0 10% 0); }
+  20% { clip-path: inset(40% 0 50% 0); }
+  30% { clip-path: inset(90% 0 5% 0); }
+  40% { clip-path: inset(10% 0 85% 0); }
+  50% { clip-path: inset(60% 0 35% 0); }
+  60% { clip-path: inset(30% 0 65% 0); }
+  70% { clip-path: inset(85% 0 10% 0); }
+  80% { clip-path: inset(5% 0 90% 0); }
+  90% { clip-path: inset(75% 0 20% 0); }
+  100% { clip-path: inset(15% 0 80% 0); }
+}
+
+@keyframes glitch-anim-2 {
+  0% { clip-path: inset(10% 0 85% 0); }
+  10% { clip-path: inset(60% 0 35% 0); }
+  20% { clip-path: inset(30% 0 65% 0); }
+  30% { clip-path: inset(85% 0 10% 0); }
+  40% { clip-path: inset(5% 0 90% 0); }
+  50% { clip-path: inset(75% 0 20% 0); }
+  60% { clip-path: inset(15% 0 80% 0); }
+  70% { clip-path: inset(50% 0 45% 0); }
+  80% { clip-path: inset(95% 0 2% 0); }
+  90% { clip-path: inset(25% 0 70% 0); }
+  100% { clip-path: inset(80% 0 15% 0); }
+}
+
+@keyframes glitch-bg {
+  0%, 100% { opacity: 0; }
+  92% { opacity: 0; }
+  93% { opacity: 0.12; }
+  94% { opacity: 0; }
+  96% { opacity: 0.18; }
+  97% { opacity: 0; }
+}
+
+/* Foco visible para navegación por teclado (señal: cobalto) */
+@layer base {
+  :focus-visible {
+    outline: 1px solid hsl(var(--cobalt));
+    outline-offset: 3px;
+  }
+}
+
+/* Menos movimiento: se frenan grano, marquesinas y pulsos */
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  .animate-marquee,
+  .animate-pulse,
+  .hover-glitch:hover {
+    animation: none !important;
+  }
+  html:focus-within {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+  }
+}
