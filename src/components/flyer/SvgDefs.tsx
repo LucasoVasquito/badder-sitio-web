@@ -1,71 +1,13 @@
-import { useEffect, useRef } from "react";
-import { reducedMotion, useScrollVelocity } from "@/hooks/motion";
+// Definiciones SVG de la maqueta, tal cual (DEFS): alambre blanco/negro, púas, warp y bitmap 1-bit.
+const DEFS = `<svg width="0" height="0" style="position:absolute"><defs>
+<pattern id="barbW" width="120" height="30" patternUnits="userSpaceOnUse"><g fill="none" stroke="#F2EFE6" stroke-width="2.2" stroke-linecap="round"><path d="M0 15 C20 9 40 21 60 15 S100 9 120 15"/><path d="M0 15 C20 21 40 9 60 15 S100 21 120 15"/><path d="M53 3 L67 27 M67 3 L53 27 M50 15 L70 15"/></g></pattern>
+<pattern id="barbK" width="120" height="30" patternUnits="userSpaceOnUse"><g fill="none" stroke="#0A0A09" stroke-width="2.4" stroke-linecap="round"><path d="M0 15 C20 9 40 21 60 15 S100 9 120 15"/><path d="M0 15 C20 21 40 9 60 15 S100 21 120 15"/><path d="M53 3 L67 27 M67 3 L53 27 M50 15 L70 15"/></g></pattern>
+<pattern id="thornH" width="46" height="24" patternUnits="userSpaceOnUse"><g fill="#F2EFE6"><rect y="9" width="46" height="5"/><polygon points="3,10 6,0 9,10"/><polygon points="13,13 16,24 19,13"/><polygon points="22,10 27,1 30,10"/><polygon points="32,13 36,22 39,13"/><polygon points="40,10 42,4 45,10"/></g></pattern>
+<pattern id="thornV" width="24" height="46" patternUnits="userSpaceOnUse"><g fill="#F2EFE6"><rect x="9" width="5" height="46"/><polygon points="10,3 0,6 10,9"/><polygon points="13,13 24,16 13,19"/><polygon points="10,22 1,27 10,30"/><polygon points="13,32 22,36 13,39"/><polygon points="10,40 4,42 10,45"/></g></pattern>
+<filter id="warp" x="-10%" y="-20%" width="120%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.006 0.05" numOctaves="2" seed="4" result="t"/><feDisplacementMap id="warpMap" in="SourceGraphic" in2="t" scale="14" xChannelSelector="R" yChannelSelector="G"/></filter>
+<filter id="bitmap" color-interpolation-filters="sRGB"><feColorMatrix in="SourceGraphic" type="saturate" values="0" result="g"/><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="1" seed="2" result="n"/><feColorMatrix in="n" type="saturate" values="0" result="ng"/><feComposite in="g" in2="ng" operator="arithmetic" k1="0" k2="1.1" k3="0.5" k4="-0.3" result="m"/><feComponentTransfer in="m"><feFuncR type="discrete" tableValues="0 1"/><feFuncG type="discrete" tableValues="0 1"/><feFuncB type="discrete" tableValues="0 1"/></feComponentTransfer></filter>
+</defs></svg>`;
 
-/**
- * Definiciones SVG compartidas (se monta una vez en App):
- *  #warp    desplazamiento por ruido; su escala oscila y sube con la velocidad de scroll
- *  #bitmap  umbral de 1 bit: sobre fondo --a con la imagen en multiply = duotono negro + acento
- *  #thornH/#thornV  línea con triángulos irregulares (marco de espinas, en --a)
- *  #barbW/#barbK    alambre de púas blanco / negro
- */
 export default function SvgDefs() {
-  const disp = useRef<SVGFEDisplacementMapElement>(null);
-  const vel = useScrollVelocity();
-
-  useEffect(() => {
-    if (reducedMotion()) {
-      disp.current?.setAttribute("scale", "0");
-      return;
-    }
-    let raf = 0;
-    const loop = (t: number) => {
-      if (!document.hidden) {
-        const s = 10 + Math.sin(t / 900) * 7 + Math.min(vel.value * 2.2, 40);
-        disp.current?.setAttribute("scale", s.toFixed(1));
-      }
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
-  }, [vel]);
-
-  return (
-    <svg width="0" height="0" aria-hidden="true" focusable="false" style={{ position: "absolute", pointerEvents: "none" }}>
-      <defs>
-        <filter id="warp" x="-5%" y="-5%" width="110%" height="110%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.012 0.04" numOctaves="2" seed="3" result="n" />
-          <feDisplacementMap ref={disp} in="SourceGraphic" in2="n" scale="12" xChannelSelector="R" yChannelSelector="G" />
-        </filter>
-
-        <filter id="bitmap" x="0" y="0" width="100%" height="100%" colorInterpolationFilters="sRGB">
-          <feColorMatrix type="saturate" values="0" result="g" />
-          <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="1" seed="7" result="noise" />
-          <feComposite in="g" in2="noise" operator="arithmetic" k1="0" k2="0.85" k3="0.3" k4="-0.06" result="mix" />
-          <feComponentTransfer in="mix">
-            <feFuncR type="discrete" tableValues="0 1" />
-            <feFuncG type="discrete" tableValues="0 1" />
-            <feFuncB type="discrete" tableValues="0 1" />
-          </feComponentTransfer>
-        </filter>
-
-        <pattern id="thornH" width="48" height="22" patternUnits="userSpaceOnUse">
-          <rect y="10" width="48" height="2" style={{ fill: "hsl(var(--a))" }} />
-          <path d="M5 10 L10 1 L14 10Z M26 10 L29 3 L35 10Z M15 12 L18 20 L22 12Z M38 12 L42 21 L46 12Z" style={{ fill: "hsl(var(--a))" }} />
-        </pattern>
-        <pattern id="thornV" width="22" height="48" patternUnits="userSpaceOnUse">
-          <rect x="10" width="2" height="48" style={{ fill: "hsl(var(--a))" }} />
-          <path d="M10 5 L1 10 L10 14Z M10 26 L3 29 L10 35Z M12 15 L20 18 L12 22Z M12 38 L21 42 L12 46Z" style={{ fill: "hsl(var(--a))" }} />
-        </pattern>
-
-        <pattern id="barbW" width="60" height="30" patternUnits="userSpaceOnUse">
-          <path d="M0 15 C15 2 15 2 30 15 S45 28 60 15 M0 15 C15 28 15 28 30 15 S45 2 60 15" fill="none" stroke="#F2EFE6" strokeWidth="2.4" />
-          <path d="M23 8 L37 22 M37 8 L23 22 M-7 8 L7 22 M7 8 L-7 22 M53 8 L67 22 M67 8 L53 22" stroke="#F2EFE6" strokeWidth="2" strokeLinecap="round" />
-        </pattern>
-        <pattern id="barbK" width="60" height="30" patternUnits="userSpaceOnUse">
-          <path d="M0 15 C15 2 15 2 30 15 S45 28 60 15 M0 15 C15 28 15 28 30 15 S45 2 60 15" fill="none" stroke="#0A0A09" strokeWidth="2.4" />
-          <path d="M23 8 L37 22 M37 8 L23 22 M-7 8 L7 22 M7 8 L-7 22 M53 8 L67 22 M67 8 L53 22" stroke="#0A0A09" strokeWidth="2" strokeLinecap="round" />
-        </pattern>
-      </defs>
-    </svg>
-  );
+  return <div aria-hidden style={{ position: "absolute", width: 0, height: 0, overflow: "hidden" }} dangerouslySetInnerHTML={{ __html: DEFS }} />;
 }

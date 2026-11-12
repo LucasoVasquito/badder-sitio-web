@@ -19,7 +19,11 @@ import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Sistema from "./pages/Sistema";
 import { SvgDefs, GrainOverlay, CursorDot } from "./components/flyer";
-import { useMouseParallax } from "./hooks/motion";
+import TouchBlur from "./components/flyer/TouchBlur";
+import { useFlyerLoop } from "./hooks/useFlyerLoop";
+import { useFlyerStore } from "./store/flyerStore";
+import { PALETAS } from "./config/flyer";
+import { useEffect } from "react";
 
 // Redirige conservando ?query y #hash (ej: /journal?post=post-01 → /culture?post=post-01)
 function Redirect({ to }: { to: string }) {
@@ -28,7 +32,18 @@ function Redirect({ to }: { to: string }) {
 }
 
 function App() {
-  useMouseParallax();
+  useFlyerLoop();
+  // Aplica los tweaks (paleta, grano, difusas) como variables CSS en <html>.
+  const { paleta, textura, difusas } = useFlyerStore();
+  useEffect(() => {
+    const p = PALETAS[paleta] ?? PALETAS[0];
+    const s = document.documentElement.style;
+    s.setProperty("--a", p.aHsl); s.setProperty("--b", p.bHsl);
+    s.setProperty("--a-c", p.a); s.setProperty("--b-c", p.b);
+    s.setProperty("--a-fg", p.aFg); s.setProperty("--b-fg", p.bFg);
+    s.setProperty("--grain", String(textura));
+    s.setProperty("--blur", difusas ? "4px" : "0px");
+  }, [paleta, textura, difusas]);
   return (
     // reducedMotion="user": Framer Motion respeta prefers-reduced-motion en todo el sitio
     <MotionConfig reducedMotion="user">
@@ -36,6 +51,7 @@ function App() {
         <SvgDefs />
         <GrainOverlay />
         <CursorDot />
+        <TouchBlur />
         <ScrollToTop />
         <Navigation />
 

@@ -1,35 +1,10 @@
-import { useEffect, useRef } from "react";
-import { reducedMotion } from "@/hooks/motion";
+const GRAIN = `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><filter id="grainF"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.4 -0.2"/></filter><rect width="100%" height="100%" filter="url(#grainF)"/></svg>`;
 
-const NOISE =
-  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")";
-
-/** Grano de impresión: ruido fijo al 200 % del viewport que salta de lugar cada ~70 ms (sin re-render). Estático con reduced-motion. */
+// Grano: capa fixed z 90, overlay, opacidad var(--grain). El lazo global la traslada cada 70 ms.
 export default function GrainOverlay() {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (reducedMotion()) return;
-    let raf = 0;
-    let last = 0;
-    const loop = (t: number) => {
-      if (!document.hidden && t - last > 70 && ref.current) {
-        last = t;
-        ref.current.style.transform = `translate(${-Math.random() * 50}%, ${-Math.random() * 50}%)`;
-      }
-      raf = requestAnimationFrame(loop);
-    };
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
-  }, []);
-
   return (
-    <div aria-hidden className="fixed inset-0 z-[60] overflow-hidden pointer-events-none">
-      <div
-        ref={ref}
-        className="absolute"
-        style={{ width: "200%", height: "200%", backgroundImage: NOISE, mixBlendMode: "overlay", opacity: 0.24, willChange: "transform" }}
-      />
+    <div aria-hidden style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 90, overflow: "hidden", opacity: "var(--grain,.35)", mixBlendMode: "overlay" }}>
+      <div id="flyer-grain" style={{ position: "absolute", left: "-50%", top: "-50%", width: "200%", height: "200%" }} dangerouslySetInnerHTML={{ __html: GRAIN }} />
     </div>
   );
 }

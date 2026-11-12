@@ -2,24 +2,31 @@ import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link, useLocation } from "react-router-dom";
 import { ShoppingBag, X } from "lucide-react";
-import badderLogo from "@/assets/badder_logo_original.webp";
-import { mainSections, communitySection, isSectionActive } from "@/data/site";
 import { useCartCount } from "@/store/cartStore";
 
-// Cabecera fija con mix-blend-mode: difference: se invierte sola sobre secciones tinta, papel o de acento.
+// Rutas reales para los anclas de la maqueta: #top→/, #music→/music, #culture→/culture, #archive→/archive, #drop→/shop, #about→/studio, #join→/community.
+const NAV = [
+  { label: "Home", path: "/" },
+  { label: "Music", path: "/music" },
+  { label: "Culture", path: "/culture" },
+  { label: "Archive", path: "/archive" },
+  { label: "Shop", path: "/shop" },
+  { label: "Studio", path: "/studio" },
+];
+const COMMUNITY = { label: "↳ Community", path: "/community" };
+
+const MONO = { fontFamily: "'IBM Plex Mono',monospace", fontSize: 13, letterSpacing: ".14em", textTransform: "uppercase" as const };
+const isActive = (path: string, pathname: string) => (path === "/" ? pathname === "/" : pathname === path || pathname.startsWith(`${path}/`));
+
+// Nav fija (z 80, mix-blend-mode: difference), logo 30 px, mono 13 px .14em. Menú móvil a pantalla completa con Escape y cierre 44×44.
 export default function Navigation() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
   const toggleRef = useRef<HTMLButtonElement>(null);
   const cartCount = useCartCount();
-  const communityActive = isSectionActive(communitySection, pathname);
-  const cartActive = pathname === "/cart";
 
-  useEffect(() => {
-    setOpen(false);
-  }, [pathname]);
+  useEffect(() => setOpen(false), [pathname]);
 
-  // Escape cierra el menú; mientras está abierto no se desplaza el fondo.
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -28,89 +35,67 @@ export default function Navigation() {
         toggleRef.current?.focus();
       }
     };
-    const prevOverflow = document.body.style.overflow;
+    const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     window.addEventListener("keydown", onKey);
     return () => {
-      document.body.style.overflow = prevOverflow;
+      document.body.style.overflow = prev;
       window.removeEventListener("keydown", onKey);
     };
   }, [open]);
 
-  const link = (active: boolean) =>
-    `label relative inline-flex items-center h-11 px-1 border-b-2 transition-colors ${
-      active ? "border-white" : "border-transparent hover:border-white/50"
-    }`;
+  const cart = () => (
+    <Link to="/cart" aria-label={`Carrito${cartCount > 0 ? ` (${cartCount})` : ""}`} className="relative inline-flex items-center justify-center min-w-[44px] min-h-[44px]">
+      <ShoppingBag className="w-5 h-5" strokeWidth={1.75} />
+      {cartCount > 0 && (
+        <span style={{ ...MONO, fontSize: 11, letterSpacing: 0 }} className="absolute top-1 right-0 min-w-[18px] h-[18px] px-1 flex items-center justify-center bg-white text-black">
+          {cartCount}
+        </span>
+      )}
+    </Link>
+  );
 
   return (
     <>
-      <header className="sticky top-0 z-[70] text-white mix-blend-difference">
-        <nav aria-label="Principal" className="flex items-center justify-between gap-6 px-5 md:px-12 h-16 max-w-[1440px] mx-auto">
-          <Link to="/" aria-label="BADDER — Inicio" className="shrink-0 flex items-center tap">
-            <img src={badderLogo} alt="Badder" className="h-12 w-auto object-contain -my-2" />
+      <nav aria-label="Principal" style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 80, mixBlendMode: "difference", color: "#F2EFE6" }}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 20, padding: "16px clamp(16px,3vw,40px)" }}>
+          <Link to="/" aria-label="BADDER — Inicio" style={{ color: "inherit" }}>
+            <img src="/img/logo.webp" alt="Badder" style={{ height: 30, width: "auto", display: "block" }} />
           </Link>
 
           {/* Escritorio */}
-          <div className="hidden lg:flex items-center gap-7">
-            <ul className="flex items-center gap-6">
-              {mainSections.map((item) => {
-                const active = isSectionActive(item, pathname);
-                return (
-                  <li key={item.path}>
-                    <Link to={item.path} aria-current={active ? "page" : undefined} className={link(active)}>
-                      {item.label}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-            <Link
-              to={communitySection.path}
-              aria-current={communityActive ? "page" : undefined}
-              className={`label inline-flex items-center h-11 px-4 border-2 border-white transition-colors ${
-                communityActive ? "bg-white text-black" : "hover:bg-white hover:text-black"
-              }`}
-            >
-              {communitySection.label}
+          <div className="hidden lg:flex" style={{ alignItems: "center", gap: "clamp(10px,2vw,28px)", flexWrap: "wrap", justifyContent: "flex-end", ...MONO }}>
+            {NAV.map((n) => (
+              <Link key={n.path} to={n.path} aria-current={isActive(n.path, pathname) ? "page" : undefined}>
+                {n.label}
+              </Link>
+            ))}
+            <Link to={COMMUNITY.path} aria-current={isActive(COMMUNITY.path, pathname) ? "page" : undefined} style={{ border: "1px solid #F2EFE6", padding: "8px 12px" }}>
+              {COMMUNITY.label}
             </Link>
-            <Link
-              to="/cart"
-              aria-label={`Carrito${cartCount > 0 ? ` (${cartCount})` : ""}`}
-              aria-current={cartActive ? "page" : undefined}
-              className={`relative tap inline-flex items-center justify-center border-b-2 ${cartActive ? "border-white" : "border-transparent hover:border-white/50"}`}
-            >
-              <ShoppingBag className="w-5 h-5" strokeWidth={1.75} />
-              {cartCount > 0 && (
-                <span className="label absolute -top-0.5 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center bg-white text-black !text-[11px]">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
+            {cart()}
           </div>
 
           {/* Móvil / tablet */}
-          <div className="lg:hidden flex items-center gap-1">
-            <Link to="/cart" aria-label={`Carrito${cartCount > 0 ? ` (${cartCount})` : ""}`} className="relative tap inline-flex items-center justify-center">
-              <ShoppingBag className="w-5 h-5" strokeWidth={1.75} />
-              {cartCount > 0 && (
-                <span className="label absolute top-1 right-0 min-w-[18px] h-[18px] px-1 flex items-center justify-center bg-white text-black !text-[11px]">
-                  {cartCount}
-                </span>
-              )}
-            </Link>
+          <div className="lg:hidden flex items-center gap-1" style={MONO}>
+            {cart()}
             <button
               ref={toggleRef}
               type="button"
               onClick={() => setOpen((o) => !o)}
               aria-expanded={open}
               aria-controls="mobile-menu"
-              className="label tap inline-flex items-center px-3 border-2 border-white"
+              className="inline-flex items-center px-3 min-h-[44px]"
+              style={{ border: "1px solid #F2EFE6", ...MONO }}
             >
               {open ? "Cerrar" : "Menú"}
             </button>
           </div>
-        </nav>
-      </header>
+        </div>
+      </nav>
+
+      {/* La nav es fija: en las páginas interiores se reserva su alto. En Home el hero arranca debajo de ella. */}
+      {pathname !== "/" && <div aria-hidden style={{ height: 64 }} />}
 
       <AnimatePresence>
         {open && (
@@ -123,49 +108,55 @@ export default function Navigation() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-[80] bg-background text-foreground flex flex-col lg:hidden"
+            className="fixed inset-0 z-[88] flex flex-col lg:hidden"
+            style={{ background: "#0A0A09", color: "#F2EFE6" }}
           >
-            <div className="flex items-center justify-between px-5 h-16 border-b border-border shrink-0">
-              <span className="label">Menú</span>
-              <button type="button" onClick={() => { setOpen(false); toggleRef.current?.focus(); }} aria-label="Cerrar menú" className="w-11 h-11 inline-flex items-center justify-center border-2 border-foreground">
+            <div className="flex items-center justify-between px-4 h-16 shrink-0" style={{ borderBottom: "1px solid rgba(242,239,230,.4)" }}>
+              <span style={MONO}>Menú</span>
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  toggleRef.current?.focus();
+                }}
+                aria-label="Cerrar menú"
+                className="w-11 h-11 inline-flex items-center justify-center"
+                style={{ border: "1px solid #F2EFE6" }}
+              >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-5 pb-8">
+            <div className="flex-1 overflow-y-auto px-4 pb-8">
               <ul className="flex flex-col">
-                {mainSections.map((item) => {
-                  const active = isSectionActive(item, pathname);
+                {NAV.map((n) => {
+                  const on = isActive(n.path, pathname);
                   return (
-                    <li key={item.path} className="border-b border-border">
-                      <Link
-                        to={item.path}
-                        onClick={() => setOpen(false)}
-                        aria-current={active ? "page" : undefined}
-                        className="flex items-center justify-between min-h-[56px] py-2"
-                      >
-                        <span className={`font-display f-akira !text-[1.6rem] ${active ? "bg-accent text-accent-foreground px-2 -mx-2" : ""}`}>{item.label}</span>
-                        <span aria-hidden className="label">→</span>
+                    <li key={n.path} style={{ borderBottom: "1px solid rgba(242,239,230,.4)" }}>
+                      <Link to={n.path} onClick={() => setOpen(false)} aria-current={on ? "page" : undefined} className="flex items-center justify-between min-h-[56px] py-2">
+                        <span style={{ fontFamily: "'Akira',sans-serif", fontSize: "1.6rem", textTransform: "uppercase", background: on ? "var(--a-c,#FF2B1C)" : undefined, color: on ? "#0A0A09" : undefined, padding: on ? "0 8px" : undefined }}>
+                          {n.label}
+                        </span>
+                        <span aria-hidden style={MONO}>→</span>
                       </Link>
                     </li>
                   );
                 })}
               </ul>
-
               <Link
-                to={communitySection.path}
+                to={COMMUNITY.path}
                 onClick={() => setOpen(false)}
-                className={`mt-6 label flex items-center justify-between min-h-[52px] px-4 border-2 border-foreground ${communityActive ? "bg-accent text-accent-foreground" : ""}`}
+                className="mt-6 flex items-center justify-between min-h-[52px] px-4"
+                style={{ border: "1px solid #F2EFE6", ...MONO, background: isActive(COMMUNITY.path, pathname) ? "var(--a-c,#FF2B1C)" : undefined, color: isActive(COMMUNITY.path, pathname) ? "#0A0A09" : undefined }}
               >
-                <span>{communitySection.label}</span>
+                <span>{COMMUNITY.label}</span>
                 <span aria-hidden>→</span>
               </Link>
-
-              <div className="mt-8 flex justify-between label text-muted-foreground">
-                <Link to="/contact" onClick={() => setOpen(false)} className="underline underline-offset-4 hover:text-foreground">
+              <div className="mt-8 flex justify-between" style={MONO}>
+                <Link to="/contact" onClick={() => setOpen(false)} className="underline underline-offset-4 min-h-[44px] inline-flex items-center">
                   Contacto
                 </Link>
-                <span>La Plata, Argentina</span>
+                <span className="self-center">La Plata, Argentina</span>
               </div>
             </div>
           </motion.div>

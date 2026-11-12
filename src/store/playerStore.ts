@@ -11,20 +11,27 @@ interface PlayerState {
   playTrack: (index: number) => void;
   toggle: () => void;
   setPlaying: (playing: boolean) => void;
-  /** Salta a un track aleatorio distinto del actual (y que no haya fallado). */
+  /** Pasa al siguiente track en el orden de la maqueta. */
   next: () => void;
   markFailed: (index: number) => void;
 }
 
-const randomOther = (current: number, failed: number[]) => {
-  const options = playlist.map((_, i) => i).filter((i) => i !== current && !failed.includes(i));
-  if (options.length === 0) return current;
-  return options[Math.floor(Math.random() * options.length)];
+// Orden de la maqueta: Not Rules, Beeacks, Club Motion, Dope Energy, Power Up, Talk Like That.
+export const ORDER = ["Not Rules EP", "Beeacks Breck Me", "Club Motion", "Dope Energy", "Power Up", "Talk Like That"]
+  .map((t) => playlist.findIndex((p) => p.title.toLowerCase().startsWith(t.toLowerCase())))
+  .filter((i) => i >= 0);
+
+// Siguiente en orden (con vuelta al inicio), salteando los que fallaron. Si el actual no está en la lista, arranca en el primero.
+const nextInOrder = (current: number, failed: number[]) => {
+  const pool = ORDER.filter((i) => !failed.includes(i));
+  if (pool.length === 0) return current;
+  const pos = pool.indexOf(current);
+  return pool[(pos + 1) % pool.length];
 };
 
-// Arranca en un track al azar, pero nunca reproduce solo: siempre espera un clic.
+// Arranca en el primer track (Not Rules EP), pero nunca reproduce solo: siempre espera un clic.
 export const usePlayerStore = create<PlayerState>((set, get) => ({
-  index: Math.floor(Math.random() * playlist.length),
+  index: ORDER[0] ?? 0,
   isPlaying: false,
   failed: [],
   error: null,
@@ -36,7 +43,7 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   },
   toggle: () => set({ isPlaying: !get().isPlaying, error: null }),
   setPlaying: (isPlaying) => set({ isPlaying }),
-  next: () => set({ index: randomOther(get().index, get().failed), error: null }),
+  next: () => set({ index: nextInOrder(get().index, get().failed), error: null }),
   markFailed: (index) =>
     set({
       failed: [...new Set([...get().failed, index])],

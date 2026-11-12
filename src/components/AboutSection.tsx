@@ -1,38 +1,35 @@
-import { Link } from "react-router-dom";
-import { crewNames } from "@/data/credits";
+import { useFontCycle } from "./home/useFontCycle";
 
-// Cierre de la Home: papel, Newsreader grande, título Microgramma y crew en Anton (ancla #crew).
+const MONO = "'IBM Plex Mono',monospace";
+const CREW: [string, string][] = [
+  ["Lucas Nicolas Bengochea", "Diseño · flyers · motion"],
+  ["Juan Francisco Arias", "Fotografía · diseño"],
+  ["Uriel Galeano", "Música"],
+  ["Francisco Anguis", "Música"],
+  ["Javier Almiron", "Diseño"],
+];
+
+// 08 About + Crew — tal cual la maqueta. El bloque Crew conserva el ancla #crew (enlaces de créditos).
 export default function AboutSection() {
+  const title = useFontCycle("about");
   return (
-    <section id="about" className="surface-paper scroll-mt-20 px-5 md:px-12 py-20 md:py-28">
-      <div className="max-w-[1440px] mx-auto">
-        <div className="label text-muted-foreground mb-4">Sobre BADDER</div>
-        <h2 className="f-micro text-[clamp(2rem,7vw,6.5rem)] leading-[0.95]">Quiénes somos</h2>
-
-        <div className="mt-10 grid md:grid-cols-12 gap-x-12 gap-y-8">
-          <p className="md:col-span-7 f-news text-[clamp(1.5rem,1rem+1.8vw,2.4rem)] leading-[1.2]">
-            BADDER es un espacio creativo multidisciplinario de La Plata, nacido en 2024 alrededor de la música electrónica underground.
-          </p>
-          <p className="md:col-span-5 f-news italic text-[clamp(1.2rem,1rem+0.8vw,1.6rem)] leading-snug self-end">
-            Produce música, diseña gráfica e indumentaria, fotografía y filma eventos, y guarda todo eso en un archivo abierto.
+    <section id="about" data-screen-label="08 About + Crew" style={{ position: "relative", background: "#F2EFE6", color: "#0A0A09", padding: "clamp(60px,8vw,120px) clamp(16px,3vw,40px)", overflow: "hidden" }}>
+      <div style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", backgroundImage: "radial-gradient(#0A0A09 1px,transparent 1.5px)", backgroundSize: "6px 6px", WebkitMaskImage: "linear-gradient(90deg,transparent 55%,#000)", maskImage: "linear-gradient(90deg,transparent 55%,#000)", opacity: 0.4 }} />
+      <div style={{ position: "relative", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,380px),1fr))", gap: "clamp(32px,6vw,96px)", alignItems: "start" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
+          <h2 onClick={title.onClick} style={{ margin: 0, cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 400, fontSize: "clamp(54px,7vw,120px)", lineHeight: 0.9, textTransform: "uppercase" }}>About</h2>
+          <p style={{ margin: 0, fontFamily: "'Newsreader',serif", fontSize: "clamp(24px,2.3vw,34px)", lineHeight: 1.3, maxWidth: "30ch", textWrap: "pretty" }}>
+            Espacio creativo multidisciplinario nacido alrededor de la música electrónica underground. <i>Música, cultura de club, diseño, fotografía, audiovisual e indumentaria</i> desde La Plata.
           </p>
         </div>
-
-        <div id="crew" className="scroll-mt-24 mt-16 pt-6 border-t-2 border-border grid md:grid-cols-12 gap-8">
-          <div className="md:col-span-4">
-            <h3 className="label">Crew y créditos</h3>
-            <p className="mt-3 text-muted-foreground max-w-xs">Las personas que hicieron BADDER, pasado y presente.</p>
-            <Link to="/contact#bookings" className="inline-flex items-center min-h-[44px] mt-3 label underline underline-offset-4 decoration-2 hover:bg-accent hover:text-accent-foreground">
-              Conocé a los integrantes →
-            </Link>
-          </div>
-          <ul className="md:col-span-8">
-            {crewNames.map((name) => (
-              <li key={name} className="border-b border-border">
-                <span className="f-anton block text-[clamp(1.6rem,1rem+2.4vw,3rem)] leading-[1.15] py-1 px-1 transition-colors hover:bg-[hsl(var(--a))] hover:text-[hsl(var(--a-fg))]">{name}</span>
-              </li>
-            ))}
-          </ul>
+        <div id="crew" style={{ display: "flex", flexDirection: "column", borderTop: "3px solid #0A0A09", scrollMarginTop: 96 }}>
+          <span style={{ fontFamily: MONO, fontSize: 13, letterSpacing: ".16em", textTransform: "uppercase", padding: "14px 0", borderBottom: "1px solid #0A0A09" }}>Crew</span>
+          {CREW.map(([n, r]) => (
+            <div key={n} className="hv-crew" style={{ display: "flex", justifyContent: "space-between", gap: 16, padding: "14px 0", borderBottom: "1px solid #0A0A09" }}>
+              <span style={{ fontFamily: "'Anton',sans-serif", fontSize: 26, textTransform: "uppercase" }}>{n}</span>
+              <span style={{ fontFamily: MONO, fontSize: 13, textAlign: "right" }}>{r}</span>
+            </div>
+          ))}
         </div>
       </div>
     </section>

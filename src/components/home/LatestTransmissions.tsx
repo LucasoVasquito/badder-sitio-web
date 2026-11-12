@@ -1,109 +1,86 @@
-import { Link } from "react-router-dom";
-import { Marquee, Sticker, ThornFrame, FontCycleTitle } from "@/components/flyer";
-import { usePlayerStore, findTrackByAudio } from "@/store/playerStore";
-import { releases } from "@/data/music";
-import { playlist } from "@/data/audio";
-import { Play, Pause } from "lucide-react";
+import { usePlayerStore, ORDER } from "@/store/playerStore";
+import { useFontCycle } from "./useFontCycle";
 
-const featured = releases[0];
-const featuredTrack = findTrackByAudio(featured.tracks[0]?.audio);
-const lineup = releases.slice(1);
+const MONO = "'IBM Plex Mono',monospace";
 
-// Bloques de color con desplazamiento horizontal distinto (tipo lineup de flyer). A 390 px el desplazamiento baja a 0.
-const BLOCKS = [
-  { cls: "bg-[hsl(var(--a))] text-[hsl(var(--a-fg))]", shift: "md:ml-0" },
-  { cls: "bg-[hsl(var(--b))] text-[hsl(var(--b-fg))]", shift: "md:ml-[12%]" },
-  { cls: "bg-[hsl(var(--paper))] text-[hsl(var(--ink))]", shift: "md:ml-[4%]" },
-  { cls: "bg-background text-foreground border-2 border-[hsl(var(--paper))]", shift: "md:ml-[18%]" },
-  { cls: "bg-[hsl(var(--a))] text-[hsl(var(--a-fg))]", shift: "md:ml-[8%]" },
+const THORN = (h: number) => (
+  <>
+    <svg aria-hidden style={{ position: "absolute", left: 0, top: 0, width: "100%", height: h }}><rect width="100%" height={h} fill="url(#thornH)" /></svg>
+    <svg aria-hidden style={{ position: "absolute", left: 0, bottom: 0, width: "100%", height: h, transform: "scaleY(-1)" }}><rect width="100%" height={h} fill="url(#thornH)" /></svg>
+    <svg aria-hidden style={{ position: "absolute", left: 0, top: 0, width: h, height: "100%" }}><rect width={h} height="100%" fill="url(#thornV)" /></svg>
+    <svg aria-hidden style={{ position: "absolute", right: 0, top: 0, width: h, height: "100%", transform: "scaleX(-1)" }}><rect width={h} height="100%" fill="url(#thornV)" /></svg>
+  </>
+);
+
+const A = "var(--a-c,#FF2B1C)";
+const ROWS = [
+  { i: 0, label: "Not Rules", tag: "EP", ml: undefined, font: "'Anton',sans-serif", size: "clamp(30px,3.6vw,54px)", paper: false, doto: false },
+  { i: 1, label: "Beeacks Breck Me", tag: "EP", ml: "clamp(20px,8vw,120px)", font: "'Doto',monospace", size: "clamp(28px,3.3vw,50px)", paper: false, doto: true },
+  { i: 2, label: "Club Motion", tag: "Preview", ml: "clamp(8px,3vw,40px)", font: "'Anton',sans-serif", size: "clamp(30px,3.6vw,54px)", paper: true, doto: false },
+  { i: 3, label: "Dope Energy", tag: "Preview", ml: "clamp(30px,12vw,200px)", font: "'Doto',monospace", size: "clamp(28px,3.3vw,50px)", paper: false, doto: true },
+  { i: 4, label: "Power Up", tag: "Preview", ml: "clamp(14px,5vw,80px)", font: "'Anton',sans-serif", size: "clamp(30px,3.6vw,54px)", paper: false, doto: false },
+  { i: 5, label: "Talk Like That", tag: "Preview", ml: "clamp(26px,10vw,160px)", font: "'Doto',monospace", size: "clamp(28px,3.3vw,50px)", paper: true, doto: true },
 ];
 
-const tag = (r: (typeof releases)[number]) => (r.tracks.some((t) => t.preview) ? "[Preview]" : `[${r.type}]`);
-
-function LineupItem({ release, idx, block }: { release: (typeof releases)[number]; idx: number; block: (typeof BLOCKS)[number] }) {
-  const trackIndex = findTrackByAudio(release.tracks.find((t) => t.audio)?.audio);
-  const playing = usePlayerStore((s) => s.index === trackIndex && s.isPlaying);
-  const playTrack = usePlayerStore((s) => s.playTrack);
-  const track = playlist[trackIndex];
+// 02 Latest Transmissions — tal cual la maqueta. El audio sale del reproductor global (un solo <audio>).
+export default function LatestTransmissions() {
+  const title = useFontCycle("trans");
+  const { index, isPlaying, playTrack } = usePlayerStore();
+  const playingFirst = isPlaying && index === ORDER[0];
 
   return (
-    <li className={`${block.shift} md:w-[78%]`}>
-      <div className={`${block.cls} flex items-center gap-4 p-3 ${playing ? "outline outline-4 outline-offset-2 outline-[hsl(var(--paper))]" : ""}`}>
-        <img src={release.cover} alt="" loading="lazy" className="w-16 h-16 md:w-20 md:h-20 object-cover shrink-0 border-2 border-[hsl(var(--ink))]" />
-        <div className="min-w-0 flex-1">
-          <div className="label opacity-80">{tag(release)} · {release.artist.replace(/\s+/g, " ")}</div>
-          <div className="f-news font-bold text-xl md:text-3xl leading-tight truncate">{release.title}</div>
-          {playing && <div className="label mt-1">▶ Sonando</div>}
-        </div>
-        {track && (
+    <section id="music" data-screen-label="02 Latest Transmissions" style={{ position: "relative", background: "#0A0A09", padding: "clamp(72px,9vw,140px) clamp(16px,3vw,40px) clamp(72px,8vw,120px)", overflow: "hidden" }}>
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(0deg,rgba(242,239,230,.045) 0 1px,transparent 1px 4px)", pointerEvents: "none" }} />
+      <h2
+        onClick={title.onClick}
+        className="hv-glitch"
+        style={{ position: "relative", margin: 0, cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 900, fontSize: "clamp(40px,8.6vw,160px)", lineHeight: 0.86, textTransform: "uppercase", color: A, textShadow: "4px 0 0 rgba(0,255,240,.35),-4px 0 0 rgba(255,0,90,.35)" }}
+      >
+        <span style={{ display: "block" }}>Latest</span>
+        <span style={{ display: "block", paddingLeft: "clamp(12px,8vw,180px)", color: "transparent", WebkitTextStroke: "2px #F2EFE6" }}>Transmissions</span>
+      </h2>
+      <div style={{ position: "relative", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,380px),1fr))", gap: "clamp(32px,5vw,80px)", marginTop: "clamp(24px,4vw,56px)", alignItems: "start" }}>
+        <div style={{ position: "relative", transform: "rotate(-2.5deg)", maxWidth: 560 }}>
+          <div style={{ position: "relative", padding: 22 }}>
+            {THORN(24)}
+            <img src="/img/cover-not-rules.webp" alt="Not Rules EP" style={{ width: "100%", aspectRatio: "1/1", objectFit: "cover", display: "block", filter: "contrast(1.15)" }} />
+          </div>
           <button
             type="button"
-            onClick={() => playTrack(trackIndex)}
-            aria-label={playing ? `Pausar ${release.title}` : `Escuchar ${release.title}`}
-            aria-pressed={playing}
-            className="shrink-0 w-12 h-12 flex items-center justify-center border-2 border-current hover:bg-[hsl(var(--ink))] hover:text-[hsl(var(--paper))] transition-colors"
-            data-idx={idx}
+            onClick={() => playTrack(ORDER[0])}
+            aria-label={playingFirst ? "Pausar Not Rules EP" : "Escuchar Not Rules EP"}
+            aria-pressed={playingFirst}
+            className="hv-sello"
+            style={{ all: "unset", cursor: "pointer", position: "absolute", right: -18, bottom: -26, width: 128, height: 128, borderRadius: "50%", background: A, color: "#0A0A09", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", transform: "rotate(12deg)", fontFamily: "'Anton',sans-serif", fontSize: 30, lineHeight: 0.9, textTransform: "uppercase", textAlign: "center", boxShadow: `0 0 0 3px #0A0A09,0 0 0 5px ${A}` }}
           >
-            {playing ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
+            <span>{playingFirst ? "Pausa" : "Play"}</span>
+            <span style={{ fontFamily: MONO, fontSize: 11, letterSpacing: ".14em", marginTop: 6 }}>Not Rules EP</span>
           </button>
-        )}
-      </div>
-    </li>
-  );
-}
-
-export default function LatestTransmissions() {
-  const playing = usePlayerStore((s) => s.index === featuredTrack && s.isPlaying);
-  const playTrack = usePlayerStore((s) => s.playTrack);
-
-  return (
-    <section aria-labelledby="latest" className="relative overflow-hidden pt-16 md:pt-24 pb-20 md:pb-28">
-      <div className="px-5 md:px-12 max-w-[1440px] mx-auto relative">
-        <div className="label text-muted-foreground mb-4">Releases · Preview</div>
-        <FontCycleTitle id="latest" font="doto" as="h2" className="text-[clamp(2.4rem,9vw,9.5rem)] leading-[0.85] t-glitch">
-          <span className="block">Latest</span>
-          <span className="block t-stroke">Transmissions</span>
-        </FontCycleTitle>
-
-        <div className="mt-12 md:mt-16 grid md:grid-cols-12 gap-x-10 gap-y-14">
-          {/* Portada */}
-          <div className="md:col-span-5 relative">
-            <div className="-rotate-[2.5deg] max-w-[520px]">
-              <ThornFrame>
-                <img src={featured.cover} alt={`Portada de ${featured.title}, de ${featured.artist}`} className="w-full aspect-square object-cover block" />
-              </ThornFrame>
-              <Sticker
-                tone="b"
-                rotate={8}
-                onClick={() => playTrack(featuredTrack)}
-                ariaLabel={playing ? `Pausar ${featured.title}` : `Escuchar ${featured.title}`}
-                pressed={playing}
-                className="absolute -bottom-6 -right-2 md:-right-8 z-10"
-              >
-                {playing ? "PAUSA" : "PLAY"}
-              </Sticker>
-            </div>
-            <div className="mt-8 max-w-[520px]">
-              <div className="label text-muted-foreground">[{featured.type}] · {featured.artist}</div>
-              <div className="f-news font-bold text-3xl md:text-4xl leading-tight mt-1">{featured.title}</div>
-              {featured.note && <p className="mt-1 italic text-lg">{featured.note}</p>}
-              <Link to="/music" className="inline-flex items-center min-h-[44px] mt-4 label underline underline-offset-4 decoration-2 hover:bg-accent hover:text-accent-foreground">
-                Toda la música →
-              </Link>
-            </div>
-          </div>
-
-          {/* Lineup */}
-          <ul className="md:col-span-7 flex flex-col gap-4 md:gap-5 self-start">
-            {lineup.map((r, i) => (
-              <LineupItem key={r.id} release={r} idx={i} block={BLOCKS[i % BLOCKS.length]} />
-            ))}
-          </ul>
+          <div style={{ position: "absolute", left: -10, top: -18, background: "#F2EFE6", color: "#0A0A09", padding: "6px 10px", fontFamily: MONO, fontSize: 12, letterSpacing: ".14em", textTransform: "uppercase", transform: "rotate(-5deg)" }}>Uriel Galeano — EP</div>
         </div>
-      </div>
-
-      <div className="mt-16 bg-[hsl(var(--a))] text-[hsl(var(--a-fg))] rotate-[1.2deg] py-1.5">
-        <Marquee items={releases.map((r) => `${r.artist.replace(/\s+/g, " ")} — ${r.title}`)} itemClassName="f-akira text-sm md:text-lg" speed={50} separator="✕" reverse />
+        <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+          <span style={{ fontFamily: MONO, fontSize: 13, letterSpacing: ".16em", textTransform: "uppercase", marginBottom: 10 }}>Releases / click para escuchar</span>
+          {ROWS.map((r) => {
+            const on = isPlaying && index === ORDER[r.i];
+            return (
+              <button
+                key={r.i}
+                type="button"
+                onClick={() => playTrack(ORDER[r.i])}
+                aria-label={`${on ? "Pausar" : "Escuchar"} ${r.label}`}
+                aria-pressed={on}
+                className="hv-shift"
+                style={{ all: "unset", cursor: "pointer", alignSelf: "flex-start", marginLeft: r.ml, display: "flex", alignItems: "flex-start", gap: 8 }}
+              >
+                <span style={{ background: r.paper ? "#F2EFE6" : A, color: "#0A0A09", fontFamily: r.font, fontWeight: r.doto ? 900 : undefined, fontSize: r.size, lineHeight: 1, padding: "2px 10px", textTransform: "uppercase" }}>{r.label}</span>
+                <span style={{ fontFamily: MONO, fontSize: 12, border: `1px solid ${r.paper ? "#F2EFE6" : A}`, color: r.paper ? undefined : A, padding: "2px 6px" }}>{r.tag}</span>
+              </button>
+            );
+          })}
+          <div style={{ display: "flex", justifyContent: "space-between", gap: 16, marginTop: 22, paddingTop: 14, borderTop: "1px dashed rgba(242,239,230,.5)", fontFamily: MONO, fontSize: 13, letterSpacing: ".12em", textTransform: "uppercase" }}>
+            <span>Uriel Galeano</span><span>×</span><span>Anguis</span>
+          </div>
+        </div>
       </div>
     </section>
   );

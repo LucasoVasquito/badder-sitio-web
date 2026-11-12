@@ -1,43 +1,37 @@
-# BADDER — "Flyer vivo" (rediseño v2)
+# BADDER v2 "Flyer vivo" — réplica de la maqueta
 
-Rama `redesign/flyer-vivo` (reemplaza la dirección editorial de `redesign/editorial`). Referencia viva: ruta interna `/sistema` (no enlazada). Capturas en `docs/capturas/` (1440 y 390 px).
+Rama `redesign/flyer-vivo-exacto`. La Home porta el código del Apéndice A de `prompt-claude-code-badder-EXACTO.md` (guardado tal cual en `docs/rediseno/maqueta-v2.dc.html`). Capturas por sección en `docs/capturas/v2/` (`x-*` = 1440 px, `m-*` = 390 px) y de las demás pantallas en `docs/capturas/`. Referencia interna: `/sistema`.
 
-## Tokens
+## Cómo está armado
 
-| Token | Valor | Uso |
-|---|---|---|
-| `--ink` | `#0A0A09` | Fondo base |
-| `--paper` | `#F2EFE6` | Texto sobre tinta, secciones papel |
-| `--a` | `#FF2B1C` | Acento A (domina) |
-| `--b` | `#9BFF2E` | Acento B |
-| `--tape` | `rgba(214,206,180,.85)` | Cinta adhesiva |
+- **Tokens** (`index.css`): `--a`/`--b` y sus equivalentes hex `--a-c`/`--b-c` (los que usa el JSX de la maqueta), `--grain`, `--blur`. Tinta `#0A0A09`, papel `#F2EFE6`.
+- **Tweaks** (`src/config/flyer.ts` + `src/store/flyerStore.ts`): paleta (4 pares), textura (grano 0–0.8, default .35), distorsión (warp on/off), difusas (blur 4px/0). Se aplican como variables CSS en `<html>` y se cambian en vivo en `/sistema`.
+- **Lazo global** (`src/hooks/useFlyerLoop.ts`): un solo `requestAnimationFrame` con el `loop` de la maqueta: cursor (lerp .35), parallax `[data-depth]` (lerp .06), cintas `[data-marquee]` (aceleran con la velocidad de scroll), grano (salto cada 70 ms) y escala de `#warpMap` (`10 + sin(t/700)*6 + min(80, vel*3)`). DOM directo, sin setState por frame; se pausa con `document.hidden`.
+- **`src/components/flyer/`**: `SvgDefs` (DEFS de la maqueta: `barbW/K`, `thornH/V`, `#warp`, `#bitmap`), `GrainOverlay`, `CursorDot` (solo `pointer: fine`), `Marquee`, `FontCycleTitle` y utilidades (`textures.tsx`, `media.tsx`) que usan las páginas interiores, y `TouchBlur` (en touch las `.fx-blur` se enfocan al entrar en viewport).
+- **Home** (`src/components/HeroSection.tsx`, `home/*`, `AboutSection.tsx`): una sección por componente con los estilos de la maqueta (inline y clases `hv-*` / `fx-blur` en `index.css` para los `style-hover`). Las 7 rotaciones de fuente al click usan `FONTS`/`KEYS` de la maqueta (`home/useFontCycle.ts`).
+- **Audio**: el sello PLAY y el lineup disparan el reproductor global (un solo `<audio>`); el orden es el de la maqueta (`ORDER` en `playerStore.ts`), el botón » avanza en ese orden y al terminar un track pasa al siguiente. El reproductor tiene el aspecto de la maqueta (46 px, mono en `--a`, Anton, ▶/II, »).
+- **Enlaces**: `#top→/`, `#music→/music`, `#culture→/culture`, `#archive→/archive`, `#drop→/shop`, `#about→/studio`, `#join→/community`. Culture → `/culture/post-01|02|03`; Archive → `/archive/rosset|cuchate.esta|emergent|capital|levels|tom`; Motion → los videos de YouTube de `visuals.ts` (ids 3, 7, 12).
 
-- `data-palette` en `<html>`: `vr` (verde/rojo), `ya` (`#FFE600`/`#3346FF`), `ar` (`#3346FF`/rojo). `--a-fg` y `--b-fg` cambian el color de texto sobre el acento (papel sobre azul, para mantener contraste).
-- Variables de shadcn mapeadas a estos tokens. Superficies: `.surface-paper`, `.surface-dark`, `.surface-tint`, `.surface-b`. Radio 0; solo sombra dura `6px 6px 0 var(--a)` (`.shadow-hard`).
+## Diferencias respecto de la maqueta (todas por funcionalidad que debía conservarse)
 
-## Tipografía
+1. **Carrito en la nav** (ícono con contador): la maqueta no lo tiene, pero la ruta `/cart` debe seguir accesible.
+2. **Footer**: se agregó el enlace "Contacto →" (`/contact`) y una línea con el crédito de desarrollo y el ancla a la crew. Sin eso `/contact` quedaría sin acceso.
+3. **Nav móvil** (< 1024 px): se mantiene el menú de pantalla completa existente (Escape, cierre 44×44) en lugar del `flex-wrap` de la maqueta, como indica el brief.
+4. En las tarjetas de Culture el enlace al artículo cubre toda la tarjeta (`::after`); visualmente es idéntico.
+5. En páginas interiores se reserva un espaciador de 64 px bajo la nav fija.
+6. El reproductor muestra el mensaje de error de audio (si lo hay) debajo del título; el orden de reproducción usa los 6 tracks de la maqueta.
+7. `data-depth` y marquees se apagan con `prefers-reduced-motion`; el cursor solo existe con puntero fino.
+8. Las páginas interiores (`PageHeader`, listados, artículo, tienda) usan el mismo lenguaje (fuentes display por ruta, semitono, alambre, stickers) pero **no son réplica de la maqueta** (la maqueta solo define la Home). Los artículos quedan sobre tinta (no sobre papel).
 
-Tres capas: display (13 fuentes, solo títulos y cintas), lectura (Newsreader, 20 px) y datos (IBM Plex Mono 12 px, mayúsculas, tracking .12em), más Pinyon Script como acento. Las 13 display: Doto, Seagram, HitMePunk, Akira, Ethnocentric, Rubik Wet Paint, Microgramma, Anton, Rye, UnifrakturMaguntia, Pirata One, Bowlby One y DASH Early (clases `f-*` en `index.css`). Google Fonts en `index.html`; Akira y Microgramma se precargan. Fuentes del repo con `@font-face` y `font-display: swap`. **Click en un título = rota su tipografía** (`FontCycleTitle`, guardado en `localStorage` por id).
+## No cumplido / no verificado
 
-## Componentes (`src/components/flyer/`) y hooks (`src/hooks/motion.ts`)
+- **No se armó `maqueta-v2.html`** (la traducción a HTML/JS plano del §9) ni hay capturas comparativas maqueta vs. implementación: no se ejecutó la maqueta original. Las capturas son solo de la implementación. La comparación fue visual contra el código del apéndice.
+- Los valores `--a`/`--b` en HSL (para shadcn) son aproximaciones de los hex; el JSX de la Home usa los hex exactos.
+- No se midió Lighthouse ni se probó con lector de pantalla o dispositivos reales. 390 px se revisó a ojo solo en las secciones de la Home y no en todas las rutas interiores.
+- Las imágenes `img/` ya estaban en `public/img`. Quedan sin uso `capital-2`, `capital-6`, `d2-extasys`, `d3-sancor`, `p-drop3` (como indica el apéndice).
 
-`SvgDefs` (filtros `#warp`, `#bitmap`; patrones `#thornH/V`, `#barbW/K`), `GrainOverlay`, `CursorDot`, `Marquee` (acelera con el scroll), `FontCycleTitle`, `BlurImage` (se enfoca al entrar en viewport en touch), `Duotone` (bitmap / duo sobre `--a`), `Halftone`, `Checker`, `OpArt`, `Scanlines`, `ThornFrame`, `BarbedWire`, `Tape`, `Sticker` (con `onClick` es el sello circular PLAY). Hooks: `useScrollVelocity` (lazo compartido, lerp), `useMouseParallax` (`data-depth`, usa la propiedad `translate` para no pisar rotaciones). Todo va por `requestAnimationFrame` y refs, sin setState por frame; se pausa con la pestaña oculta y fuera de viewport (Marquee). Con `prefers-reduced-motion`: sin warp animado, parallax, marquees ni grano en movimiento (grano estático).
+## Propuestas (no aplicadas)
 
-## Qué se implementó
-
-Home completa en el orden del brief (Hero, Latest Transmissions con lineup reproducible, Culture, From the Archive, Badder in Motion, Current Drop, Join the Frequency, About + Crew, Footer), navegación con `mix-blend-mode: difference`, reproductor con borde `--a`, y todas las páginas interiores con el nuevo `PageHeader` (display propio por ruta, semitono, alambre y sticker). Rutas, redirecciones, `usePageMeta`, `MotionConfig`, foco, `aria` y las reglas de datos no cambiaron: ningún producto se presenta comprable sin `verified`, `AVAILABLE`, precio y stock; `unverifiedNotes` no se muestra; servicios `confirmed: false` ocultos; links vacíos siguen vacíos.
-
-## Desvíos respecto del brief y por qué
-
-- **No existía `docs/rediseno/`** (la maqueta `.dc.html` ni la guía de estética): se trabajó solo desde el texto del prompt. Valores de rotación, filtros y patrones son interpretaciones propias.
-- Se mantuvo el tema oscuro como base (pedido anterior): la lectura (artículo, proyecto) queda sobre tinta con Newsreader 20 px, no sobre papel. Culture y About sí usan papel.
-- No se hizo la etapa de propuesta y confirmación del paso 0.5 (se pidió aplicar todo).
-- Las imágenes del hero y de Drop se eligieron por el título de cada archivo en `collections.ts` (DJ azul = Drop 3 nº 35, Clifford rojo = nº 16, perrito = nº 10, Blue Clifford = nº 27); no se verificó que el perrito tenga cadena ni que todas tengan fondo transparente.
-- El selector de paleta de `/sistema` cambia `data-palette` en vivo; el reproductor global no se duplica en `/sistema`, se ve abajo en cualquier página.
-- `Archivo` (Akira, Ethnocentric, etc.) en títulos largos baja el `clamp` mínimo; verificado en 390 px en Home y Archivo, no en todas las rutas.
-- No se midió Lighthouse ni se probó con lector de pantalla o dispositivos reales. Las capturas móviles usan un iframe de 390 px dentro de una ventana de 500 px.
-- No se borraron archivos de fuentes sin uso de `public/` (Cyberpunks, Eurostile, Milk and Honey, Pure Energy, Righteous, Tenada).
-
-## Material pendiente
-
-Maqueta y guía de estética en `docs/rediseno/`; fotos de producto de remeras nuevas; links reales de releases y personas; fechas completas de proyectos de archivo.
+- Pasar las rutas interiores a papel para lectura larga (artículos).
+- Sumar un estado visual en el lineup para el track que suena (hoy solo `aria-pressed` y la etiqueta Pausa en el sello).
+- Borrar de `public/` las fuentes sin uso (Cyberpunks, Eurostile, Milk and Honey, Pure Energy, Righteous, Tenada) y `src/assets/badder_logo_original.webp` si ya no se usa.

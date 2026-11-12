@@ -1,4 +1,7 @@
-import { useEffect, useState, type ReactNode } from "react";
+import type { ReactNode } from "react";
+import { useFlyerStore } from "@/store/flyerStore";
+import { PALETAS } from "@/config/flyer";
+const PAL_LABELS = ["Rojo / Verde", "Verde / Rojo", "Amarillo / Azul", "Azul / Rojo"];
 import PageHeader from "@/components/site/PageHeader";
 import { btn } from "@/lib/ui";
 import { usePageMeta } from "@/lib/usePageMeta";
@@ -27,29 +30,25 @@ const Demo = ({ children, h = "h-44" }: { children: ReactNode; h?: string }) => 
 // Referencia interna del sistema "flyer vivo" (no enlazada desde el menú).
 export default function Sistema() {
   usePageMeta({ title: "Sistema", description: "Referencia interna del sistema visual." });
-  const [palette, setPalette] = useState("");
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (palette) root.setAttribute("data-palette", palette);
-    else root.removeAttribute("data-palette");
-    return () => root.removeAttribute("data-palette");
-  }, [palette]);
+  const { paleta, textura, distorsion, difusas, set } = useFlyerStore();
 
   return (
     <main className="bg-background min-h-screen pt-10 md:pt-16 pb-24 overflow-hidden">
       <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
         <PageHeader kicker="Interno · no enlazado" title="Sistema" intro="Texturas, marcos, stickers, títulos, botones y tarjetas del rediseño “flyer vivo”. Cambiá la paleta A/B con los botones." />
 
-        <Block title="Paleta A / B (data-palette en <html>)" className="flex flex-wrap gap-2">
-          {PALETTES.map((p) => (
-            <button key={p.key} type="button" onClick={() => setPalette(p.key)} aria-pressed={palette === p.key} className={`label h-11 px-3 border-2 ${palette === p.key ? "bg-accent text-accent-foreground border-foreground" : "border-border/40 hover:bg-foreground hover:text-background"}`}>
-              {p.label}
-            </button>
+        <Block title="Tweaks (src/config/flyer.ts): paleta, textura, distorsión, difusas" className="flex flex-wrap gap-2 items-center">
+          {PAL_LABELS.map((l, i) => (
+            <button key={l} type="button" onClick={() => set({ paleta: i })} aria-pressed={paleta === i} className={`label h-11 px-3 border-2 ${paleta === i ? "bg-accent text-accent-foreground border-foreground" : "border-border/40 hover:bg-foreground hover:text-background"}`}>{l}</button>
           ))}
+          <label className="label flex items-center gap-2 ml-4">Grano {textura.toFixed(2)}
+            <input type="range" min={0} max={0.8} step={0.05} value={textura} onChange={(e) => set({ textura: +e.target.value })} />
+          </label>
+          <button type="button" aria-pressed={distorsion} onClick={() => set({ distorsion: !distorsion })} className="label h-11 px-3 border-2 border-foreground">Distorsión: {distorsion ? "on" : "off"}</button>
+          <button type="button" aria-pressed={difusas} onClick={() => set({ difusas: !difusas })} className="label h-11 px-3 border-2 border-foreground">Difusas: {difusas ? "on" : "off"}</button>
           <div className="w-full flex gap-3 mt-3">
-            <div className="w-24 h-16 bg-[hsl(var(--a))]" /> <div className="w-24 h-16 bg-[hsl(var(--b))]" />
-            <div className="w-24 h-16 bg-[hsl(var(--paper))]" /> <div className="w-24 h-16 border border-border bg-[hsl(var(--ink))]" />
+            <div className="w-24 h-16" style={{ background: PALETAS[paleta].a }} /> <div className="w-24 h-16" style={{ background: PALETAS[paleta].b }} />
+            <div className="w-24 h-16 bg-[#F2EFE6]" /> <div className="w-24 h-16 border border-border bg-[#0A0A09]" />
           </div>
         </Block>
 
@@ -95,7 +94,7 @@ export default function Sistema() {
 
         <Block title="Marquee (acelera con el scroll)">
           <div className="bg-[hsl(var(--a))] text-[hsl(var(--a-fg))] -rotate-1 py-2">
-            <Marquee items={["Badder", "La Plata", "Est. 2024"]} itemClassName="f-akira text-xl" />
+            <Marquee speed={0.6} style={{ gap: 28, padding: "7px 0", fontFamily: "Akira", fontSize: 20, textTransform: "uppercase" }}><span>Badder</span><span>/</span><span>La Plata</span><span>/</span><span>Est. 2024</span><span>/</span></Marquee>
           </div>
         </Block>
 

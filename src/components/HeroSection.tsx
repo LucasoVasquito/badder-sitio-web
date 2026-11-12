@@ -1,78 +1,40 @@
-import badderLogo from "@/assets/badder_logo_original.webp";
-import { BarbedWire, BlurImage, Checker, Duotone, Halftone, Marquee, Sticker } from "@/components/flyer";
-import { contact } from "@/data/site";
+import { Marquee } from "@/components/flyer";
 
-// Portada: flyer vivo. El collage reacciona al mouse (data-depth) y el logo se deforma con #warp.
-// Piezas: DJ azul (Drop 3) en bitmap sobre --a, foto de Rosset difusa y Clifford rojo (Drop 3) delante del logo.
+const MONO = "'IBM Plex Mono',monospace";
+const ITEMS = ["Badder Experience", "/", "La Plata — AR", "/", "Música", "/", "Cultura de club", "/", "Diseño", "/", "Fotografía", "/", "Indumentaria", "/", "Est. 2024", "/"];
+
+// 01 Hero — tal cual la maqueta.
 export default function HeroSection() {
   return (
-    <section aria-label="BADDER" className="relative isolate overflow-hidden -mt-16 pt-16 bg-background">
-      {/* Cinta superior */}
-      <div className="relative z-20 mt-6 bg-[hsl(var(--a))] text-[hsl(var(--a-fg))] -rotate-[1.2deg] py-2">
-        <Marquee
-          items={["Badder Experience", "La Plata, Argentina", "Est. 2024", "Música electrónica underground"]}
-          itemClassName="f-doto text-2xl md:text-4xl leading-none"
-          speed={70}
-          separator="✕"
-        />
+    <section id="top" data-screen-label="01 Hero" style={{ position: "relative", minHeight: "100vh", overflow: "hidden", background: "#0A0A09" }}>
+      <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(rgba(242,239,230,.16) 1.1px,transparent 1.7px)", backgroundSize: "7px 7px", WebkitMaskImage: "radial-gradient(ellipse at 50% 45%,#000 20%,transparent 75%)", maskImage: "radial-gradient(ellipse at 50% 45%,#000 20%,transparent 75%)" }} />
+      <div style={{ position: "absolute", left: 0, right: 0, top: 68, background: "var(--a-c,#FF2B1C)", color: "#0A0A09", overflow: "hidden", whiteSpace: "nowrap", zIndex: 6, transform: "rotate(-1.2deg)", margin: "0 -2%" }}>
+        <Marquee speed={0.6} style={{ gap: 28, padding: "7px 0", fontFamily: "'Doto',monospace", fontWeight: 900, fontSize: 22, letterSpacing: ".04em", textTransform: "uppercase" }}>
+          {ITEMS.map((t, i) => <span key={i}>{t}</span>)}
+        </Marquee>
       </div>
-
-      <div className="relative min-h-[620px] md:min-h-[860px]">
-        <Halftone className="z-0" size={8} opacity={0.5} />
-
-        {/* DJ azul · bitmap sobre acento */}
-        <div data-depth="22" className="absolute z-10 left-[3%] top-[6%] w-[38%] md:w-[22%] max-w-[330px]">
-          <div className="-rotate-[7deg] md:-rotate-[7deg] border-2 border-[hsl(var(--ink))]">
-            <Duotone src="/drop3/foto (35).webp" mode="bitmap" alt="Gráfica DJ del Drop 3" className="w-full aspect-[4/5] object-cover" />
-          </div>
-        </div>
-
-        {/* Rosset · difusa */}
-        <div data-depth="-18" className="absolute z-10 right-[4%] top-[4%] w-[34%] md:w-[20%] max-w-[300px]">
-          <div className="rotate-[3deg] md:rotate-[5deg] relative">
-            <BlurImage src="/rosset/foto (1).webp" alt="Badder Showcase en Rosset" blur={5} className="w-full aspect-[3/4] object-cover border-2 border-foreground" />
-            <Sticker tone="b" rotate={-5} className="absolute -bottom-3 -left-3">Rosset</Sticker>
-          </div>
-        </div>
-
-        {/* Logo */}
-        <div className="absolute inset-x-0 top-[30%] md:top-[26%] z-[5] flex justify-center px-4">
-          <img
-            src={badderLogo}
-            alt="Badder"
-            fetchPriority="high"
-            className="w-[min(84vw,1040px)] h-auto"
-            style={{ filter: "url(#warp)" }}
-          />
-        </div>
-        <span
-          aria-hidden
-          className="f-script absolute z-[15] right-[5%] md:right-[14%] top-[52%] md:top-[60%] text-[clamp(2.75rem,9vw,8rem)] leading-none text-[hsl(var(--a))] -rotate-[8deg]"
-        >
-          experience
-        </span>
-
-        {/* Alambre de púas */}
-        <BarbedWire variant="light" rotate={-4} className="top-[64%] z-[12]" />
-
-        {/* Clifford rojo, delante del logo */}
-        <div data-depth="-46" className="absolute z-[14] left-[8%] md:left-[34%] bottom-[2%] w-[44%] md:w-[24%] max-w-[360px]">
-          <img src="/drop3/foto (16).webp" alt="Clifford rojo, Drop 3" loading="eager" className="w-full h-auto object-contain" />
-        </div>
-
-        {/* Datos en las esquinas */}
-        <div className="label absolute z-20 left-5 md:left-12 bottom-4 text-muted-foreground">
-          {contact.location.split(",")[0]}, ARG
-          <br />
-          Est. 2024
-        </div>
-        <a href={contact.instagramUrl} target="_blank" rel="noreferrer" className="label absolute z-20 right-5 md:right-12 bottom-4 inline-flex items-center min-h-[44px] hover:underline">
-          {contact.instagramHandle} ↗
-        </a>
+      <div data-depth="22" style={{ position: "absolute", left: "3%", top: "18%", width: "clamp(170px,25vw,380px)", transform: "rotate(-7deg)", background: "var(--a-c,#FF2B1C)", zIndex: 2 }}>
+        <img src="/img/d3-dj-azul.webp" alt="Gráfica DJ del Drop 3" style={{ width: "100%", display: "block", mixBlendMode: "multiply", filter: "url(#bitmap)" }} />
       </div>
-
-      <div className="relative h-10 md:h-14">
-        <Checker size={56} />
+      <div data-depth="34" style={{ position: "absolute", right: "4%", top: "14%", width: "clamp(150px,21vw,320px)", transform: "rotate(5deg)", zIndex: 2 }}>
+        <img src="/img/p-rosset.webp" alt="Badder Showcase en Rosset Club" className="fx-blur" style={{ width: "100%", display: "block", ["--fx" as string]: "contrast(1.2)" }} />
+        <span style={{ position: "absolute", left: -14, bottom: 18, background: "#F2EFE6", color: "#0A0A09", fontFamily: MONO, fontSize: 12, letterSpacing: ".12em", padding: "5px 8px", transform: "rotate(-4deg)", textTransform: "uppercase" }}>Rosset Club — 2025</span>
+      </div>
+      <div data-depth="-46" style={{ position: "absolute", left: "22%", bottom: "9%", width: "clamp(220px,32vw,500px)", zIndex: 5, pointerEvents: "none" }}>
+        <img src="/img/d3-clifford-rojo.webp" alt="Clifford rojo, Drop 3" style={{ width: "100%", display: "block" }} />
+      </div>
+      <div style={{ position: "absolute", left: "-5%", width: "110%", top: "64%", height: 30, transform: "rotate(-4deg)", zIndex: 4, opacity: 0.9 }}>
+        <svg aria-hidden width="100%" height="30" style={{ display: "block" }}><rect width="100%" height="30" fill="url(#barbW)" /></svg>
+      </div>
+      <div style={{ position: "relative", zIndex: 3, minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "120px 4vw 140px" }}>
+        <div data-depth="10" style={{ position: "relative", width: "min(84vw,1040px)" }}>
+          <img src="/img/logo.webp" alt="Badder" fetchPriority="high" style={{ width: "100%", display: "block", filter: "url(#warp)" }} />
+          <span aria-hidden style={{ position: "absolute", right: "-2%", bottom: "-24%", fontFamily: "'Pinyon Script',cursive", fontSize: "clamp(54px,10vw,170px)", color: "var(--a-c,#FF2B1C)", transform: "rotate(-8deg)", lineHeight: 1, whiteSpace: "nowrap" }}>experience</span>
+        </div>
+      </div>
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, height: 64, background: "repeating-conic-gradient(#141413 0 25%,#1f1f1d 0 50%) 0 0/64px 64px", zIndex: 1 }} />
+      <div style={{ position: "absolute", left: "clamp(16px,3vw,40px)", right: "clamp(16px,3vw,40px)", bottom: 20, display: "flex", justifyContent: "space-between", gap: 16, flexWrap: "wrap", fontFamily: MONO, fontSize: 12, letterSpacing: ".16em", textTransform: "uppercase", zIndex: 6 }}>
+        <span>Espacio creativo multidisciplinario</span><span>La Plata, Argentina</span><span>@badder.experience</span><span>Scroll ↓</span>
       </div>
     </section>
   );

@@ -1,62 +1,24 @@
 import { Link } from "react-router-dom";
-import badderLogo from "@/assets/badder_logo_original.webp";
-import { mainSections, communitySection, contact } from "@/data/site";
 
+const MONO14 = { fontFamily: "'IBM Plex Mono',monospace", fontSize: 14, letterSpacing: ".08em" };
+
+// Footer de la maqueta: borde superior 2px --a, logo con warp min(60vw,420px), contacto mono 14px, padding inferior 120px (por el reproductor).
+// Agregados funcionales fuera de la maqueta (ver DISENO.md): enlace a /contact y crédito de desarrollo con ancla a la crew.
 export default function Footer() {
-  const a = "inline-flex items-center min-h-[44px] hover:underline underline-offset-4";
   return (
-    // pb extra: la barra del reproductor es fija y no debe tapar la última línea
-    <footer className="surface-dark relative z-10 border-t border-border mt-24 md:mt-32 px-5 md:px-12 pt-14 pb-32 md:pb-28">
-      <div className="wrap grid grid-cols-2 md:grid-cols-12 gap-x-6 gap-y-12">
-        <div className="col-span-2 md:col-span-6">
-          <img src={badderLogo} alt="Badder" loading="lazy" className="w-[min(100%,520px)] h-auto" style={{ filter: "url(#warp)" }} />
-          <p className="mt-4 label text-muted-foreground">
-            Espacio creativo multidisciplinario
-            <br />
-            {contact.location} · Est. 2024
-          </p>
-        </div>
-
-        <nav aria-label="Secciones" className="md:col-span-3">
-          <h2 className="label text-muted-foreground mb-3">Secciones</h2>
-          <ul className="flex flex-col">
-            {mainSections.map((s) => (
-              <li key={s.path}>
-                <Link to={s.path} className={a}>{s.label}</Link>
-              </li>
-            ))}
-            <li>
-              <Link to={communitySection.path} className={a}>{communitySection.label}</Link>
-            </li>
-          </ul>
-        </nav>
-
-        <div className="md:col-span-3">
-          <h2 className="label text-muted-foreground mb-3">Contacto</h2>
-          <ul className="flex flex-col">
-            <li>
-              <a href={contact.instagramUrl} target="_blank" rel="noreferrer" className={a}>
-                {contact.instagramHandle} ↗
-              </a>
-            </li>
-            <li>
-              <a href={`mailto:${contact.email}`} className={`${a} break-all`}>{contact.email}</a>
-            </li>
-            <li>
-              <Link to="/contact" className={a}>Formulario de contacto →</Link>
-            </li>
-          </ul>
+    <footer style={{ position: "relative", background: "#0A0A09", padding: "48px clamp(16px,3vw,40px) 120px", borderTop: "2px solid var(--a-c,#FF2B1C)", color: "#F2EFE6" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 32, flexWrap: "wrap" }}>
+        <img src="/img/logo.webp" alt="Badder" loading="lazy" style={{ width: "min(60vw,420px)", display: "block", filter: "url(#warp)" }} />
+        <div style={{ display: "flex", flexDirection: "column", gap: 8, ...MONO14 }}>
+          <a href="mailto:contact@badderexperience.com">contact@badderexperience.com</a>
+          <a href="https://instagram.com/badder.experience" target="_blank" rel="noreferrer">@badder.experience</a>
+          <span>La Plata, Argentina — Est. 2024</span>
+          <Link to="/contact" className="inline-flex items-center min-h-[44px]">Contacto →</Link>
         </div>
       </div>
-
-      <div className="wrap mt-14 pt-6 border-t border-border/40 flex flex-col md:flex-row justify-between gap-3 label text-muted-foreground">
-        <span>© 2026 BADDER EXPERIENCE</span>
-        <span>
-          Diseño y desarrollo web: Lucas Nicolas Bengochea ·{" "}
-          <Link to="/#crew" className="underline underline-offset-4 hover:text-foreground">
-            Créditos
-          </Link>
-        </span>
+      <div style={{ marginTop: 32, fontFamily: "'IBM Plex Mono',monospace", fontSize: 11, letterSpacing: ".1em", opacity: 0.7, textTransform: "uppercase" }}>
+        © 2026 Badder Experience · Diseño y desarrollo web: Lucas Nicolas Bengochea ·{" "}
+        <Link to="/#crew" className="underline underline-offset-4">Créditos</Link>
       </div>
     </footer>
   );

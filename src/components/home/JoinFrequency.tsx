@@ -1,41 +1,22 @@
-import { BarbedWire, Duotone, FontCycleTitle } from "@/components/flyer";
-import { contact } from "@/data/site";
+import { useFontCycle } from "./useFontCycle";
 
-const disciplines = ["Artistas", "DJs", "Productores", "Diseñadores", "Fotógrafos", "Realizadores"];
-
-// Participar: bloque de acento B a sangre. Solo vías que funcionan hoy: Instagram y mail.
+// 07 Join the Frequency — tal cual la maqueta (fondo --b). "Escribinos" abre el mail; la sección vive en /community.
 export default function JoinFrequency() {
+  const title = useFontCycle("join");
   return (
-    <section className="surface-b relative overflow-hidden px-5 md:px-12 py-24 md:py-32">
-      <BarbedWire variant="dark" rotate={-3} className="top-6" />
-      <BarbedWire variant="dark" rotate={2} className="bottom-6" />
-      <div className="relative max-w-[1440px] mx-auto grid grid-cols-1 md:grid-cols-12 gap-x-10 gap-y-12 items-center">
-        <div className="md:col-span-7">
-          <div className="label mb-4">Participar</div>
-          <FontCycleTitle id="join" font="wet" as="h2" className="text-[clamp(2.8rem,9.5vw,9rem)] leading-[0.9]">
-            Join the<br />Frequency
-          </FontCycleTitle>
-          <p className="mt-6 text-xl max-w-[40ch] font-medium">Mandanos tu música, tu diseño, tus fotos o tu video. Escribinos y contanos en qué estás trabajando.</p>
-          <ul className="mt-6 flex flex-wrap gap-2">
-            {disciplines.map((d) => (
-              <li key={d} className="label border-2 border-foreground px-2.5 py-1.5">{d}</li>
-            ))}
-          </ul>
-
-          <div className="mt-8 flex flex-wrap gap-3">
-            <a href={contact.instagramUrl} target="_blank" rel="noreferrer" className="inline-flex items-center min-h-[52px] px-6 label bg-foreground text-background border-2 border-foreground hover:bg-transparent hover:text-foreground transition-colors">
-              Instagram {contact.instagramHandle} ↗
-            </a>
-            <a href={`mailto:${contact.email}`} className="inline-flex items-center min-h-[52px] px-6 label border-2 border-foreground hover:bg-foreground hover:text-background transition-colors break-all">
-              {contact.email}
-            </a>
-          </div>
-        </div>
-
-        <div className="md:col-span-5">
-          <div className="rotate-[3deg] max-w-[420px] md:ml-auto border-2 border-foreground">
-            <Duotone src="/rosset/foto (5).webp" mode="bitmap" alt="Público en una fecha de BADDER" className="w-full aspect-[4/5] object-cover" />
-          </div>
+    <section id="join" data-screen-label="07 Join the Frequency" style={{ position: "relative", overflow: "hidden", background: "var(--b-c,#9BFF2E)", color: "#0A0A09", padding: "clamp(60px,8vw,120px) clamp(16px,3vw,40px)" }}>
+      <div style={{ position: "absolute", right: "-4%", top: "8%", width: "clamp(200px,34vw,520px)", transform: "rotate(6deg)", opacity: 0.9 }}>
+        <img src="/img/p-sesion.webp" alt="" aria-hidden loading="lazy" style={{ width: "100%", display: "block", mixBlendMode: "multiply", filter: "url(#bitmap)" }} />
+      </div>
+      <div style={{ position: "absolute", left: "-5%", width: "110%", top: "46%", height: 30, transform: "rotate(3deg)" }}>
+        <svg aria-hidden width="100%" height="30" style={{ display: "block" }}><rect width="100%" height="30" fill="url(#barbK)" /></svg>
+      </div>
+      <h2 onClick={title.onClick} style={{ position: "relative", margin: 0, cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 400, fontSize: "clamp(60px,10vw,176px)", lineHeight: 0.88, textTransform: "uppercase", maxWidth: "11ch", transform: "rotate(-3deg)" }}>Join the frequency</h2>
+      <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 22, marginTop: "clamp(40px,5vw,72px)", maxWidth: 520 }}>
+        <p style={{ margin: 0, fontFamily: "'Newsreader',serif", fontSize: 22, lineHeight: 1.4, textWrap: "pretty" }}>Mandanos tu música, tu fotografía o tu gráfica. Buscamos gente para sumar a sesiones, eventos y proyectos.</p>
+        <div style={{ display: "flex", gap: 12, flexWrap: "wrap" }}>
+          <a href="https://instagram.com/badder.experience" target="_blank" rel="noreferrer" className="hv-ig" style={{ background: "#0A0A09", color: "#F2EFE6", fontFamily: "'Anton',sans-serif", fontSize: 24, textTransform: "uppercase", padding: "12px 20px" }}>@badder.experience</a>
+          <a href="mailto:contact@badderexperience.com" className="hv-mail" style={{ border: "3px solid #0A0A09", fontFamily: "'Anton',sans-serif", fontSize: 24, textTransform: "uppercase", padding: "9px 18px" }}>Escribinos</a>
         </div>
       </div>
     </section>

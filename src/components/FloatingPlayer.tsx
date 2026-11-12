@@ -1,10 +1,9 @@
 import { useRef, useEffect } from "react";
-import { Play, Pause, SkipForward } from "lucide-react";
 import { usePlayerStore } from "@/store/playerStore";
 import { playlist } from "@/data/audio";
 
-// Se monta una sola vez en App (fuera de <Routes>), así el audio sigue sonando entre páginas.
-// Barra rectangular oscura abajo; el Footer reserva su altura para que no tape contenido.
+// Un solo reproductor para todo el sitio (fuera de <Routes>). Aspecto de la maqueta: bloque negro abajo a la izquierda,
+// borde 1px de --a, portada 46 px, artista mono en --a, título Anton con ellipsis, ▶/II y ».
 export default function FloatingPlayer() {
   const { index: currentIndex, isPlaying, toggle: togglePlay, next: nextTrack, setPlaying, markFailed, error } = usePlayerStore();
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -21,7 +20,7 @@ export default function FloatingPlayer() {
     <div
       role="region"
       aria-label="Reproductor BADDER"
-      className="surface-dark fixed bottom-0 left-0 right-0 md:right-auto md:left-6 md:bottom-6 md:w-[460px] z-50 flex items-stretch border-t-2 border-[hsl(var(--a))] md:border-2 md:shadow-hard"
+      style={{ position: "fixed", left: 16, bottom: 16, zIndex: 85, display: "flex", alignItems: "center", gap: 10, background: "#0A0A09", border: "1px solid var(--a-c,#FF2B1C)", padding: 6, maxWidth: "calc(100vw - 32px)", color: "#F2EFE6" }}
     >
       <audio
         ref={audioRef}
@@ -32,43 +31,31 @@ export default function FloatingPlayer() {
         }}
         preload="none"
       />
-
-      <img
-        src={currentTrack.cover}
-        alt=""
-        className="w-16 h-16 shrink-0 object-cover"
-        onError={(e) => {
-          e.currentTarget.style.visibility = "hidden";
-        }}
-      />
-
-      <div className="flex-1 min-w-0 flex flex-col justify-center px-3 py-1">
-        <span className="label text-muted-foreground !text-xs">{isPlaying ? "Sonando" : "Escuchar"}</span>
-        <span className="f-news text-base font-semibold truncate">
-          {currentTrack.artist} — {currentTrack.title}
-        </span>
+      <img src={currentTrack.cover} alt="" style={{ width: 46, height: 46, objectFit: "cover", display: "block" }} onError={(e) => (e.currentTarget.style.visibility = "hidden")} />
+      <div style={{ display: "flex", flexDirection: "column", gap: 2, minWidth: 0, maxWidth: 200 }}>
+        <span style={{ fontFamily: "'IBM Plex Mono',monospace", fontSize: 11, letterSpacing: ".14em", textTransform: "uppercase", color: "var(--a-c,#FF2B1C)" }}>{currentTrack.artist.replace(/\s+/g, " ")}</span>
+        <span style={{ fontFamily: "'Anton',sans-serif", fontSize: 17, textTransform: "uppercase", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{currentTrack.title}</span>
         {error && !isPlaying && (
-          <span role="status" className="text-xs text-muted-foreground truncate">
+          <span role="status" style={{ fontFamily: "'IBM Plex Mono',monospace", fontSize: 11, opacity: 0.7 }}>
             {error}
           </span>
         )}
       </div>
-
       <button
         type="button"
         onClick={togglePlay}
-        aria-label={isPlaying ? "Pausar" : `Reproducir ${currentTrack.artist} — ${currentTrack.title}`}
-        className="w-16 shrink-0 flex items-center justify-center bg-accent text-accent-foreground hover:bg-foreground hover:text-background transition-colors"
+        aria-label={isPlaying ? "Pausar" : `Reproducir ${currentTrack.artist.replace(/\s+/g, " ")} — ${currentTrack.title}`}
+        style={{ all: "unset", cursor: "pointer", width: 44, height: 44, display: "flex", alignItems: "center", justifyContent: "center", background: "var(--a-c,#FF2B1C)", color: "#0A0A09", fontFamily: "'Anton',sans-serif", fontSize: 16 }}
       >
-        {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
+        {isPlaying ? "II" : "▶"}
       </button>
       <button
         type="button"
         onClick={nextTrack}
         aria-label="Siguiente track"
-        className="w-14 shrink-0 flex items-center justify-center hover:bg-foreground hover:text-background transition-colors"
+        style={{ all: "unset", cursor: "pointer", width: 44, height: 44, display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #F2EFE6", fontFamily: "'Anton',sans-serif", fontSize: 16 }}
       >
-        <SkipForward className="w-5 h-5" />
+        »
       </button>
     </div>
   );

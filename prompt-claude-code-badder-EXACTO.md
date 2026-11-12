@@ -1,0 +1,502 @@
+# Megaprompt para Claude Code — BADDER v2 "Flyer vivo" (réplica EXACTA)
+
+> Pegá este archivo completo en Claude Code con `LucasoVasquito/badder-sitio-web` abierto. Copiá también la carpeta `img/` de este proyecto a `public/img/` del repo (las imágenes .webp de la maqueta). Reemplaza a `prompt-claude-code-badder.md` y a `prompt-claude-code-badder-v2.md`.
+
+---
+
+## Instrucción principal
+
+Tu tarea es **portar al repo, píxel por píxel, la maqueta cuyo código fuente completo está en el Apéndice A**. No es una guía de inspiración: es la especificación. No reinterpretes, no "mejores", no simplifiques, no cambies textos, colores, fuentes, tamaños, rotaciones, márgenes, filtros ni timings. Cada valor del apéndice se copia tal cual.
+
+- Si algo del sitio actual contradice la maqueta, gana la maqueta.
+- Si querés cambiar algo, **no lo hagas**: anotalo en `DISENO.md` como propuesta y seguí.
+- Antes de cerrar cada sección, compará lado a lado tu versión con la maqueta (ver §9) en 1440 px y 390 px.
+
+## 1. Cómo leer el apéndice
+
+El apéndice es un "Design Component" (`.dc.html`). Traducción a React:
+- `<x-dc>…</x-dc>` = el JSX de `Home`. `<helmet>` = cosas de `index.html` / `index.css`.
+- `style="…"` = estilo inline → objeto `style` de React o clases Tailwind arbitrarias **con los mismos valores exactos** (`clamp()`, grados, px). Preferí `style` cuando Tailwind no lo expresa 1:1.
+- `style-hover="…"` = estilos de `:hover` → `hover:[…]` de Tailwind o CSS module. Sin transiciones en hovers (solo el cursor tiene transición).
+- `{{ x }}` = valor que viene de `renderVals()` en el `<script>` del final (estado React). `ref="{{ rootRef }}"` = `useRef`. `onClick="{{ shuf.trans }}"` = handler.
+- Rutas `img/…` → `/img/…`; `public/…otf` → `/…otf` (las fuentes ya están en `public/` del repo).
+- Los `href="#…"` de la maqueta pasan a rutas reales: `#music`→`/music`, `#culture`→`/culture`, `#archive`→`/archive`, `#drop`→`/shop` (o `/archive/drop-3`), `#about`→`/studio`, `#join`→`/community`, `#top`→`/`. Las tarjetas de Culture/Archive/Motion enlazan a su ítem real (`/culture/:id`, `/archive/:id`, video de YouTube de `music.ts`). Ese es el único cambio permitido.
+
+## 2. Inventario de efectos (ninguno puede faltar)
+
+**Globales**
+1. Fondo `#0A0A09`, texto `#F2EFE6`, `overflow-x: clip` en html/body, `::selection` rojo, links heredan color y van a `#FF2B1C` en hover.
+2. Variables CSS en el root: `--a` (`#FF2B1C`), `--b` (`#9BFF2E`), `--grain` (.35), `--blur` (4px), `--f-trans`, `--f-culture`, `--f-archive`, `--f-motion`, `--f-drop`, `--f-join`, `--f-about`.
+3. **Grano animado**: capa fixed, z 90, `mix-blend-mode: overlay`, opacidad `var(--grain)`; adentro un div 200%×200% (left/top −50%) con el SVG `GRAIN`. Cada 70 ms se traslada a un % aleatorio entre −10 y 10.
+4. **Cursor**: círculo 18 px de `--a`, `mix-blend-mode: difference`, z 95, sigue al mouse con lerp 0.35; 64 px sobre `img, button, a, h2` (transición .2s de width/height/margin).
+5. **Parallax**: todo `[data-depth]` se traslada `translate: px*d py*d` con mouse normalizado (−.5….5) y lerp 0.06. Valores: DJ 22, Rosset 34, galgo −46, logo 10, foto motion −18, perrito 14, blue clifford −30.
+6. **Marquees**: `[data-marquee]` con velocidad (hero 0.6, archivo −0.9). Contenido duplicado 2 veces; avance `dt*0.06*(1+vel*0.15)`, módulo medio scrollWidth. **Aceleran con la velocidad de scroll.**
+7. **Velocidad de scroll**: |Δy| por frame, lerp 0.15.
+8. **Warp** (`#warp`): feTurbulence fractalNoise `0.006 0.05`, 2 octavas, seed 4 + feDisplacementMap `#warpMap`. `scale` = `10 + sin(t/700)*6 + min(80, vel*3)` cada frame (0 si distorsión apagada). Aplicado a: logo del hero, título "Badder in motion", logo del footer.
+9. **Bitmap 1-bit** (`#bitmap`): desatura → ruido 0.85 → feComposite arithmetic (k2 1.1, k3 .5, k4 −.3) → umbral discrete 0/1. Con `mix-blend-mode: multiply` sobre fondo de acento = duotono. Aplicado a: DJ azul (sobre `--a`), portada Club Motion (sobre `--a`), foto Tom en Culture (B/N), Capital (sobre `--b`), sesión en Join (sobre `--b`).
+10. **Patrones SVG**: `barbW` (alambre blanco), `barbK` (alambre negro), `thornH`, `thornV` (púas). Exactamente los paths del apéndice.
+11. **Marco de púas**: wrapper `padding:22px` (24 en drop) + 4 svgs (arriba, abajo scaleY(−1), izquierda, derecha scaleX(−1)). En: portada Not Rules, foto Cuchate.esta, gráfica perrito.
+12. **Fotos difusas**: `filter: blur(var(--blur))` → `filter:none` al hover.
+13. **Glitch RGB** en "Latest Transmissions": `4px 0 0 rgba(0,255,240,.35), -4px 0 0 rgba(255,0,90,.35)` → hover 10px y .6.
+14. **Rotación de fuentes al click**: cada `h2` de sección rota su `font-family` por `FONTS` (13). Iniciales (`KEYS`): trans Doto, culture Seagram, archive HitMePunk, motion Akira, drop Ethnocentric, join Rubik Wet Paint, about Microgramma.
+15. **Audio**: 6 tracks (`TRACKS`), URL `/audio/` + encodeURIComponent(archivo). Click en el track que suena = pausa; al terminar pasa al siguiente. Reproductor fijo abajo-izquierda (portada 46 px, artista mono en `--a`, título Anton con ellipsis, ▶/II 44 px en `--a`, » 44 px). El sello PLAY dice "Pausa" mientras suena el track 0. Integralo con el store/FloatingPlayer existente sin cambiar este aspecto.
+
+**Por sección** (orden, fondos y piezas — no reordenar)
+- **Nav**: fixed, z 80, `mix-blend-mode: difference`; logo 30 px; mono 13 px .14em; "↳ Community" con borde 1px. Mantener el menú móvil existente (Escape, 44×44) con esta tipografía.
+- **01 Hero**: semitono 7px enmascarado elíptico; cinta roja Doto 22px a top 68px, −1.2°; DJ bitmap/rojo −7°; Rosset difusa 5° con sticker "Rosset Club — 2025" −4°; galgo rojo abajo (z 5, sin eventos); alambre blanco −4° al 64%; logo `min(84vw,1040px)` con warp + "experience" Pinyon Script `clamp(54px,10vw,170px)` −8°; damero inferior 64px; 4 datos mono abajo.
+- **02 Latest Transmissions**: scanlines sutiles; h2 dos líneas (sólida `--a` + contorno 2px papel con padding-left); portada en púas −2.5° + sticker "Uriel Galeano — EP" −5°; sello PLAY circular 128px rotado 12° (hover −6°, 1.06) con doble anillo; lineup de 6 botones escalonados (márgenes exactos), alternando Anton/Doto, rojo/papel, EP/Preview; hover `translateX(12px)`; pie "Uriel Galeano × Anguis" con borde dashed.
+- **03 Culture** (papel): semitono 8px enmascarado arriba-derecha; h2 Seagram `clamp(84px,15vw,250px)` rojo −4° (hover −1° skewX −6°); bajada itálica; 3 notas con cinta, rotaciones −2.5 / 1.8 / −1, margin-top escalonados, imagen y fuente distinta en cada una (Newsreader 600 / UnifrakturMaguntia / Rye).
+- **Cinta Akira** entre Culture y Archive: bordes 2px `--a`, ✕ en rojo.
+- **04 From the Archive**: damero 120px; h2 HitMePunk papel con sombra dura `6px 6px 0 --a`, 2° (hover `-8px 8px 0 --b`); 6 piezas rotadas con margin-top escalonados y stickers de año; una en púas, una bitmap sobre verde; "Ver archivo completo →" Anton con borde inferior 4px rojo.
+- **05 Badder in Motion**: foto a sangre (inset −6%, blur 10px, saturate 1.4) con parallax −18; degradé oscuro; scanlines multiply; h2 Akira difference + warp, segunda línea corrida; 3 tarjetas que se ponen rojas en hover.
+- **06 Current Drop**: op-art radial `--a` 9/22px enmascarado; perrito en púas −4° (depth 14) + blue clifford encima −8° (depth −30); "current" Pinyon; "DROP 3" Ethnocentric (hover rojo); chips SS25 / Archivo / "Compras online deshabilitadas" (dashed rojo); texto; 4 miniaturas rotadas (hover scale 1.1); CTA "Ver colección →" rojo −2°.
+- **07 Join the Frequency** (fondo `--b`): foto sesión bitmap 6° arriba-derecha; alambre negro 3° al 46%; h2 Rubik Wet Paint −3° `max-width:11ch`; texto; botones @badder.experience (negro) y Escribinos (borde 3px).
+- **08 About + Crew** (papel): semitono 6px enmascarado a la derecha; h2 Microgramma; párrafo serif grande con itálica; crew Anton 26px con filetes y hover fondo `--a`.
+- **Footer**: borde superior 2px `--a`, logo con warp `min(60vw,420px)`, contacto mono 14px, padding inferior 120px (por el reproductor).
+
+## 3. Tweaks → configuración
+
+Los 4 controles de la maqueta van como constantes en `src/config/flyer.ts` (y como controles en vivo en la ruta interna `/sistema`):
+- `paleta` `[a, b]`: `[#FF2B1C,#9BFF2E]` (default), `[#9BFF2E,#FF2B1C]`, `[#FFE600,#3346FF]`, `[#3346FF,#FF2B1C]`.
+- `textura`: opacidad del grano 0–0.8, default 0.35.
+- `distorsion`: warp on/off, default on.
+- `difusas`: blur de fotos 4px / 0px, default on.
+
+## 4. Arquitectura sugerida (sin cambiar el resultado)
+
+- `src/components/flyer/`: `SvgDefs` (inyecta `DEFS` una vez en App), `GrainOverlay`, `CursorDot`, `ThornFrame`, `BarbedWire`, `Marquee`, `Sticker`, `Tape`, `BlurImage`, `FontCycleTitle`.
+- `src/hooks/useFlyerLoop.ts`: **un solo** rAF global que hace parallax, cursor, marquees, grano y warp exactamente como el `loop` del apéndice (refs, sin setState por frame). Pausar con `document.hidden`.
+- Secciones en `src/components/home/*` reemplazando las actuales con el JSX del apéndice.
+- Textos/imágenes pueden venir de `src/data/*` y `src/content/culture` **siempre que el resultado visible sea idéntico** a la maqueta.
+
+## 5. Agregados permitidos (solo estos)
+
+- `prefers-reduced-motion: reduce`: warp 0, sin parallax, marquees quietas, grano estático.
+- Cursor y `cursor:none` solo con `(pointer: fine)`; en touch no se renderiza.
+- En touch, las fotos difusas se enfocan al entrar al viewport.
+- `alt` reales, `aria-label` en botones de audio, foco visible (outline 2px `--a`).
+- `loading="lazy"` salvo hero; `font-display: swap`.
+
+## 6. Resto de rutas
+
+Con el Home idéntico: aplicar el mismo lenguaje (fuentes por tipo de título, texturas, stickers, púas, cintas, grano, cursor, player) a `/music`, `/culture`, `/culture/:id`, `/archive`, `/archive/:id`, `/shop`, `/shop/:id`, `/cart`, `/studio`, `/community`, `/contact`, 404. Mantener redirecciones `/journal`, `/archivo`, `/services`, `/visuals`, `/colecciones`. En artículos: Newsreader 20px sobre papel, sin efectos sobre el texto. Reutilizá piezas del Home; no inventes recursos nuevos.
+
+## 7. Reglas de datos (no romper)
+
+- Producto comprable solo si `verified`, `AVAILABLE`, precio y stock > 0. Hoy: Archivo, sin precio, compras deshabilitadas.
+- `unverifiedNotes` nunca visible; servicios `confirmed:false` ocultos; links de releases solo reales.
+- Mantener `usePageMeta`, `MotionConfig reducedMotion="user"`, compatibilidad `/archive?album=`.
+
+## 8. Entregables
+
+1. Rama `redesign/flyer-vivo`. Commits: defs+fuentes+tokens → loop global → nav+player → Home sección por sección (01–08 + footer) → resto de rutas → limpieza de CSS viejo sin uso.
+2. `npm run build`, `lint`, `test` sin errores.
+3. Capturas comparativas maqueta vs. implementación por sección en 1440 y 390 px en `docs/capturas/`.
+4. `DISENO.md`: diferencias que hayan quedado (debería estar vacía) y propuestas anotadas.
+
+## 9. Primer paso obligatorio
+
+Guardá el Apéndice A como `docs/rediseno/maqueta-v2.dc.html` y armá `docs/rediseno/maqueta-v2.html` traduciéndolo a HTML/JS plano (mismo markup; `style-hover` → reglas `:hover`; `{{ }}` → valores default; el `<script>` como JS vanilla) servido con `public/img`. Abrilo y usalo como referencia de comparación durante todo el trabajo.
+
+## 10. Checklist final (todo tiene que ser "sí")
+
+- [ ] Grano animado moviéndose · [ ] Cursor rojo difference que crece · [ ] Parallax en las 7 piezas con depth
+- [ ] Cinta del hero y cinta Akira se mueven y aceleran al scrollear · [ ] Logo hero, "in motion" y logo footer ondulan y se deforman más al scrollear
+- [ ] 5 imágenes en bitmap/duotono · [ ] 3 marcos de púas · [ ] 2 alambres · [ ] 3 cintas adhesivas · [ ] semitono en hero, culture y about · [ ] damero en hero y archive · [ ] op-art en drop · [ ] scanlines en transmissions y motion
+- [ ] Fotos difusas que se enfocan · [ ] Glitch RGB · [ ] Sombra dura en archive que cambia a verde · [ ] Click en cada h2 cambia la fuente
+- [ ] Audio real desde PLAY, lineup y reproductor; siguiente y auto-avance
+- [ ] Mismos textos, colores, fuentes, rotaciones y tamaños que la maqueta en 1440 y 390 px
+
+---
+
+## Apéndice A — Código fuente completo de la maqueta (especificación)
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Bowlby+One&family=Doto:wght@100..900&family=IBM+Plex+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..700&family=Pinyon+Script&family=Pirata+One&family=Rubik+Wet+Paint&family=Rye&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Akira';src:url("public/Akira%20Expanded%20Demo.otf")}
+@font-face{font-family:'Seagram';src:url("public/Seagram%20tfb.ttf")}
+@font-face{font-family:'HitMePunk';src:url("public/Hit%20me%2C%20punk!%2001.ttf")}
+@font-face{font-family:'Microgramma';src:url("public/Microgramma%20D%20Extended%20Bold.otf")}
+@font-face{font-family:'Ethnocentric';src:url("public/Ethnocentric-Regular.otf")}
+@font-face{font-family:'DashEarly';src:url("public/DASH-Early.ttf")}
+html,body{margin:0;background:#0A0A09;color:#F2EFE6;overflow-x:clip}
+body{font-family:'Newsreader',serif;-webkit-font-smoothing:antialiased}
+*{box-sizing:border-box}
+a{color:inherit;text-decoration:none}a:hover{color:#FF2B1C}
+::selection{background:#FF2B1C;color:#0A0A09}
+</style>
+</helmet>
+<div ref="{{ rootRef }}" style="--a:{{ a }};--b:{{ b }};--grain:{{ grain }};--blur:{{ blur }};--f-trans:{{ f.trans }};--f-culture:{{ f.culture }};--f-archive:{{ f.archive }};--f-motion:{{ f.motion }};--f-drop:{{ f.drop }};--f-join:{{ f.join }};--f-about:{{ f.about }};position:relative;background:#0A0A09;color:#F2EFE6;overflow:hidden">
+<div ref="{{ defsRef }}" style="position:absolute;width:0;height:0;overflow:hidden"></div>
+
+<div style="position:fixed;inset:0;pointer-events:none;z-index:90;overflow:hidden;opacity:var(--grain,.35);mix-blend-mode:overlay"><div ref="{{ grainRef }}" style="position:absolute;left:-50%;top:-50%;width:200%;height:200%"></div></div>
+<div ref="{{ cursorRef }}" style="position:fixed;left:0;top:0;width:18px;height:18px;margin:-9px 0 0 -9px;border-radius:50%;background:var(--a,#FF2B1C);mix-blend-mode:difference;pointer-events:none;z-index:95;transition:width .2s,height .2s,margin .2s"></div>
+
+<nav style="position:fixed;top:0;left:0;right:0;z-index:80;mix-blend-mode:difference;color:#F2EFE6">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:20px;padding:16px clamp(16px,3vw,40px)">
+<img src="img/logo.webp" alt="Badder" style="height:30px;width:auto;display:block">
+<div style="display:flex;align-items:center;gap:clamp(10px,2vw,28px);flex-wrap:wrap;justify-content:flex-end;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase">
+<a href="#top">Home</a><a href="#music">Music</a><a href="#culture">Culture</a><a href="#archive">Archive</a><a href="#drop">Shop</a><a href="#about">Studio</a>
+<a href="#join" style="border:1px solid #F2EFE6;padding:8px 12px">↳ Community</a>
+</div>
+</div>
+</nav>
+
+<section id="top" data-screen-label="01 Hero" style="position:relative;min-height:100vh;overflow:hidden;background:#0A0A09">
+<div style="position:absolute;inset:0;background-image:radial-gradient(rgba(242,239,230,.16) 1.1px,transparent 1.7px);background-size:7px 7px;-webkit-mask-image:radial-gradient(ellipse at 50% 45%,#000 20%,transparent 75%);mask-image:radial-gradient(ellipse at 50% 45%,#000 20%,transparent 75%)"></div>
+<div style="position:absolute;left:0;right:0;top:68px;background:var(--a,#FF2B1C);color:#0A0A09;overflow:hidden;white-space:nowrap;z-index:6;transform:rotate(-1.2deg);margin:0 -2%">
+<div data-marquee="0.6" style="display:inline-flex;gap:28px;padding:7px 0;font-family:'Doto',monospace;font-weight:900;font-size:22px;letter-spacing:.04em;text-transform:uppercase">
+<span>Badder Experience</span><span>/</span><span>La Plata — AR</span><span>/</span><span>Música</span><span>/</span><span>Cultura de club</span><span>/</span><span>Diseño</span><span>/</span><span>Fotografía</span><span>/</span><span>Indumentaria</span><span>/</span><span>Est. 2024</span><span>/</span>
+<span>Badder Experience</span><span>/</span><span>La Plata — AR</span><span>/</span><span>Música</span><span>/</span><span>Cultura de club</span><span>/</span><span>Diseño</span><span>/</span><span>Fotografía</span><span>/</span><span>Indumentaria</span><span>/</span><span>Est. 2024</span><span>/</span>
+</div>
+</div>
+<div data-depth="22" style="position:absolute;left:3%;top:18%;width:clamp(170px,25vw,380px);transform:rotate(-7deg);background:var(--a,#FF2B1C);z-index:2">
+<img src="img/d3-dj-azul.webp" alt="" style="width:100%;display:block;mix-blend-mode:multiply;filter:url(#bitmap)">
+</div>
+<div data-depth="34" style="position:absolute;right:4%;top:14%;width:clamp(150px,21vw,320px);transform:rotate(5deg);z-index:2">
+<img src="img/p-rosset.webp" alt="" style="width:100%;display:block;filter:blur(var(--blur,4px)) contrast(1.2)">
+<span style="position:absolute;left:-14px;bottom:18px;background:#F2EFE6;color:#0A0A09;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.12em;padding:5px 8px;transform:rotate(-4deg);text-transform:uppercase">Rosset Club — 2025</span>
+</div>
+<div data-depth="-46" style="position:absolute;left:22%;bottom:9%;width:clamp(220px,32vw,500px);z-index:5;pointer-events:none">
+<img src="img/d3-clifford-rojo.webp" alt="" style="width:100%;display:block">
+</div>
+<div style="position:absolute;left:-5%;width:110%;top:64%;height:30px;transform:rotate(-4deg);z-index:4;opacity:.9">
+<svg width="100%" height="30" style="display:block"><rect width="100%" height="30" fill="url(#barbW)"></rect></svg>
+</div>
+<div style="position:relative;z-index:3;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:120px 4vw 140px">
+<div data-depth="10" style="position:relative;width:min(84vw,1040px)">
+<img src="img/logo.webp" alt="Badder" style="width:100%;display:block;filter:url(#warp)">
+<span style="position:absolute;right:-2%;bottom:-24%;font-family:'Pinyon Script',cursive;font-size:clamp(54px,10vw,170px);color:var(--a,#FF2B1C);transform:rotate(-8deg);line-height:1;white-space:nowrap">experience</span>
+</div>
+</div>
+<div style="position:absolute;left:0;right:0;bottom:0;height:64px;background:repeating-conic-gradient(#141413 0 25%,#1f1f1d 0 50%) 0 0/64px 64px;z-index:1"></div>
+<div style="position:absolute;left:clamp(16px,3vw,40px);right:clamp(16px,3vw,40px);bottom:20px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;text-transform:uppercase;z-index:6">
+<span>Espacio creativo multidisciplinario</span><span>La Plata, Argentina</span><span>@badder.experience</span><span>Scroll ↓</span>
+</div>
+</section>
+
+<section id="music" data-screen-label="02 Latest Transmissions" style="position:relative;background:#0A0A09;padding:clamp(72px,9vw,140px) clamp(16px,3vw,40px) clamp(72px,8vw,120px);overflow:hidden">
+<div style="position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,rgba(242,239,230,.045) 0 1px,transparent 1px 4px);pointer-events:none"></div>
+<h2 onClick="{{ shuf.trans }}" style="position:relative;margin:0;cursor:pointer;font-family:var(--f-trans,'Doto');font-weight:900;font-size:clamp(40px,8.6vw,160px);line-height:.86;text-transform:uppercase;color:var(--a,#FF2B1C);text-shadow:4px 0 0 rgba(0,255,240,.35),-4px 0 0 rgba(255,0,90,.35)" style-hover="text-shadow:10px 0 0 rgba(0,255,240,.6),-10px 0 0 rgba(255,0,90,.6)">
+<span style="display:block">Latest</span>
+<span style="display:block;padding-left:clamp(12px,8vw,180px);color:transparent;-webkit-text-stroke:2px #F2EFE6">Transmissions</span>
+</h2>
+<div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:clamp(32px,5vw,80px);margin-top:clamp(24px,4vw,56px);align-items:start">
+<div style="position:relative;transform:rotate(-2.5deg);max-width:560px">
+<div style="position:relative;padding:22px">
+<svg style="position:absolute;left:0;top:0;width:100%;height:24px"><rect width="100%" height="24" fill="url(#thornH)"></rect></svg>
+<svg style="position:absolute;left:0;bottom:0;width:100%;height:24px;transform:scaleY(-1)"><rect width="100%" height="24" fill="url(#thornH)"></rect></svg>
+<svg style="position:absolute;left:0;top:0;width:24px;height:100%"><rect width="24" height="100%" fill="url(#thornV)"></rect></svg>
+<svg style="position:absolute;right:0;top:0;width:24px;height:100%;transform:scaleX(-1)"><rect width="24" height="100%" fill="url(#thornV)"></rect></svg>
+<img src="img/cover-not-rules.webp" alt="Not Rules EP" style="width:100%;aspect-ratio:1/1;object-fit:cover;display:block;filter:contrast(1.15)">
+</div>
+<button onClick="{{ play.t0 }}" style="all:unset;cursor:pointer;position:absolute;right:-18px;bottom:-26px;width:128px;height:128px;border-radius:50%;background:var(--a,#FF2B1C);color:#0A0A09;display:flex;flex-direction:column;align-items:center;justify-content:center;transform:rotate(12deg);font-family:'Anton',sans-serif;font-size:30px;line-height:.9;text-transform:uppercase;text-align:center;box-shadow:0 0 0 3px #0A0A09,0 0 0 5px var(--a,#FF2B1C)" style-hover="transform:rotate(-6deg) scale(1.06)">
+<span>{{ playLabel }}</span><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;margin-top:6px">Not Rules EP</span>
+</button>
+<div style="position:absolute;left:-10px;top:-18px;background:#F2EFE6;color:#0A0A09;padding:6px 10px;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;transform:rotate(-5deg)">Uriel Galeano — EP</div>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:10px">Releases / click para escuchar</span>
+<button onClick="{{ play.t0 }}" style="all:unset;cursor:pointer;align-self:flex-start;display:flex;align-items:flex-start;gap:8px" style-hover="transform:translateX(12px)"><span style="background:var(--a,#FF2B1C);color:#0A0A09;font-family:'Anton',sans-serif;font-size:clamp(30px,3.6vw,54px);line-height:1;padding:2px 10px;text-transform:uppercase">Not Rules</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;border:1px solid var(--a,#FF2B1C);color:var(--a,#FF2B1C);padding:2px 6px">EP</span></button>
+<button onClick="{{ play.t1 }}" style="all:unset;cursor:pointer;align-self:flex-start;margin-left:clamp(20px,8vw,120px);display:flex;align-items:flex-start;gap:8px" style-hover="transform:translateX(12px)"><span style="background:var(--a,#FF2B1C);color:#0A0A09;font-family:'Doto',monospace;font-weight:900;font-size:clamp(28px,3.3vw,50px);line-height:1;padding:2px 10px;text-transform:uppercase">Beeacks Breck Me</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;border:1px solid var(--a,#FF2B1C);color:var(--a,#FF2B1C);padding:2px 6px">EP</span></button>
+<button onClick="{{ play.t2 }}" style="all:unset;cursor:pointer;align-self:flex-start;margin-left:clamp(8px,3vw,40px);display:flex;align-items:flex-start;gap:8px" style-hover="transform:translateX(12px)"><span style="background:#F2EFE6;color:#0A0A09;font-family:'Anton',sans-serif;font-size:clamp(30px,3.6vw,54px);line-height:1;padding:2px 10px;text-transform:uppercase">Club Motion</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;border:1px solid #F2EFE6;padding:2px 6px">Preview</span></button>
+<button onClick="{{ play.t3 }}" style="all:unset;cursor:pointer;align-self:flex-start;margin-left:clamp(30px,12vw,200px);display:flex;align-items:flex-start;gap:8px" style-hover="transform:translateX(12px)"><span style="background:var(--a,#FF2B1C);color:#0A0A09;font-family:'Doto',monospace;font-weight:900;font-size:clamp(28px,3.3vw,50px);line-height:1;padding:2px 10px;text-transform:uppercase">Dope Energy</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;border:1px solid var(--a,#FF2B1C);color:var(--a,#FF2B1C);padding:2px 6px">Preview</span></button>
+<button onClick="{{ play.t4 }}" style="all:unset;cursor:pointer;align-self:flex-start;margin-left:clamp(14px,5vw,80px);display:flex;align-items:flex-start;gap:8px" style-hover="transform:translateX(12px)"><span style="background:var(--a,#FF2B1C);color:#0A0A09;font-family:'Anton',sans-serif;font-size:clamp(30px,3.6vw,54px);line-height:1;padding:2px 10px;text-transform:uppercase">Power Up</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;border:1px solid var(--a,#FF2B1C);color:var(--a,#FF2B1C);padding:2px 6px">Preview</span></button>
+<button onClick="{{ play.t5 }}" style="all:unset;cursor:pointer;align-self:flex-start;margin-left:clamp(26px,10vw,160px);display:flex;align-items:flex-start;gap:8px" style-hover="transform:translateX(12px)"><span style="background:#F2EFE6;color:#0A0A09;font-family:'Doto',monospace;font-weight:900;font-size:clamp(28px,3.3vw,50px);line-height:1;padding:2px 10px;text-transform:uppercase">Talk Like That</span><span style="font-family:'IBM Plex Mono',monospace;font-size:12px;border:1px solid #F2EFE6;padding:2px 6px">Preview</span></button>
+<div style="display:flex;justify-content:space-between;gap:16px;margin-top:22px;padding-top:14px;border-top:1px dashed rgba(242,239,230,.5);font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.12em;text-transform:uppercase"><span>Uriel Galeano</span><span>×</span><span>Anguis</span></div>
+</div>
+</div>
+</section>
+
+<section id="culture" data-screen-label="03 Culture" style="position:relative;background:#F2EFE6;color:#0A0A09;padding:clamp(60px,8vw,120px) clamp(16px,3vw,40px) clamp(80px,9vw,140px);overflow:hidden">
+<div style="position:absolute;right:-10%;top:-10%;width:70%;height:90%;background-image:radial-gradient(#0A0A09 1.2px,transparent 1.8px);background-size:8px 8px;-webkit-mask-image:radial-gradient(circle at 70% 30%,#000 0,transparent 65%);mask-image:radial-gradient(circle at 70% 30%,#000 0,transparent 65%);opacity:.55"></div>
+<div style="position:relative;display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px">
+<h2 onClick="{{ shuf.culture }}" style="margin:0;cursor:pointer;font-family:var(--f-culture,'Seagram');font-weight:400;font-size:clamp(84px,15vw,250px);line-height:.8;color:var(--a,#FF2B1C);transform:rotate(-4deg);transform-origin:left bottom" style-hover="transform:rotate(-1deg) skewX(-6deg)">Culture</h2>
+<p style="margin:0;max-width:34ch;font-family:'Newsreader',serif;font-style:italic;font-size:clamp(20px,1.8vw,26px);line-height:1.3;text-wrap:pretty">Notas, referencias y documentación de la escena. Sonido, diseño, flyers y la historia detrás de la pista.</p>
+</div>
+<div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:clamp(28px,4vw,56px);margin-top:clamp(40px,5vw,72px);align-items:start">
+<article style="position:relative;transform:rotate(-2.5deg);background:#0A0A09;color:#F2EFE6;padding:14px 14px 22px" style-hover="transform:rotate(0deg) scale(1.02)">
+<div style="position:absolute;left:38%;top:-14px;width:96px;height:26px;background:rgba(214,206,180,.85);transform:rotate(3deg)"></div>
+<div style="background:var(--a,#FF2B1C);aspect-ratio:4/3;overflow:hidden"><img src="img/cover-club-motion.webp" alt="" style="width:100%;height:100%;object-fit:cover;display:block;mix-blend-mode:multiply;filter:url(#bitmap)"></div>
+<span style="display:inline-block;margin-top:16px;background:var(--a,#FF2B1C);color:#0A0A09;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;padding:4px 8px;text-transform:uppercase">Sound</span>
+<h3 style="margin:10px 0 0;font-family:'Newsreader',serif;font-weight:600;font-size:clamp(26px,2.4vw,34px);line-height:1.08;text-wrap:pretty">5 tracks de la semana</h3>
+</article>
+<article style="position:relative;transform:rotate(1.8deg);margin-top:clamp(0px,6vw,90px);background:#F2EFE6;border:2px solid #0A0A09;padding:14px 14px 22px" style-hover="transform:rotate(0deg) scale(1.02)">
+<div style="position:absolute;right:16%;top:-14px;width:90px;height:26px;background:rgba(214,206,180,.85);transform:rotate(-5deg)"></div>
+<div style="aspect-ratio:4/3;overflow:hidden;background:#F2EFE6"><img src="img/p-tom.webp" alt="" style="width:100%;height:100%;object-fit:cover;display:block;filter:url(#bitmap)"></div>
+<span style="display:inline-block;margin-top:16px;background:#0A0A09;color:#F2EFE6;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;padding:4px 8px;text-transform:uppercase">Culture</span>
+<h3 style="margin:10px 0 0;font-family:'UnifrakturMaguntia',serif;font-weight:400;font-size:clamp(30px,2.8vw,40px);line-height:1.05;text-wrap:pretty">Los orígenes del techno de Detroit</h3>
+</article>
+<article style="position:relative;transform:rotate(-1deg);margin-top:clamp(0px,2vw,30px);background:#0A0A09;color:#F2EFE6;padding:14px 14px 22px" style-hover="transform:rotate(0deg) scale(1.02)">
+<div style="position:absolute;left:10%;top:-14px;width:100px;height:26px;background:rgba(214,206,180,.85);transform:rotate(-2deg)"></div>
+<div style="aspect-ratio:4/3;overflow:hidden"><img src="img/f-2.webp" alt="" style="width:100%;height:100%;object-fit:cover;object-position:top;display:block;filter:contrast(1.3) saturate(1.3)"></div>
+<span style="display:inline-block;margin-top:16px;background:var(--b,#9BFF2E);color:#0A0A09;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;padding:4px 8px;text-transform:uppercase">Design</span>
+<h3 style="margin:10px 0 0;font-family:'Rye',serif;font-weight:400;font-size:clamp(28px,2.6vw,38px);line-height:1.05;text-transform:uppercase;text-wrap:pretty">Flyers rave</h3>
+</article>
+</div>
+</section>
+
+<div style="background:#0A0A09;border-top:2px solid var(--a,#FF2B1C);border-bottom:2px solid var(--a,#FF2B1C);overflow:hidden;white-space:nowrap">
+<div data-marquee="-0.9" style="display:inline-flex;gap:40px;padding:12px 0;font-family:'Akira',sans-serif;font-size:clamp(22px,2.6vw,38px);text-transform:uppercase;color:#F2EFE6">
+<span>From the archive</span><span style="color:var(--a,#FF2B1C)">✕</span><span>Eventos</span><span style="color:var(--a,#FF2B1C)">✕</span><span>Drops</span><span style="color:var(--a,#FF2B1C)">✕</span><span>Series fotográficas</span><span style="color:var(--a,#FF2B1C)">✕</span><span>Gráfica</span><span style="color:var(--a,#FF2B1C)">✕</span>
+<span>From the archive</span><span style="color:var(--a,#FF2B1C)">✕</span><span>Eventos</span><span style="color:var(--a,#FF2B1C)">✕</span><span>Drops</span><span style="color:var(--a,#FF2B1C)">✕</span><span>Series fotográficas</span><span style="color:var(--a,#FF2B1C)">✕</span><span>Gráfica</span><span style="color:var(--a,#FF2B1C)">✕</span>
+</div>
+</div>
+
+<section id="archive" data-screen-label="04 From the Archive" style="position:relative;padding:clamp(60px,8vw,120px) clamp(16px,3vw,40px);background:repeating-conic-gradient(#0E0E0D 0 25%,#161614 0 50%) 0 0/120px 120px;overflow:hidden">
+<h2 onClick="{{ shuf.archive }}" style="position:relative;z-index:3;margin:0;cursor:pointer;font-family:var(--f-archive,'HitMePunk');font-weight:400;font-size:clamp(64px,11vw,190px);line-height:.85;color:#F2EFE6;text-shadow:6px 6px 0 var(--a,#FF2B1C);transform:rotate(2deg)" style-hover="text-shadow:-8px 8px 0 var(--b,#9BFF2E)">From the Archive</h2>
+<div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:clamp(20px,3vw,40px);margin-top:clamp(32px,4vw,60px);align-items:start">
+<a href="#archive" style="position:relative;display:block;transform:rotate(-3deg)" style-hover="transform:rotate(0deg) scale(1.04);z-index:5">
+<img src="img/f-4.webp" alt="Flyer Badder Showcase Rosset" style="width:100%;display:block;filter:blur(var(--blur,4px)) saturate(1.2)" style-hover="filter:none">
+<span style="position:absolute;left:-8px;bottom:14px;background:#0A0A09;color:#F2EFE6;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;padding:6px 8px;text-transform:uppercase"><b style="color:var(--a,#FF2B1C)">2025</b> Badder Showcase — Rosset Club</span>
+</a>
+<a href="#archive" style="position:relative;display:block;margin-top:clamp(0px,7vw,110px);transform:rotate(2deg)" style-hover="transform:rotate(0deg) scale(1.04);z-index:5">
+<div style="position:relative;padding:22px">
+<svg style="position:absolute;left:0;top:0;width:100%;height:24px"><rect width="100%" height="24" fill="url(#thornH)"></rect></svg>
+<svg style="position:absolute;left:0;bottom:0;width:100%;height:24px;transform:scaleY(-1)"><rect width="100%" height="24" fill="url(#thornH)"></rect></svg>
+<svg style="position:absolute;left:0;top:0;width:24px;height:100%"><rect width="24" height="100%" fill="url(#thornV)"></rect></svg>
+<svg style="position:absolute;right:0;top:0;width:24px;height:100%;transform:scaleX(-1)"><rect width="24" height="100%" fill="url(#thornV)"></rect></svg>
+<img src="img/p-cuchate.webp" alt="Uriel Galeano — Cuchate.esta" style="width:100%;aspect-ratio:3/4;object-fit:cover;display:block;filter:blur(var(--blur,4px))" style-hover="filter:none">
+</div>
+<span style="position:absolute;right:-6px;top:30px;background:var(--a,#FF2B1C);color:#0A0A09;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;padding:6px 8px;text-transform:uppercase;transform:rotate(4deg)">2025 Cuchate.esta</span>
+</a>
+<a href="#archive" style="position:relative;display:block;transform:rotate(-1.5deg);margin-top:clamp(0px,2vw,30px)" style-hover="transform:rotate(0deg) scale(1.04);z-index:5">
+<img src="img/f-2.webp" alt="Flyer Emergent x Badder" style="width:100%;display:block;filter:blur(var(--blur,4px))" style-hover="filter:none">
+<span style="position:absolute;left:10px;top:-12px;background:#F2EFE6;color:#0A0A09;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;padding:6px 8px;text-transform:uppercase"><b>2024</b> Emergent x Badder</span>
+</a>
+<a href="#archive" style="position:relative;display:block;transform:rotate(3deg);margin-top:clamp(0px,9vw,140px)" style-hover="transform:rotate(0deg) scale(1.04);z-index:5">
+<div style="background:var(--b,#9BFF2E)"><img src="img/p-capital.webp" alt="011 — Capital Federal" style="width:100%;display:block;mix-blend-mode:multiply;filter:url(#bitmap)"></div>
+<span style="position:absolute;left:-8px;bottom:-14px;background:#0A0A09;color:#F2EFE6;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;padding:6px 8px;text-transform:uppercase"><b style="color:var(--b,#9BFF2E)">2025</b> 011 — Capital Federal</span>
+</a>
+<a href="#archive" style="position:relative;display:block;transform:rotate(-2deg)" style-hover="transform:rotate(0deg) scale(1.04);z-index:5">
+<img src="img/f-6.webp" alt="Flyer Levels" style="width:100%;display:block;filter:blur(var(--blur,4px))" style-hover="filter:none">
+<span style="position:absolute;right:-8px;bottom:24px;background:#F2EFE6;color:#0A0A09;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;padding:6px 8px;text-transform:uppercase"><b>2025</b> Levels</span>
+</a>
+<a href="#archive" style="position:relative;display:block;transform:rotate(1.5deg);margin-top:clamp(0px,4vw,60px)" style-hover="transform:rotate(0deg) scale(1.04);z-index:5">
+<img src="img/p-tom.webp" alt="Badder Showcase — Tom" style="width:100%;display:block;filter:blur(var(--blur,4px)) contrast(1.3)" style-hover="filter:none">
+<span style="position:absolute;left:12px;top:-12px;background:var(--a,#FF2B1C);color:#0A0A09;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.1em;padding:6px 8px;text-transform:uppercase">2024 Badder Showcase — Tom</span>
+</a>
+</div>
+<div style="position:relative;display:flex;justify-content:flex-end;margin-top:clamp(40px,5vw,72px)">
+<a href="#archive" style="font-family:'Anton',sans-serif;font-size:clamp(28px,3vw,44px);text-transform:uppercase;border-bottom:4px solid var(--a,#FF2B1C);padding-bottom:4px">Ver archivo completo →</a>
+</div>
+</section>
+
+<section data-screen-label="05 Badder in Motion" style="position:relative;min-height:90vh;overflow:hidden;display:flex;flex-direction:column;justify-content:flex-end;padding:clamp(60px,8vw,120px) clamp(16px,3vw,40px)">
+<img data-depth="-18" src="img/p-flash.webp" alt="" style="position:absolute;inset:-6%;width:112%;height:112%;object-fit:cover;filter:blur(10px) saturate(1.4) contrast(1.2)">
+<div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,9,.2),rgba(10,10,9,.85))"></div>
+<div style="position:absolute;inset:0;background-image:repeating-linear-gradient(0deg,rgba(0,0,0,.45) 0 2px,transparent 2px 4px);mix-blend-mode:multiply"></div>
+<h2 onClick="{{ shuf.motion }}" style="position:relative;margin:0 0 clamp(28px,4vw,56px);cursor:pointer;font-family:var(--f-motion,'Akira');font-weight:400;font-size:clamp(46px,8.4vw,150px);line-height:.9;text-transform:uppercase;color:#F2EFE6;mix-blend-mode:difference;filter:url(#warp)">
+<span style="display:block">Badder</span><span style="display:block;padding-left:clamp(30px,20vw,380px)">in motion</span>
+</h2>
+<div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:20px">
+<a href="#" style="display:flex;flex-direction:column;gap:10px;background:rgba(10,10,9,.7);padding:10px;border:1px solid rgba(242,239,230,.4)" style-hover="background:var(--a,#FF2B1C);color:#0A0A09">
+<div style="aspect-ratio:16/9;overflow:hidden"><img src="img/p-emergent.webp" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase">Motion · 2024</span>
+<span style="font-family:'Newsreader',serif;font-size:22px;line-height:1.15">Emergent x Badder — Teaser</span>
+</a>
+<a href="#" style="display:flex;flex-direction:column;gap:10px;background:rgba(10,10,9,.7);padding:10px;border:1px solid rgba(242,239,230,.4)" style-hover="background:var(--a,#FF2B1C);color:#0A0A09">
+<div style="aspect-ratio:16/9;overflow:hidden"><img src="img/p-rosset.webp" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase">Motion · 2025</span>
+<span style="font-family:'Newsreader',serif;font-size:22px;line-height:1.15">Badder Showcase — Rosset Club</span>
+</a>
+<a href="#" style="display:flex;flex-direction:column;gap:10px;background:rgba(10,10,9,.7);padding:10px;border:1px solid rgba(242,239,230,.4)" style-hover="background:var(--a,#FF2B1C);color:#0A0A09">
+<div style="aspect-ratio:16/9;overflow:hidden"><img src="img/p-verano2025.webp" alt="" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+<span style="font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase">Visualizer · 2024</span>
+<span style="font-family:'Newsreader',serif;font-size:22px;line-height:1.15">You Look At Me (Original Mix) — Visual concept</span>
+</a>
+</div>
+</section>
+
+<section id="drop" data-screen-label="06 Current Drop" style="position:relative;overflow:hidden;padding:clamp(60px,8vw,120px) clamp(16px,3vw,40px);background:#0A0A09">
+<div style="position:absolute;left:-20%;top:-20%;width:90%;height:140%;background:repeating-radial-gradient(circle at 50% 50%,var(--a,#FF2B1C) 0 9px,#0A0A09 9px 22px);opacity:.9;-webkit-mask-image:radial-gradient(circle,#000 35%,transparent 70%);mask-image:radial-gradient(circle,#000 35%,transparent 70%)"></div>
+<div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,400px),1fr));gap:clamp(32px,5vw,72px);align-items:center">
+<div style="position:relative;max-width:620px">
+<div data-depth="14" style="position:relative;padding:24px;background:#0A0A09;transform:rotate(-4deg)">
+<svg style="position:absolute;left:0;top:0;width:100%;height:24px"><rect width="100%" height="24" fill="url(#thornH)"></rect></svg>
+<svg style="position:absolute;left:0;bottom:0;width:100%;height:24px;transform:scaleY(-1)"><rect width="100%" height="24" fill="url(#thornH)"></rect></svg>
+<svg style="position:absolute;left:0;top:0;width:24px;height:100%"><rect width="24" height="100%" fill="url(#thornV)"></rect></svg>
+<svg style="position:absolute;right:0;top:0;width:24px;height:100%;transform:scaleX(-1)"><rect width="24" height="100%" fill="url(#thornV)"></rect></svg>
+<img src="img/d3-perrito.webp" alt="Gráfica Drop 3" style="width:100%;display:block">
+</div>
+<img data-depth="-30" src="img/d3-blue-clifford.webp" alt="" style="position:absolute;right:-12%;bottom:-14%;width:62%;display:block;transform:rotate(-8deg)">
+</div>
+<div style="position:relative;display:flex;flex-direction:column;gap:20px">
+<span style="font-family:'Pinyon Script',cursive;font-size:clamp(44px,5vw,80px);line-height:.8;color:var(--a,#FF2B1C)">current</span>
+<h2 onClick="{{ shuf.drop }}" style="margin:-10px 0 0;cursor:pointer;font-family:var(--f-drop,'Ethnocentric');font-weight:400;font-size:clamp(64px,9vw,160px);line-height:.85;text-transform:uppercase;color:#F2EFE6;-webkit-text-stroke:1px #0A0A09" style-hover="color:var(--a,#FF2B1C)">Drop 3</h2>
+<div style="display:flex;gap:10px;flex-wrap:wrap;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.14em;text-transform:uppercase">
+<span style="background:#F2EFE6;color:#0A0A09;padding:5px 9px">SS25</span><span style="border:1px solid #F2EFE6;padding:5px 9px">Archivo</span><span style="border:1px dashed var(--a,#FF2B1C);color:var(--a,#FF2B1C);padding:5px 9px">Compras online deshabilitadas</span>
+</div>
+<p style="margin:0;max-width:44ch;font-family:'Newsreader',serif;font-size:20px;line-height:1.45;text-wrap:pretty">Bunker 001, Noise for the Dancefloor, The Showcase y Blue Clifford. Diseño de Lucas Nicolas Bengochea y Juan Francisco Arias.</p>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:8px">
+<div style="aspect-ratio:1/1;background:#1a1a18;overflow:hidden;transform:rotate(-3deg)" style-hover="transform:rotate(0) scale(1.1)"><img src="img/d3-bunker.webp" alt="Bunker 001" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+<div style="aspect-ratio:1/1;background:#F2EFE6;overflow:hidden;transform:rotate(2deg)" style-hover="transform:rotate(0) scale(1.1)"><img src="img/d3-noise.webp" alt="Noise for the Dancefloor" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+<div style="aspect-ratio:1/1;background:#F2EFE6;overflow:hidden;transform:rotate(-1deg)" style-hover="transform:rotate(0) scale(1.1)"><img src="img/d3-showcase.webp" alt="The Showcase" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+<div style="aspect-ratio:1/1;background:#1a1a18;overflow:hidden;transform:rotate(3deg)" style-hover="transform:rotate(0) scale(1.1)"><img src="img/d3-blue-clifford-front.webp" alt="Blue Clifford Knit" style="width:100%;height:100%;object-fit:cover;display:block"></div>
+</div>
+<a href="#drop" style="align-self:flex-start;margin-top:10px;background:var(--a,#FF2B1C);color:#0A0A09;font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase;padding:12px 22px;transform:rotate(-2deg)" style-hover="background:#F2EFE6;color:#0A0A09">Ver colección →</a>
+</div>
+</div>
+</section>
+
+<section id="join" data-screen-label="07 Join the Frequency" style="position:relative;overflow:hidden;background:var(--b,#9BFF2E);color:#0A0A09;padding:clamp(60px,8vw,120px) clamp(16px,3vw,40px)">
+<div style="position:absolute;right:-4%;top:8%;width:clamp(200px,34vw,520px);transform:rotate(6deg);opacity:.9"><img src="img/p-sesion.webp" alt="" style="width:100%;display:block;mix-blend-mode:multiply;filter:url(#bitmap)"></div>
+<div style="position:absolute;left:-5%;width:110%;top:46%;height:30px;transform:rotate(3deg)"><svg width="100%" height="30" style="display:block"><rect width="100%" height="30" fill="url(#barbK)"></rect></svg></div>
+<h2 onClick="{{ shuf.join }}" style="position:relative;margin:0;cursor:pointer;font-family:var(--f-join,'Rubik Wet Paint');font-weight:400;font-size:clamp(60px,10vw,176px);line-height:.88;text-transform:uppercase;max-width:11ch;transform:rotate(-3deg)">Join the frequency</h2>
+<div style="position:relative;display:flex;flex-direction:column;gap:22px;margin-top:clamp(40px,5vw,72px);max-width:520px">
+<p style="margin:0;font-family:'Newsreader',serif;font-size:22px;line-height:1.4;text-wrap:pretty">Mandanos tu música, tu fotografía o tu gráfica. Buscamos gente para sumar a sesiones, eventos y proyectos.</p>
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<a href="https://instagram.com/badder.experience" style="background:#0A0A09;color:#F2EFE6;font-family:'Anton',sans-serif;font-size:24px;text-transform:uppercase;padding:12px 20px" style-hover="background:#F2EFE6;color:#0A0A09">@badder.experience</a>
+<a href="mailto:contact@badderexperience.com" style="border:3px solid #0A0A09;font-family:'Anton',sans-serif;font-size:24px;text-transform:uppercase;padding:9px 18px" style-hover="background:#0A0A09;color:#F2EFE6">Escribinos</a>
+</div>
+</div>
+</section>
+
+<section id="about" data-screen-label="08 About + Crew" style="position:relative;background:#F2EFE6;color:#0A0A09;padding:clamp(60px,8vw,120px) clamp(16px,3vw,40px);overflow:hidden">
+<div style="position:absolute;left:0;top:0;width:100%;height:100%;background-image:radial-gradient(#0A0A09 1px,transparent 1.5px);background-size:6px 6px;-webkit-mask-image:linear-gradient(90deg,transparent 55%,#000);mask-image:linear-gradient(90deg,transparent 55%,#000);opacity:.4"></div>
+<div style="position:relative;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr));gap:clamp(32px,6vw,96px);align-items:start">
+<div style="display:flex;flex-direction:column;gap:28px">
+<h2 onClick="{{ shuf.about }}" style="margin:0;cursor:pointer;font-family:var(--f-about,'Microgramma');font-weight:400;font-size:clamp(54px,7vw,120px);line-height:.9;text-transform:uppercase">About</h2>
+<p style="margin:0;font-family:'Newsreader',serif;font-size:clamp(24px,2.3vw,34px);line-height:1.3;max-width:30ch;text-wrap:pretty">Espacio creativo multidisciplinario nacido alrededor de la música electrónica underground. <i>Música, cultura de club, diseño, fotografía, audiovisual e indumentaria</i> desde La Plata.</p>
+</div>
+<div style="display:flex;flex-direction:column;border-top:3px solid #0A0A09">
+<span style="font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.16em;text-transform:uppercase;padding:14px 0;border-bottom:1px solid #0A0A09">Crew</span>
+<div style="display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid #0A0A09" style-hover="background:var(--a,#FF2B1C)"><span style="font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase">Lucas Nicolas Bengochea</span><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:right">Diseño · flyers · motion</span></div>
+<div style="display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid #0A0A09" style-hover="background:var(--a,#FF2B1C)"><span style="font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase">Juan Francisco Arias</span><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:right">Fotografía · diseño</span></div>
+<div style="display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid #0A0A09" style-hover="background:var(--a,#FF2B1C)"><span style="font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase">Uriel Galeano</span><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:right">Música</span></div>
+<div style="display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid #0A0A09" style-hover="background:var(--a,#FF2B1C)"><span style="font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase">Francisco Anguis</span><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:right">Música</span></div>
+<div style="display:flex;justify-content:space-between;gap:16px;padding:14px 0;border-bottom:1px solid #0A0A09" style-hover="background:var(--a,#FF2B1C)"><span style="font-family:'Anton',sans-serif;font-size:26px;text-transform:uppercase">Javier Almiron</span><span style="font-family:'IBM Plex Mono',monospace;font-size:13px;text-align:right">Diseño</span></div>
+</div>
+</div>
+</section>
+
+<footer style="position:relative;background:#0A0A09;padding:48px clamp(16px,3vw,40px) 120px;border-top:2px solid var(--a,#FF2B1C)">
+<div style="display:flex;justify-content:space-between;align-items:flex-end;gap:32px;flex-wrap:wrap">
+<img src="img/logo.webp" alt="Badder" style="width:min(60vw,420px);display:block;filter:url(#warp)">
+<div style="display:flex;flex-direction:column;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:14px;letter-spacing:.08em">
+<a href="mailto:contact@badderexperience.com">contact@badderexperience.com</a><a href="https://instagram.com/badder.experience">@badder.experience</a><span>La Plata, Argentina — Est. 2024</span>
+</div>
+</div>
+</footer>
+
+<div style="position:fixed;left:16px;bottom:16px;z-index:85;display:flex;align-items:center;gap:10px;background:#0A0A09;border:1px solid var(--a,#FF2B1C);padding:6px;max-width:calc(100vw - 32px)">
+<img src="{{ now.cover }}" alt="" style="width:46px;height:46px;object-fit:cover;display:block">
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0;max-width:200px">
+<span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--a,#FF2B1C)">{{ now.artist }}</span>
+<span style="font-family:'Anton',sans-serif;font-size:17px;text-transform:uppercase;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ now.title }}</span>
+</div>
+<button onClick="{{ toggle }}" style="all:unset;cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--a,#FF2B1C);color:#0A0A09;font-family:'Anton',sans-serif;font-size:16px">{{ btn }}</button>
+<button onClick="{{ next }}" style="all:unset;cursor:pointer;width:44px;height:44px;display:flex;align-items:center;justify-content:center;border:1px solid #F2EFE6;font-family:'Anton',sans-serif;font-size:16px">»</button>
+</div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;paleta&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;default&quot;:[&quot;#FF2B1C&quot;,&quot;#9BFF2E&quot;],&quot;options&quot;:[[&quot;#FF2B1C&quot;,&quot;#9BFF2E&quot;],[&quot;#9BFF2E&quot;,&quot;#FF2B1C&quot;],[&quot;#FFE600&quot;,&quot;#3346FF&quot;],[&quot;#3346FF&quot;,&quot;#FF2B1C&quot;]],&quot;tsType&quot;:&quot;string[]&quot;,&quot;section&quot;:&quot;Color&quot;},&quot;textura&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:0.35,&quot;min&quot;:0,&quot;max&quot;:0.8,&quot;step&quot;:0.05,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Textura&quot;},&quot;distorsion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Textura&quot;},&quot;difusas&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Textura&quot;}}">
+const FONTS = ["'Seagram'", "'Doto'", "'Akira'", "'HitMePunk'", "'Rubik Wet Paint'", "'Rye'", "'Anton'", "'Ethnocentric'", "'Microgramma'", "'UnifrakturMaguntia'", "'Pirata One'", "'Bowlby One'", "'DashEarly'"];
+const TRACKS = [
+  ["Not Rules EP", "Uriel Galeano", "Uriel Galeano - Not Rules EP (Incl. Agustin Barbei Psychokiller Remix).mp3", "cover-not-rules"],
+  ["Beeacks Breck Me", "Uriel Galeano", "Beeacks Breck Me.mp3", "cover-beeacks"],
+  ["Club Motion", "Anguis", "Anguis - Club Motion (Preview).mp3", "cover-club-motion"],
+  ["Dope Energy", "Anguis", "Anguis - Dope Energy (Preview).mp3", "cover-dope-energy"],
+  ["Power Up", "Anguis", "Anguis - Power Up (Preview).mp3", "cover-power-up"],
+  ["Talk Like That", "Anguis", "Anguis - Talk Like That (Preview).mp3", "cover-talk-like-that"],
+];
+const DEFS = `<svg width="0" height="0" style="position:absolute"><defs>
+<pattern id="barbW" width="120" height="30" patternUnits="userSpaceOnUse"><g fill="none" stroke="#F2EFE6" stroke-width="2.2" stroke-linecap="round"><path d="M0 15 C20 9 40 21 60 15 S100 9 120 15"/><path d="M0 15 C20 21 40 9 60 15 S100 21 120 15"/><path d="M53 3 L67 27 M67 3 L53 27 M50 15 L70 15"/></g></pattern>
+<pattern id="barbK" width="120" height="30" patternUnits="userSpaceOnUse"><g fill="none" stroke="#0A0A09" stroke-width="2.4" stroke-linecap="round"><path d="M0 15 C20 9 40 21 60 15 S100 9 120 15"/><path d="M0 15 C20 21 40 9 60 15 S100 21 120 15"/><path d="M53 3 L67 27 M67 3 L53 27 M50 15 L70 15"/></g></pattern>
+<pattern id="thornH" width="46" height="24" patternUnits="userSpaceOnUse"><g fill="#F2EFE6"><rect y="9" width="46" height="5"/><polygon points="3,10 6,0 9,10"/><polygon points="13,13 16,24 19,13"/><polygon points="22,10 27,1 30,10"/><polygon points="32,13 36,22 39,13"/><polygon points="40,10 42,4 45,10"/></g></pattern>
+<pattern id="thornV" width="24" height="46" patternUnits="userSpaceOnUse"><g fill="#F2EFE6"><rect x="9" width="5" height="46"/><polygon points="10,3 0,6 10,9"/><polygon points="13,13 24,16 13,19"/><polygon points="10,22 1,27 10,30"/><polygon points="13,32 22,36 13,39"/><polygon points="10,40 4,42 10,45"/></g></pattern>
+<filter id="warp" x="-10%" y="-20%" width="120%" height="140%"><feTurbulence type="fractalNoise" baseFrequency="0.006 0.05" numOctaves="2" seed="4" result="t"/><feDisplacementMap id="warpMap" in="SourceGraphic" in2="t" scale="14" xChannelSelector="R" yChannelSelector="G"/></filter>
+<filter id="bitmap" color-interpolation-filters="sRGB"><feColorMatrix in="SourceGraphic" type="saturate" values="0" result="g"/><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="1" seed="2" result="n"/><feColorMatrix in="n" type="saturate" values="0" result="ng"/><feComposite in="g" in2="ng" operator="arithmetic" k1="0" k2="1.1" k3="0.5" k4="-0.3" result="m"/><feComponentTransfer in="m"><feFuncR type="discrete" tableValues="0 1"/><feFuncG type="discrete" tableValues="0 1"/><feFuncB type="discrete" tableValues="0 1"/></feComponentTransfer></filter>
+</defs></svg>`;
+const GRAIN = `<svg xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"><filter id="grainF"><feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/><feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1.4 -0.2"/></filter><rect width="100%" height="100%" filter="url(#grainF)"/></svg>`;
+const KEYS = { trans: 1, culture: 0, archive: 3, motion: 2, drop: 7, join: 4, about: 8 };
+
+class Component extends DCLogic {
+  state = { fonts: { ...KEYS }, track: 0, playing: false };
+  rootRef = React.createRef(); defsRef = React.createRef(); grainRef = React.createRef(); cursorRef = React.createRef();
+  mouse = { x: 0, y: 0, cx: 0, cy: 0, px: 0, py: 0 }; vel = 0; lastY = 0; marq = 0;
+  componentDidMount() {
+    if (this.defsRef.current) this.defsRef.current.innerHTML = DEFS;
+    if (this.grainRef.current) this.grainRef.current.innerHTML = GRAIN;
+    this.onMove = (e) => {
+      this.mouse.x = e.clientX; this.mouse.y = e.clientY;
+      const c = this.cursorRef.current;
+      if (c) { const big = !!e.target.closest && !!e.target.closest("img,button,a,h2"); c.style.width = c.style.height = big ? "64px" : "18px"; c.style.margin = big ? "-32px 0 0 -32px" : "-9px 0 0 -9px"; }
+    };
+    window.addEventListener("mousemove", this.onMove);
+    this.lastY = window.scrollY || document.body.scrollTop;
+    let t0 = 0, gT = 0;
+    const loop = (t) => {
+      this.raf = requestAnimationFrame(loop);
+      const dt = Math.min(50, t - (t0 || t)); t0 = t;
+      const root = this.rootRef.current; if (!root) return;
+      const m = this.mouse;
+      m.cx += (m.x - m.cx) * 0.35; m.cy += (m.y - m.cy) * 0.35;
+      if (this.cursorRef.current) this.cursorRef.current.style.transform = `translate(${m.cx}px,${m.cy}px)`;
+      const nx = (m.x / window.innerWidth - 0.5), ny = (m.y / window.innerHeight - 0.5);
+      m.px += (nx - m.px) * 0.06; m.py += (ny - m.py) * 0.06;
+      root.querySelectorAll("[data-depth]").forEach((el) => { const d = +el.dataset.depth; el.style.translate = `${m.px * d}px ${m.py * d}px`; });
+      const sy = window.scrollY || document.documentElement.scrollTop || document.body.scrollTop; const v = Math.abs(sy - this.lastY); this.lastY = sy;
+      this.vel += (v - this.vel) * 0.15;
+      this.marq += dt * 0.06 * (1 + this.vel * 0.15);
+      root.querySelectorAll("[data-marquee]").forEach((el) => { const s = +el.dataset.marquee; const w = el.scrollWidth / 2 || 1; let x = (this.marq * s) % w; if (x > 0) x -= w; el.style.translate = `${x}px 0`; });
+      if (t - gT > 70 && this.grainRef.current) { gT = t; this.grainRef.current.style.transform = `translate(${(Math.random() * 20 - 10).toFixed(1)}%,${(Math.random() * 20 - 10).toFixed(1)}%)`; }
+      const wm = document.getElementById("warpMap");
+      if (wm) { const on = this.props.distorsion ?? true; wm.setAttribute("scale", on ? (10 + Math.sin(t / 700) * 6 + Math.min(80, this.vel * 3)).toFixed(1) : "0"); }
+    };
+    this.raf = requestAnimationFrame(loop);
+  }
+  componentWillUnmount() { cancelAnimationFrame(this.raf); window.removeEventListener("mousemove", this.onMove); this.audio && this.audio.pause(); }
+  playTrack = (i) => {
+    if (!this.audio) { this.audio = new Audio(); this.audio.onended = () => this.playTrack((this.state.track + 1) % TRACKS.length); }
+    if (i === this.state.track && this.state.playing) { this.audio.pause(); this.setState({ playing: false }); return; }
+    const src = "https://badder.netlify.app/audio/" + encodeURIComponent(TRACKS[i][2]);
+    if (this.audio.dataset.src !== src) { this.audio.src = src; this.audio.dataset.src = src; }
+    this.audio.play().catch(() => {});
+    this.setState({ track: i, playing: true });
+  };
+  renderVals() {
+    const pal = this.props.paleta ?? ["#FF2B1C", "#9BFF2E"];
+    const { fonts, track, playing } = this.state;
+    const f = {}; const shuf = {};
+    Object.keys(KEYS).forEach((k) => {
+      f[k] = FONTS[fonts[k] % FONTS.length];
+      shuf[k] = () => this.setState((s) => ({ fonts: { ...s.fonts, [k]: (s.fonts[k] + 1) % FONTS.length } }));
+    });
+    const play = {}; TRACKS.forEach((_, i) => (play["t" + i] = () => this.playTrack(i)));
+    const tr = TRACKS[track];
+    return {
+      rootRef: this.rootRef, defsRef: this.defsRef, grainRef: this.grainRef, cursorRef: this.cursorRef,
+      a: pal[0], b: pal[1] ?? pal[0],
+      grain: String(this.props.textura ?? 0.35),
+      blur: (this.props.difusas ?? true) ? "4px" : "0px",
+      f, shuf, play,
+      playLabel: playing && track === 0 ? "Pausa" : "Play",
+      now: { title: tr[0], artist: tr[1], cover: `img/${tr[3]}.webp` },
+      btn: playing ? "II" : "▶",
+      toggle: () => this.playTrack(track),
+      next: () => this.playTrack((track + 1) % TRACKS.length),
+    };
+  }
+}
+</script>
+</body>
+</html>
+
+```
+
+## Apéndice B — Imágenes (copiar `img/` → `public/img/`)
+
+Usadas: logo · cover-not-rules · cover-beeacks · cover-club-motion · cover-dope-energy · cover-power-up · cover-talk-like-that · d3-dj-azul · d3-clifford-rojo · d3-perrito · d3-blue-clifford · d3-blue-clifford-front · d3-bunker · d3-noise · d3-showcase · f-2 (Emergent x Badder) · f-4 (Showcase Rosset) · f-6 (Levels) · p-rosset · p-cuchate · p-capital · p-tom · p-flash · p-emergent · p-verano2025 · p-sesion (.webp). Sin uso todavía: capital-2, capital-6, d2-extasys, d3-sancor, p-drop3.
