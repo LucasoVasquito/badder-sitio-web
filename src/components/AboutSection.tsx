@@ -1,96 +1,42 @@
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import badderLogo from "@/assets/recurso_2-2.webp";
 import { crewNames } from "@/data/credits";
 
-// Manifiesto breve al cierre de la Home (+ créditos de la crew, ancla #crew)
+// Cierre de la Home: qué es BADDER, en concreto, + créditos de la crew (ancla #crew).
 export default function AboutSection() {
   return (
-    <section id="about" className="scroll-mt-20 relative px-5 md:px-12 py-16 md:py-24 border-t border-border overflow-hidden">
-      <div className="grid md:grid-cols-12 gap-12 md:gap-8 wrap items-center">
-        {/* Texto */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-60px" }}
-          transition={{ duration: 0.5 }}
-          className="md:col-span-7"
-        >
-          <div className="label text-muted-foreground mb-3">
-            <span className="text-foreground">08</span> — About / Manifiesto
+    <section id="about" className="scroll-mt-20 px-5 md:px-12 pt-20 md:pt-28">
+      <div className="max-w-[1440px] mx-auto">
+        <div className="grid md:grid-cols-12 gap-x-10 gap-y-8 pt-4 border-t-2 border-border">
+          <div className="md:col-span-4">
+            <div className="label text-muted-foreground mb-2">Sobre BADDER</div>
+            <h2 className="font-display text-title">Quiénes somos</h2>
           </div>
-          <h2 className="font-display text-5xl md:text-7xl text-foreground leading-[0.9] tracking-tight mb-8">
-            Nacido
-            <br />
-            en la pista
-          </h2>
-          <div className="space-y-4 text-sm text-muted-foreground leading-relaxed max-w-lg">
-            <p>
-              BADDER empezó con la música electrónica underground y se fue expandiendo hacia todo lo que la rodea: diseño gráfico, fotografía, moda, audiovisual, videojuegos y tecnología.
+          <div className="md:col-span-8 grid md:grid-cols-2 gap-x-10 gap-y-5">
+            <p className="reading font-serif">
+              BADDER es un espacio creativo multidisciplinario de La Plata, nacido en 2024 alrededor de la música electrónica underground.
             </p>
-            <p>
-              No es una agencia ni una marca de ropa. Es un espacio creativo y un archivo en movimiento: lo que se produce, se documenta, se viste y se comparte. Las prendas son la parte física del mismo ruido.
+            <p className="reading font-serif">
+              Produce música, diseña gráfica e indumentaria, fotografía y filma eventos, y guarda todo eso en un archivo abierto.
             </p>
           </div>
-
-          <div className="mt-8 flex gap-8">
-            {[
-              ["Año", "2024"],
-              ["País", "ARG"],
-              ["Ciudad", "La Plata"],
-            ].map(([k, v]) => (
-              <div key={k}>
-                <div className="label text-muted-foreground mb-1">{k}</div>
-                <div className="font-serif text-2xl text-foreground">{v}</div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-
-        {/* Imagen: sunburst + fotos de archivo */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="md:col-span-5 relative flex items-center justify-center pb-16"
-        >
-          <div className="relative border border-foreground/20 p-3 rotate-2 max-w-[320px] md:max-w-[360px]">
-            <img src={badderLogo} alt="" className="relative z-0 w-full" loading="lazy" />
-            <div className="absolute z-20 -bottom-10 left-1/2 -translate-x-[140%] w-[96px] h-[126px] border border-foreground/10 rotate-[-5deg] shadow-lg overflow-hidden bg-muted">
-              <img src="/cuchate.esta/foto (10).webp" alt="Archivo BADDER — Cuchate.esta" loading="lazy" className="w-full h-full object-cover transition-all duration-500" />
-            </div>
-            <div className="absolute z-30 -bottom-12 left-1/2 -translate-x-1/2 w-[104px] h-[136px] border border-foreground/10 shadow-xl overflow-hidden bg-muted">
-              <img src="/cuchate.esta/foto (4).webp" alt="Archivo BADDER — Cuchate.esta" loading="lazy" className="w-full h-full object-cover transition-all duration-500" />
-            </div>
-            <div className="absolute z-20 -bottom-10 left-1/2 translate-x-[40%] w-[92px] h-[122px] border border-foreground/10 rotate-[5deg] shadow-lg overflow-hidden bg-muted">
-              <img src="/capital/foto (21).webp" alt="Archivo BADDER — Capital" loading="lazy" className="w-full h-full object-cover transition-all duration-500" />
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Crew / créditos */}
-      <div id="crew" className="scroll-mt-24 wrap mt-16 pt-8 border-t border-border grid md:grid-cols-12 gap-8">
-        <div className="md:col-span-4">
-          <h3 className="label text-foreground">Crew / Créditos</h3>
-          <p className="mt-3 text-xs text-muted-foreground leading-relaxed max-w-xs">
-            Las personas que forjaron la experiencia BADDER. Pasado y presente.
-          </p>
-          <Link
-            to="/contact#bookings"
-            className="inline-block mt-5 label text-foreground border-b border-foreground/40 pb-1 hover:border-foreground transition-colors"
-          >
-            Conocé a los integrantes →
-          </Link>
         </div>
-        <ul className="md:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3">
-          {crewNames.map((name) => (
-            <li key={name} className="label text-muted-foreground">
-              {name}
-            </li>
-          ))}
-        </ul>
+
+        <div id="crew" className="scroll-mt-24 mt-14 pt-4 border-t border-border grid md:grid-cols-12 gap-8">
+          <div className="md:col-span-4">
+            <h3 className="label">Crew y créditos</h3>
+            <p className="mt-3 text-muted-foreground max-w-xs">Las personas que hicieron BADDER, pasado y presente.</p>
+            <Link to="/contact#bookings" className="inline-flex items-center min-h-[44px] mt-3 label underline underline-offset-4 decoration-2 hover:bg-accent hover:text-accent-foreground">
+              Conocé a los integrantes →
+            </Link>
+          </div>
+          <ul className="md:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-2 content-start">
+            {crewNames.map((name) => (
+              <li key={name} className="label text-muted-foreground">
+                {name}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </section>
   );

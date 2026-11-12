@@ -22,19 +22,19 @@ function inline(text: string, keyBase: string): ReactNode[] {
       if (!safe) out.push(m[2]);
       else if (isInternal(url))
         out.push(
-          <Link key={k} to={url} className="text-foreground underline underline-offset-4">
+          <Link key={k} to={url} className="text-foreground underline underline-offset-4 decoration-2 hover:bg-accent">
             {m[2]}
           </Link>
         );
       else
         out.push(
-          <a key={k} href={url} target="_blank" rel="noopener noreferrer" className="text-foreground underline underline-offset-4">
+          <a key={k} href={url} target="_blank" rel="noopener noreferrer" className="text-foreground underline underline-offset-4 decoration-2 hover:bg-accent">
             {m[2]}
           </a>
         );
     } else if (m[4]) out.push(<strong key={k} className="text-foreground font-semibold">{m[5]}</strong>);
     else if (m[6]) out.push(<em key={k}>{m[7]}</em>);
-    else if (m[8]) out.push(<code key={k} className="font-mono text-xs bg-secondary px-1">{m[9]}</code>);
+    else if (m[8]) out.push(<code key={k} className="text-sm bg-secondary px-1">{m[9]}</code>);
     last = re.lastIndex;
   }
   if (last < text.length) out.push(text.slice(last));
@@ -44,29 +44,29 @@ function inline(text: string, keyBase: string): ReactNode[] {
 export default function Markdown({ source }: { source: string }) {
   const blocks = source.replace(/\r\n/g, "\n").split(/\n\s*\n/);
   return (
-    <div className="flex flex-col gap-6 text-[15px] md:text-base leading-relaxed text-muted-foreground">
+    <div className="flex flex-col gap-6 reading text-foreground">
       {blocks.map((block, b) => {
         const lines = block.split("\n");
         const key = `b${b}`;
         const h = block.match(/^(#{1,3})\s+(.*)$/);
         if (h && lines.length === 1) {
-          const cls = "font-display text-foreground leading-tight mt-4";
-          if (h[1].length === 1) return <h2 key={key} className={`${cls} text-3xl md:text-4xl`}>{inline(h[2], key)}</h2>;
-          if (h[1].length === 2) return <h3 key={key} className={`${cls} text-2xl md:text-3xl`}>{inline(h[2], key)}</h3>;
+          const cls = "font-display text-foreground mt-6";
+          if (h[1].length === 1) return <h2 key={key} className={`${cls} text-h2`}>{inline(h[2], key)}</h2>;
+          if (h[1].length === 2) return <h3 key={key} className={`${cls} text-[1.5rem] md:text-[1.875rem]`}>{inline(h[2], key)}</h3>;
           return <h4 key={key} className="label text-foreground mt-4">{inline(h[2], key)}</h4>;
         }
         const img = block.match(/^!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)$/);
         if (img) {
           return (
             <figure key={key} className="my-4">
-              <img src={img[2]} alt={img[1]} loading="lazy" className="w-full h-auto border border-border" />
+              <img src={img[2]} alt={img[1]} loading="lazy" className="w-full h-auto" />
               {img[3] && <figcaption className="mt-2 label text-muted-foreground">{img[3]}</figcaption>}
             </figure>
           );
         }
         if (lines.every((l) => /^\d+\.\s+/.test(l))) {
           return (
-            <ol key={key} className="flex flex-col border-t border-border">
+            <ol key={key} className="flex flex-col border-t-2 border-border">
               {lines.map((l, i) => (
                 <li key={i} className="flex gap-4 py-2 border-b border-border">
                   <span className="label text-muted-foreground pt-1 w-6">{String(i + 1).padStart(2, "0")}</span>
@@ -87,7 +87,7 @@ export default function Markdown({ source }: { source: string }) {
         }
         if (lines.every((l) => l.startsWith(">"))) {
           return (
-            <blockquote key={key} className="border-l-2 border-accent pl-5 font-serif text-xl md:text-2xl text-foreground leading-snug">
+            <blockquote key={key} className="border-l-[6px] pl-5 font-serif italic text-[1.375rem] md:text-[1.75rem] text-foreground leading-snug border-accent">
               {inline(lines.map((l) => l.replace(/^>\s?/, "")).join(" "), key)}
             </blockquote>
           );

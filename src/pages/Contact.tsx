@@ -51,8 +51,8 @@ export default function Contact() {
   };
 
   return (
-    <main className="bg-background min-h-screen pt-32 pb-0 overflow-hidden">
-      <div className="px-5 md:px-12 wrap">
+    <main className="bg-background min-h-screen pt-10 md:pt-16 pb-0 overflow-hidden">
+      <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
         <PageHeader kicker="Contacto / Colaboraciones / Bookings" title="Contact" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 mb-16">

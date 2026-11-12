@@ -1,123 +1,57 @@
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import SectionHeader from "./SectionHeader";
 import PlayButton from "./PlayButton";
 import { playlist } from "@/data/audio";
 import { findTrackIndex } from "@/store/playerStore";
-import { videos, motionProjects } from "@/data/visuals";
+import { djSets } from "@/data/music";
 
-const releaseIndexes = ["Not Rules EP", "Club Motion", "Devil Voice", "Dope Energy", "Uesa"]
-  .map(findTrackIndex)
-  .filter((i) => i >= 0);
-
-// DJ sets grabados (Showcases y Emergent x Badder)
-const djSets = [4, 3, 6].map((id) => videos.find((v) => v.id === id)!).filter(Boolean);
-
-// Sesiones / registros audiovisuales
-const interview = videos.find((v) => v.id === 1)!;
-const visualizer = motionProjects.find((p) => p.id === 12)!;
-const sessions = [
-  { title: interview.title, meta: `Entrevista · ${interview.date} · ${interview.duration}`, thumb: interview.thumb, url: interview.url },
-  { title: visualizer.title, meta: `Visualizer · ${visualizer.date}`, thumb: visualizer.thumb, url: visualizer.link },
-];
-
+const releaseIndexes = ["Not Rules EP", "Club Motion", "Devil Voice", "Dope Energy", "Uesa"].map(findTrackIndex).filter((i) => i >= 0);
+const sets = djSets.slice(0, 3);
 const clean = (s: string) => s.replace(/\s+/g, " ").trim();
 
-const Label = ({ n, children }: { n: string; children: React.ReactNode }) => (
-  <h3 className="label text-foreground border-b border-border pb-3 mb-5 flex justify-between">
-    <span>{children}</span>
-    <span className="text-muted-foreground">{n}</span>
-  </h3>
-);
-
+// Música: bloque oscuro. Lista escuchable + DJ sets.
 export default function InMotion() {
   return (
-    <section className="px-5 md:px-12 py-16 md:py-24 border-t border-border">
-      <div className="wrap">
-        <SectionHeader index="05" kicker="Music · Sets · Sesiones" title="Badder in Motion" link={{ to: "/music", label: "Ir a Music" }} />
+    <section className="surface-dark mt-20 md:mt-28 px-5 md:px-12 py-14 md:py-20">
+      <div className="max-w-[1440px] mx-auto">
+        <SectionHeader kicker="Releases · DJ sets" title="Música" link={{ to: "/music", label: "Toda la música" }} />
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-8 gap-y-14">
-          {/* RELEASES: se escuchan en el reproductor flotante */}
-          <div className="lg:col-span-4">
-            <Label n={String(releaseIndexes.length).padStart(2, "0")}>Releases / Tracks</Label>
-            <ul className="flex flex-col">
-              {releaseIndexes.map((idx, i) => {
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-x-10 gap-y-12">
+          <div className="lg:col-span-5">
+            <h3 className="label text-muted-foreground pb-3 border-b border-border/50">Para escuchar acá</h3>
+            <ul>
+              {releaseIndexes.map((idx) => {
                 const t = playlist[idx];
                 return (
-                  <motion.li
-                    key={t.audio}
-                    initial={{ opacity: 0 }}
-                    whileInView={{ opacity: 1 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.05 }}
-                    className="flex items-center gap-4 py-3 border-b border-border/60"
-                  >
-                    <img src={t.cover} alt="" loading="lazy" className="w-12 h-12 object-cover border border-border shrink-0" />
+                  <li key={t.audio} className="flex items-center gap-4 py-3 border-b border-border/30">
+                    <img src={t.cover} alt="" loading="lazy" className="w-14 h-14 object-cover shrink-0" />
                     <div className="min-w-0 flex-1">
                       <div className="label text-muted-foreground truncate">{clean(t.artist)}</div>
-                      <div className="text-sm text-foreground truncate">{clean(t.title)}</div>
+                      <div className="font-semibold truncate">{clean(t.title)}</div>
                     </div>
                     <PlayButton trackIndex={idx} />
-                  </motion.li>
+                  </li>
                 );
               })}
             </ul>
           </div>
 
-          {/* DJ SETS */}
-          <div className="lg:col-span-8">
-            <Label n={String(djSets.length).padStart(2, "0")}>DJ Sets</Label>
-            <div className="grid grid-cols-2 gap-4">
-              {djSets.map((v, i) => (
-                <motion.a
-                  key={v.id}
-                  href={v.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.06 }}
-                  className={`group block ${i === 0 ? "col-span-2" : "col-span-1"}`}
-                >
-                  <div className="relative aspect-video overflow-hidden bg-secondary border border-border">
-                    <img
-                      src={v.thumb}
-                      alt={v.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover opacity-85 transition-all duration-700 group-hover:opacity-100 group-hover:scale-[1.03]"
-                    />
-                    <span className="absolute bottom-2 right-2 bg-background/80 label text-foreground px-2 py-1">
-                      ▶ {v.duration}
-                    </span>
+          <div className="lg:col-span-7">
+            <h3 className="label text-muted-foreground pb-3 border-b border-border/50 mb-5">DJ sets en video</h3>
+            <div className="grid grid-cols-2 gap-x-5 gap-y-8">
+              {sets.map((v, i) => (
+                <a key={v.id} href={v.url} target="_blank" rel="noopener noreferrer" className={`group block ${i === 0 ? "col-span-2" : "col-span-2 sm:col-span-1"}`}>
+                  <div className="relative aspect-video overflow-hidden bg-secondary">
+                    <img src={v.thumb} alt="" loading="lazy" className="w-full h-full object-cover" />
+                    <span className="absolute bottom-0 right-0 label bg-accent text-accent-foreground px-2 py-1">▶ {v.duration}</span>
                   </div>
-                  <div className="mt-2 label text-muted-foreground">{v.date} · YouTube ↗</div>
-                  <div className={`mt-1 text-foreground leading-snug group-hover:text-foreground/70 transition-colors ${i === 0 ? "font-display text-2xl " : "text-sm"}`}>
-                    {v.title}
-                  </div>
-                </motion.a>
-              ))}
-            </div>
-          </div>
-
-          {/* SESIONES / REGISTROS */}
-          <div className="lg:col-span-12">
-            <Label n={String(sessions.length).padStart(2, "0")}>Sesiones / Registros audiovisuales</Label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {sessions.map((s) => (
-                <a key={s.url} href={s.url} target="_blank" rel="noopener noreferrer" className="group flex gap-4 items-center">
-                  <div className="w-36 md:w-48 aspect-video shrink-0 overflow-hidden bg-secondary border border-border">
-                    <img src={s.thumb} alt={s.title} loading="lazy" className="w-full h-full object-cover transition-all duration-700 " />
-                  </div>
-                  <div className="min-w-0">
-                    <div className="label text-muted-foreground">{s.meta}</div>
-                    <div className="mt-1 text-sm text-foreground leading-snug group-hover:text-foreground/70 transition-colors">{s.title}&nbsp;↗</div>
-                  </div>
+                  <div className="mt-3 label text-muted-foreground">{v.date} · YouTube ↗</div>
+                  <div className={`mt-1 leading-snug group-hover:underline underline-offset-4 decoration-2 ${i === 0 ? "font-display text-h2" : "font-semibold"}`}>{v.title}</div>
                 </a>
               ))}
             </div>
-            <Link to="/visuals" className="inline-block mt-8 label text-muted-foreground hover:text-foreground border-b border-border pb-1 transition-colors">
-              Archivo audiovisual completo →
+            <Link to="/archive?filter=video" className="inline-flex items-center min-h-[44px] mt-8 label underline underline-offset-4 decoration-2 hover:bg-accent hover:text-accent-foreground">
+              Registros audiovisuales en el archivo →
             </Link>
           </div>
         </div>

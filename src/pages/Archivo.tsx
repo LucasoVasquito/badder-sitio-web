@@ -63,8 +63,8 @@ export default function Archivo() {
     projects.filter((p) => (c === "all" || categoriesOf(p).includes(c)) && (!year || p.year === year)).length;
 
   return (
-    <main className="bg-background min-h-screen pt-32 pb-16 overflow-hidden">
-      <div className="px-5 md:px-12 wrap">
+    <main className="bg-background min-h-screen pt-10 md:pt-16 pb-16 overflow-hidden">
+      <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
         <PageHeader
           kicker="Archivo visual / Documentación 2024—"
           title="Archive"

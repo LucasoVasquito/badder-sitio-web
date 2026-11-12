@@ -1,119 +1,96 @@
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-import SectionHeader from "./SectionHeader";
 import PlayButton from "./PlayButton";
 import { findTrackIndex } from "@/store/playerStore";
-import { videos } from "@/data/visuals";
-import { photos } from "@/data/archive";
+import { releases, djSets } from "@/data/music";
+import { posts } from "@/data/journal";
+import { projects } from "@/data/projects";
 
-// Selección editorial a partir del contenido real del sitio
-const releaseTrack = findTrackIndex("Not Rules EP");
-const featuredVideo = videos.find((v) => v.id === 2)!; // Badder Showcase @anguis._
-const featuredAlbum = photos.find((p) => p.id === "capital")!;
+// Primer pantallazo: la publicación más reciente como protagonista + índice de contenidos recientes.
+const release = releases[0];
+const releaseTrack = findTrackIndex(release.title);
 
-const reveal = (i: number) => ({
-  initial: { opacity: 0, y: 16 },
-  whileInView: { opacity: 1, y: 0 },
-  viewport: { once: true, margin: "-60px" },
-  transition: { duration: 0.5, delay: i * 0.08 },
-});
+interface Row {
+  type: string;
+  title: string;
+  when: string;
+  to: string;
+  external?: boolean;
+}
 
-const Meta = ({ children }: { children: React.ReactNode }) => (
-  <div className="label text-muted-foreground flex flex-wrap gap-x-3 gap-y-1">{children}</div>
-);
+const rows: Row[] = [
+  { type: "Lanzamiento", title: `${release.artist} — ${release.title}`, when: release.type, to: "/music" },
+  ...posts.slice(0, 3).map((p) => ({ type: `Nota · ${p.category}`, title: p.title, when: p.date, to: `/culture/${p.id}` })),
+  ...[...projects]
+    .sort((a, b) => b.year - a.year)
+    .slice(0, 3)
+    .map((p) => ({ type: `Archivo · ${p.kind}`, title: p.title, when: String(p.season ?? p.year), to: `/archive/${p.id}` })),
+  ...(djSets[0] ? [{ type: "DJ set · Video", title: djSets[0].title, when: djSets[0].date, to: djSets[0].url, external: true }] : []),
+];
 
 export default function LatestTransmissions() {
   return (
-    <section id="latest" className="scroll-mt-20 px-5 md:px-12 py-16 md:py-24 border-t border-border">
-      <div className="wrap">
-        <SectionHeader index="02" kicker="Destacados" title="Latest Transmissions" />
-
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-10">
-          {/* T-01 · Último lanzamiento */}
-          <motion.article {...reveal(0)} className="md:col-span-7 md:row-span-2 group">
-            <Link to="/music" className="block">
-              <div className="relative aspect-square md:aspect-[4/5] overflow-hidden bg-secondary border border-border">
-                <img
-                  src="/audio/cover (6).webp"
-                  alt="Uriel Galeano — Not Rules EP"
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
-                />
-                <span className="absolute top-3 left-3 bg-foreground text-background label px-2 py-1">
-                  Latest release
-                </span>
-              </div>
-            </Link>
-            <div className="mt-4 flex items-start justify-between gap-4">
-              <div>
-                <Meta>
-                  <span>T—01</span>
-                  <span>Release</span>
-                  <span>EP · Incl. Agustin Barbei Psychokiller Remix</span>
-                </Meta>
-                <Link to="/music">
-                  <h3 className="mt-2 font-display text-3xl md:text-5xl leading-none text-foreground group-hover:text-foreground/70 transition-colors">
-                    Uriel Galeano — Not Rules EP
-                  </h3>
-                </Link>
-              </div>
-              <PlayButton trackIndex={releaseTrack} />
+    <section aria-labelledby="ultimo" className="px-5 md:px-12 pt-8 md:pt-12">
+      <div className="max-w-[1440px] mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-8 items-end">
+          {/* Portada: reproducción completa, sin recorte */}
+          <div className="md:col-span-5 md:order-2">
+            <div className="relative border-2 border-border bg-secondary">
+              <img src={release.cover} alt={`Portada de ${release.title}, de ${release.artist}`} className="w-full aspect-square object-contain" />
+              <span className="absolute -top-0.5 -left-0.5 label bg-accent text-accent-foreground px-3 py-2 border-2 border-border">Último lanzamiento</span>
             </div>
-          </motion.article>
+          </div>
 
-          {/* T-02 · Registro audiovisual */}
-          <motion.article {...reveal(1)} className="md:col-span-5 group">
-            <a href={featuredVideo.url} target="_blank" rel="noopener noreferrer" className="block">
-              <div className="relative aspect-video overflow-hidden bg-secondary border border-border">
-                <img
-                  src={featuredVideo.thumb}
-                  alt={featuredVideo.title}
-                  loading="lazy"
-                  className="w-full h-full object-cover opacity-90 transition-all duration-700 group-hover:opacity-100 group-hover:scale-[1.03]"
-                />
-                <span className="absolute bottom-3 right-3 bg-background/80 label text-foreground px-2 py-1">
-                  ▶ {featuredVideo.duration}
-                </span>
-              </div>
-              <div className="mt-4">
-                <Meta>
-                  <span>T—02</span>
-                  <span>DJ set / Video</span>
-                  <span>{featuredVideo.date}</span>
-                </Meta>
-                <h3 className="mt-2 font-display text-2xl md:text-3xl leading-tight text-foreground group-hover:text-foreground/70 transition-colors">
-                  {featuredVideo.title}&nbsp;<span className="label align-middle">↗</span>
-                </h3>
-              </div>
-            </a>
-          </motion.article>
+          <div className="md:col-span-7 md:order-1">
+            <div className="label text-muted-foreground mb-3">
+              {release.type} · {release.artist}
+            </div>
+            <h1 id="ultimo" className="font-display text-hero [text-wrap:balance]">
+              {release.title}
+            </h1>
+            <p className="mt-5 text-lg max-w-[48ch]">
+              {release.note ? `${release.note}. ` : ""}Música de {release.artist}, producida en La Plata.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <PlayButton trackIndex={releaseTrack} label="Escuchar EP" className="!bg-foreground !text-background hover:!bg-accent hover:!text-accent-foreground" />
+              <Link to="/music" className="inline-flex items-center min-h-[48px] px-5 border-2 border-foreground label hover:bg-foreground hover:text-background transition-colors">
+                Ver música
+              </Link>
+            </div>
+          </div>
+        </div>
 
-          {/* T-03 · Pieza del archivo */}
-          <motion.article {...reveal(2)} className="md:col-span-5 group">
-            <Link to={`/archive?album=${featuredAlbum.id}`} className="block">
-              <div className="grid grid-cols-5 gap-4 items-end">
-                <div className="col-span-3 relative aspect-[4/5] overflow-hidden bg-secondary border border-border">
-                  <img
-                    src={featuredAlbum.thumb}
-                    alt={featuredAlbum.title}
-                    loading="lazy"
-                    className="w-full h-full object-cover transition-all duration-700 "
-                  />
-                </div>
-                <div className="col-span-2 pb-1">
-                  <Meta>
-                    <span>T—03</span>
-                    <span>Archivo / Foto</span>
-                  </Meta>
-                  <h3 className="mt-2 font-display text-xl md:text-2xl leading-tight text-foreground group-hover:text-foreground/70 transition-colors">
-                    {featuredAlbum.title}
-                  </h3>
-                  <p className="mt-2 label text-muted-foreground leading-relaxed">
-                    {featuredAlbum.meta} · {featuredAlbum.imageCount} fotos
-                  </p>
-                </div>
-              </div>
-            </Link>
-          </motion.article>
+        {/* Índice reciente */}
+        <div className="mt-12 md:mt-16">
+          <h2 className="label pb-3 border-b-2 border-border">Reciente</h2>
+          <ul>
+            {rows.map((r) => {
+              const inner = (
+                <>
+                  <span className="label text-muted-foreground md:col-span-3">{r.type}</span>
+                  <span className="font-semibold text-lg leading-snug md:col-span-7 group-hover:underline underline-offset-4 decoration-2">{r.title}</span>
+                  <span className="label text-muted-foreground md:col-span-2 md:text-right">
+                    {r.when}
+                    {r.external ? " ↗" : ""}
+                  </span>
+                </>
+              );
+              const cls =
+                "group grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-1 py-4 px-1 border-b border-border min-h-[56px] items-baseline hover:bg-secondary transition-colors";
+              return (
+                <li key={r.to + r.title}>
+                  {r.external ? (
+                    <a href={r.to} target="_blank" rel="noopener noreferrer" className={cls}>
+                      {inner}
+                    </a>
+                  ) : (
+                    <Link to={r.to} className={cls}>
+                      {inner}
+                    </Link>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
         </div>
       </div>
     </section>

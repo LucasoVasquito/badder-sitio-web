@@ -55,7 +55,7 @@ export default function Lightbox({ images, index, onClose, onIndex }: LightboxPr
       role="dialog"
       aria-modal="true"
       aria-label="Visor de imágenes"
-      className="fixed inset-0 z-[80] bg-background/95 flex flex-col"
+      className="fixed inset-0 z-[80] surface-dark bg-background flex flex-col"
       onTouchStart={(e) => (touchX.current = e.touches[0].clientX)}
       onTouchEnd={(e) => {
         if (touchX.current === null) return;
@@ -68,7 +68,7 @@ export default function Lightbox({ images, index, onClose, onIndex }: LightboxPr
         <span>
           {String(index + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
         </span>
-        <button ref={closeRef} type="button" onClick={onClose} aria-label="Cerrar visor" className="p-2 -mr-2 text-foreground hover:opacity-70">
+        <button ref={closeRef} type="button" onClick={onClose} aria-label="Cerrar visor" className="w-11 h-11 -mr-2 inline-flex items-center justify-center text-foreground hover:bg-foreground hover:text-background">
           <X className="w-5 h-5" />
         </button>
       </div>
@@ -77,10 +77,10 @@ export default function Lightbox({ images, index, onClose, onIndex }: LightboxPr
         <img key={img.src} src={img.src} alt={img.alt} className="max-h-full max-w-full object-contain" />
         {images.length > 1 && (
           <>
-            <button type="button" onClick={() => go(-1)} aria-label="Imagen anterior" className="absolute left-1 md:left-4 top-1/2 -translate-y-1/2 p-3 bg-background/60 border border-border text-foreground hover:bg-foreground hover:text-background transition-colors">
+            <button type="button" onClick={() => go(-1)} aria-label="Imagen anterior" className="absolute left-1 md:left-4 top-1/2 -translate-y-1/2 w-11 h-11 inline-flex items-center justify-center bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors">
               <ChevronLeft className="w-5 h-5" />
             </button>
-            <button type="button" onClick={() => go(1)} aria-label="Imagen siguiente" className="absolute right-1 md:right-4 top-1/2 -translate-y-1/2 p-3 bg-background/60 border border-border text-foreground hover:bg-foreground hover:text-background transition-colors">
+            <button type="button" onClick={() => go(1)} aria-label="Imagen siguiente" className="absolute right-1 md:right-4 top-1/2 -translate-y-1/2 w-11 h-11 inline-flex items-center justify-center bg-background border-2 border-foreground text-foreground hover:bg-foreground hover:text-background transition-colors">
               <ChevronRight className="w-5 h-5" />
             </button>
           </>
@@ -88,7 +88,7 @@ export default function Lightbox({ images, index, onClose, onIndex }: LightboxPr
       </div>
 
       <div className="px-4 md:px-6 py-4 min-h-[64px] border-t border-border">
-        {img.caption && <div className="font-display text-lg text-foreground">{img.caption}</div>}
+        {img.caption && <div className="text-lg font-semibold text-foreground">{img.caption}</div>}
         {img.credit && <div className="label text-muted-foreground mt-1">{img.credit}</div>}
       </div>
     </div>,

@@ -1,14 +1,16 @@
-import { Play, Square } from "lucide-react";
+import { Play, Pause } from "lucide-react";
 import { usePlayerStore } from "@/store/playerStore";
 import { playlist } from "@/data/audio";
 
 interface PlayButtonProps {
   trackIndex: number;
   className?: string;
+  /** Con texto ("Escuchar EP") en vez de solo el ícono. */
+  label?: string;
 }
 
-// Reproduce el track en el reproductor flotante (no crea otro <audio>).
-export default function PlayButton({ trackIndex, className = "" }: PlayButtonProps) {
+// Reproduce el track en el reproductor global (no crea otro <audio>).
+export default function PlayButton({ trackIndex, className = "", label }: PlayButtonProps) {
   const isCurrent = usePlayerStore((s) => s.index === trackIndex && s.isPlaying);
   const playTrack = usePlayerStore((s) => s.playTrack);
   const failed = usePlayerStore((s) => s.failed.includes(trackIndex));
@@ -27,13 +29,12 @@ export default function PlayButton({ trackIndex, className = "" }: PlayButtonPro
       aria-pressed={isCurrent}
       disabled={failed}
       title={failed ? "Audio no disponible" : undefined}
-      className={`flex items-center justify-center w-11 h-11 shrink-0 border transition-colors duration-200 disabled:opacity-30 disabled:pointer-events-none ${
-        isCurrent
-          ? "bg-foreground text-background border-foreground"
-          : "bg-background/60 border-foreground/40 text-foreground hover:bg-foreground hover:text-background"
-      } ${className}`}
+      className={`inline-flex items-center justify-center gap-3 shrink-0 min-h-[44px] min-w-[44px] border-2 border-foreground label transition-colors disabled:opacity-40 disabled:pointer-events-none ${
+        isCurrent ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground"
+      } ${label ? "px-5 py-3 min-h-[48px]" : ""} ${className}`}
     >
-      {isCurrent ? <Square className="w-3.5 h-3.5 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
+      {isCurrent ? <Pause className="w-4 h-4 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}
+      {label && <span>{isCurrent ? "Pausar" : label}</span>}
     </button>
   );
 }

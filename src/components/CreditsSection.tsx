@@ -5,7 +5,7 @@ import { crewNames as names } from "@/data/credits";
 
 export default function CreditsSection() {
   return (
-    <section className="py-32 px-5 md:px-12 wrap">
+    <section className="py-32 px-5 md:px-12 max-w-[1440px] mx-auto">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}

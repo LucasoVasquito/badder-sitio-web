@@ -55,8 +55,8 @@ export default function Music() {
   usePageMeta({ title: "Music", description: "Releases, DJ sets, sesiones y artistas vinculados a BADDER." });
 
   return (
-    <main className="bg-background min-h-screen pt-32 pb-16 overflow-hidden">
-      <div className="px-5 md:px-12 wrap">
+    <main className="bg-background min-h-screen pt-10 md:pt-16 pb-16 overflow-hidden">
+      <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
         <PageHeader kicker="Releases / DJ sets / Sessions / Artists" title="Music">
           <nav aria-label="Secciones de Music" className="mt-8 flex flex-wrap gap-2">
             {sections.map((s) => (

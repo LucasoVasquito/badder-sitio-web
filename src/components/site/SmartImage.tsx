@@ -34,7 +34,7 @@ export default function SmartImage({ src, thumb = false, className = "", alt = "
         if (current !== src) setCurrent(src);
         else setFailed(true);
       }}
-      className={`${className} transition-opacity duration-500 ${loaded ? "opacity-100" : "opacity-0"}`}
+      className={`${className} transition-opacity duration-300 ${loaded ? "opacity-100" : "opacity-0"}`}
     />
   );
 }

@@ -42,8 +42,8 @@ export default function CultureArticle() {
   };
 
   return (
-    <main className="bg-background min-h-screen pt-32 pb-16 overflow-hidden">
-      <article className="px-5 md:px-12 wrap">
+    <main className="bg-background min-h-screen pt-10 md:pt-16 pb-16 overflow-hidden">
+      <article className="px-5 md:px-12 max-w-[1440px] mx-auto">
         <Link to="/culture" className="inline-block mb-10 label text-muted-foreground hover:text-foreground transition-colors">
           ← Culture
         </Link>

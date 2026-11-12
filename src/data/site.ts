@@ -8,15 +8,14 @@ export interface NavSection {
 }
 
 export const mainSections: NavSection[] = [
-  { label: "Home", path: "/" },
-  { label: "Culture", path: "/culture" },
-  { label: "Music", path: "/music" },
-  { label: "Archive", path: "/archive" },
-  { label: "Shop", path: "/shop", match: ["/cart"] },
-  { label: "Studio", path: "/studio" },
+  { label: "Notas", path: "/culture" },
+  { label: "Música", path: "/music" },
+  { label: "Archivo", path: "/archive" },
+  { label: "Indumentaria", path: "/shop", match: ["/cart"] },
+  { label: "Estudio", path: "/studio" },
 ];
 
-export const communitySection: NavSection = { label: "Community", path: "/community" };
+export const communitySection: NavSection = { label: "Participar", path: "/community" };
 
 export const contact = {
   instagramHandle: "@badder.experience",
