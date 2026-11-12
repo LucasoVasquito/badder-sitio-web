@@ -21,7 +21,7 @@ export default function FloatingPlayer() {
     <div
       role="region"
       aria-label="Reproductor BADDER"
-      className="surface-dark fixed bottom-0 left-0 right-0 md:right-auto md:left-6 md:bottom-6 md:w-[460px] z-50 flex items-stretch border-t border-foreground/50 md:border md:border-foreground/50"
+      className="surface-dark fixed bottom-0 left-0 right-0 md:right-auto md:left-6 md:bottom-6 md:w-[460px] z-50 flex items-stretch border-t-2 border-[hsl(var(--a))] md:border-2 md:shadow-hard"
     >
       <audio
         ref={audioRef}
@@ -44,7 +44,7 @@ export default function FloatingPlayer() {
 
       <div className="flex-1 min-w-0 flex flex-col justify-center px-3 py-1">
         <span className="label text-muted-foreground !text-xs">{isPlaying ? "Sonando" : "Escuchar"}</span>
-        <span className="text-sm font-semibold truncate">
+        <span className="f-news text-base font-semibold truncate">
           {currentTrack.artist} — {currentTrack.title}
         </span>
         {error && !isPlaying && (
@@ -58,7 +58,7 @@ export default function FloatingPlayer() {
         type="button"
         onClick={togglePlay}
         aria-label={isPlaying ? "Pausar" : `Reproducir ${currentTrack.artist} — ${currentTrack.title}`}
-        className="w-16 shrink-0 flex items-center justify-center bg-accent text-accent-foreground hover:brightness-95 focus-visible:outline-paper"
+        className="w-16 shrink-0 flex items-center justify-center bg-accent text-accent-foreground hover:bg-foreground hover:text-background transition-colors"
       >
         {isPlaying ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
       </button>

@@ -6,7 +6,7 @@ import badderLogo from "@/assets/badder_logo_original.webp";
 import { mainSections, communitySection, isSectionActive } from "@/data/site";
 import { useCartCount } from "@/store/cartStore";
 
-// Cabecera compacta sobre tinta. El logo es crema sobre transparente y se ve tal cual.
+// Cabecera fija con mix-blend-mode: difference: se invierte sola sobre secciones tinta, papel o de acento.
 export default function Navigation() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
@@ -39,12 +39,12 @@ export default function Navigation() {
 
   const link = (active: boolean) =>
     `label relative inline-flex items-center h-11 px-1 border-b-2 transition-colors ${
-      active ? "border-foreground" : "border-transparent hover:border-foreground/40"
+      active ? "border-white" : "border-transparent hover:border-white/50"
     }`;
 
   return (
     <>
-      <header className="sticky top-0 z-[70] bg-background border-b border-border">
+      <header className="sticky top-0 z-[70] text-white mix-blend-difference">
         <nav aria-label="Principal" className="flex items-center justify-between gap-6 px-5 md:px-12 h-16 max-w-[1440px] mx-auto">
           <Link to="/" aria-label="BADDER — Inicio" className="shrink-0 flex items-center tap">
             <img src={badderLogo} alt="Badder" className="h-12 w-auto object-contain -my-2" />
@@ -67,8 +67,8 @@ export default function Navigation() {
             <Link
               to={communitySection.path}
               aria-current={communityActive ? "page" : undefined}
-              className={`label inline-flex items-center h-11 px-4 border-2 border-foreground transition-colors ${
-                communityActive ? "bg-accent text-accent-foreground" : "hover:bg-accent hover:text-accent-foreground"
+              className={`label inline-flex items-center h-11 px-4 border-2 border-white transition-colors ${
+                communityActive ? "bg-white text-black" : "hover:bg-white hover:text-black"
               }`}
             >
               {communitySection.label}
@@ -77,11 +77,11 @@ export default function Navigation() {
               to="/cart"
               aria-label={`Carrito${cartCount > 0 ? ` (${cartCount})` : ""}`}
               aria-current={cartActive ? "page" : undefined}
-              className={`relative tap inline-flex items-center justify-center border-b-2 ${cartActive ? "border-foreground" : "border-transparent hover:border-foreground/40"}`}
+              className={`relative tap inline-flex items-center justify-center border-b-2 ${cartActive ? "border-white" : "border-transparent hover:border-white/50"}`}
             >
               <ShoppingBag className="w-5 h-5" strokeWidth={1.75} />
               {cartCount > 0 && (
-                <span className="label absolute -top-0.5 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center bg-accent text-accent-foreground !text-[11px]">
+                <span className="label absolute -top-0.5 -right-1 min-w-[18px] h-[18px] px-1 flex items-center justify-center bg-white text-black !text-[11px]">
                   {cartCount}
                 </span>
               )}
@@ -93,7 +93,7 @@ export default function Navigation() {
             <Link to="/cart" aria-label={`Carrito${cartCount > 0 ? ` (${cartCount})` : ""}`} className="relative tap inline-flex items-center justify-center">
               <ShoppingBag className="w-5 h-5" strokeWidth={1.75} />
               {cartCount > 0 && (
-                <span className="label absolute top-1 right-0 min-w-[18px] h-[18px] px-1 flex items-center justify-center bg-accent text-accent-foreground !text-[11px]">
+                <span className="label absolute top-1 right-0 min-w-[18px] h-[18px] px-1 flex items-center justify-center bg-white text-black !text-[11px]">
                   {cartCount}
                 </span>
               )}
@@ -104,7 +104,7 @@ export default function Navigation() {
               onClick={() => setOpen((o) => !o)}
               aria-expanded={open}
               aria-controls="mobile-menu"
-              className="label tap inline-flex items-center px-3 border-2 border-foreground"
+              className="label tap inline-flex items-center px-3 border-2 border-white"
             >
               {open ? "Cerrar" : "Menú"}
             </button>
@@ -123,7 +123,7 @@ export default function Navigation() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-[80] bg-background flex flex-col lg:hidden"
+            className="fixed inset-0 z-[80] bg-background text-foreground flex flex-col lg:hidden"
           >
             <div className="flex items-center justify-between px-5 h-16 border-b border-border shrink-0">
               <span className="label">Menú</span>
@@ -144,7 +144,7 @@ export default function Navigation() {
                         aria-current={active ? "page" : undefined}
                         className="flex items-center justify-between min-h-[56px] py-2"
                       >
-                        <span className={`font-display text-[2rem] ${active ? "bg-accent px-2 -mx-2" : ""}`}>{item.label}</span>
+                        <span className={`font-display f-akira !text-[1.6rem] ${active ? "bg-accent text-accent-foreground px-2 -mx-2" : ""}`}>{item.label}</span>
                         <span aria-hidden className="label">→</span>
                       </Link>
                     </li>

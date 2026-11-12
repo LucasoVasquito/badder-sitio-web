@@ -1,3 +1,4 @@
+import HeroSection from "../components/HeroSection";
 import LatestTransmissions from "../components/home/LatestTransmissions";
 import CulturePreview from "../components/home/CulturePreview";
 import FromTheArchive from "../components/home/FromTheArchive";
@@ -7,16 +8,16 @@ import JoinFrequency from "../components/home/JoinFrequency";
 import AboutSection from "../components/AboutSection";
 import { usePageMeta } from "@/lib/usePageMeta";
 
-// Home: publicación protagonista + índice reciente, y un bloque por actividad
-// (música, notas, archivo, indumentaria, participar).
+// Home "flyer vivo". Ritmo de fondos: negro → cinta → papel → damero → foto a sangre → op-art → acento B → papel → negro (footer).
 export default function Home() {
   usePageMeta({});
   return (
-    <main data-accent="lime" className="bg-background text-foreground">
+    <main className="bg-background text-foreground">
+      <HeroSection />
       <LatestTransmissions />
-      <InMotion />
       <CulturePreview />
       <FromTheArchive />
+      <InMotion />
       <CurrentDrop />
       <JoinFrequency />
       <AboutSection />

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import badderLogo from "@/assets/badder_logo_original.webp";
 import { mainSections, communitySection, contact } from "@/data/site";
 
 export default function Footer() {
@@ -8,7 +9,7 @@ export default function Footer() {
     <footer className="surface-dark relative z-10 border-t border-border mt-24 md:mt-32 px-5 md:px-12 pt-14 pb-32 md:pb-28">
       <div className="wrap grid grid-cols-2 md:grid-cols-12 gap-x-6 gap-y-12">
         <div className="col-span-2 md:col-span-6">
-          <span className="font-display text-hero block">Badder</span>
+          <img src={badderLogo} alt="Badder" loading="lazy" className="w-[min(100%,520px)] h-auto" style={{ filter: "url(#warp)" }} />
           <p className="mt-4 label text-muted-foreground">
             Espacio creativo multidisciplinario
             <br />

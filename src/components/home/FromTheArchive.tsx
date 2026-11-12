@@ -1,52 +1,68 @@
 import { Link } from "react-router-dom";
-import SectionHeader from "./SectionHeader";
-import SmartImage from "@/components/site/SmartImage";
-import { projects, getProject } from "@/data/projects";
-import { summaryLine } from "@/lib/archiveUi";
+import { BlurImage, Checker, FontCycleTitle, Marquee, Sticker, ThornFrame } from "@/components/flyer";
+import { getProject, projects, type ArchiveProject } from "@/data/projects";
 
-// Archivo: un destacado (reproducción completa) + índice editorial con año, tipo, lugar y material.
-const featured = getProject("drop-3") ?? projects[0];
-const list = projects.filter((p) => p.id !== featured.id).slice(0, 7);
+// Flyers y fotos rotados sobre damero, desenfocados hasta el hover/foco. Datos reales de src/data/projects.ts.
+const IDS = ["drop-3", "rosset", "levels", "emergent"];
+const picks = IDS.map(getProject).filter(Boolean) as ArchiveProject[];
+const marqueeItems = projects.slice(0, 8).map((p) => p.title);
+
+const LAYOUT = [
+  { rot: "-rotate-[3deg]", mt: "md:mt-0", frame: true },
+  { rot: "rotate-[2deg]", mt: "md:mt-20", frame: false },
+  { rot: "-rotate-[1.5deg]", mt: "md:mt-6", frame: false },
+  { rot: "rotate-[3deg]", mt: "md:mt-28", frame: false },
+];
 
 export default function FromTheArchive() {
   return (
-    <section className="surface-tint mt-20 md:mt-28 px-5 md:px-12 py-14 md:py-20">
-      <div className="max-w-[1440px] mx-auto">
-        <SectionHeader kicker="Eventos · Drops · Series · Gráfica" title="Archivo" link={{ to: "/archive", label: "Ver todo el archivo" }} />
+    <section className="relative overflow-hidden bg-[#141413] pb-24">
+      <Checker size={96} />
+      <div className="relative z-10 bg-[hsl(var(--a))] text-[hsl(var(--a-fg))] -rotate-[1deg] py-2 -mt-1 mb-14 md:mb-20">
+        <Marquee items={marqueeItems} itemClassName="f-akira text-lg md:text-2xl" speed={80} />
+      </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-x-10 gap-y-10">
-          <Link to={`/archive/${featured.id}`} className="md:col-span-5 group block">
-            <div className="bg-ink p-3">
-              <SmartImage src={featured.cover} thumb alt={featured.title} className="w-full aspect-[4/5] object-contain" />
-            </div>
-            <div className="mt-3 label text-muted-foreground">
-              Destacado · {featured.kind} · {featured.season ?? featured.year}
-            </div>
-            <div className="mt-1 font-display text-h2 group-hover:underline underline-offset-4 decoration-2">{featured.title}</div>
-            {featured.summary && <p className="mt-2 max-w-[48ch] line-clamp-3">{featured.summary}</p>}
-          </Link>
+      <div className="relative z-10 px-5 md:px-12 max-w-[1440px] mx-auto">
+        <div className="flex flex-wrap items-end justify-between gap-6 mb-14">
+          <div>
+            <div className="label text-muted-foreground mb-3">Eventos · Drops · Series · Gráfica</div>
+            <FontCycleTitle id="archive" font="hitme" as="h2" className="text-[clamp(3rem,10vw,9rem)] leading-[0.85] t-glitch">
+              From the<br />Archive
+            </FontCycleTitle>
+          </div>
+        </div>
 
-          <ul className="md:col-span-7 border-t-2 border-border self-start">
-            {list.map((p) => (
-              <li key={p.id} className="border-b border-border">
-                <Link
-                  to={`/archive/${p.id}`}
-                  className="group grid grid-cols-[3.5rem_1fr] md:grid-cols-[4.5rem_1fr_auto] gap-x-4 gap-y-1 py-3 items-center hover:bg-background transition-colors"
-                >
-                  <SmartImage src={p.cover} thumb alt="" className="w-14 h-14 md:w-[72px] md:h-[72px] object-cover bg-ink row-span-2 md:row-span-1" />
-                  <span className="min-w-0">
-                    <span className="block label text-muted-foreground">
-                      {p.kind} · {p.season ?? p.year}
-                      {p.location ? ` · ${p.location}` : ""}
-                    </span>
-                    <span className="block font-semibold text-lg leading-snug group-hover:underline underline-offset-4 decoration-2">{p.title}</span>
-                  </span>
-                  <span className="label text-muted-foreground col-start-2 md:col-start-auto md:text-right">{summaryLine(p)}</span>
+        <ul className="grid gap-x-8 gap-y-14 grid-cols-[repeat(auto-fit,minmax(min(100%,250px),1fr))]">
+          {picks.map((p, i) => {
+            const l = LAYOUT[i % LAYOUT.length];
+            const art = p.kind === "Gráfica" || p.kind === "Drop";
+            const inner = (
+              <BlurImage
+                src={p.cover}
+                alt={p.title}
+                blur={art ? 3 : 5}
+                className={`w-full aspect-[4/5] ${art ? "object-contain bg-secondary" : "object-cover"}`}
+              />
+            );
+            return (
+              <li key={p.id} className={l.mt}>
+                <Link to={`/archive/${p.id}`} className={`cut relative block ${l.rot} max-md:!rotate-[-1.5deg]`}>
+                  {l.frame ? <ThornFrame>{inner}</ThornFrame> : <div className="border-2 border-foreground">{inner}</div>}
+                  <Sticker tone={i % 2 ? "b" : "a"} rotate={i % 2 ? 5 : -4} className="absolute top-2 -left-2 z-10">
+                    {p.season ?? p.year}
+                  </Sticker>
+                  <Sticker tone="paper" rotate={-2} className="absolute bottom-3 -right-2 max-w-[85%] z-10 !text-[11px]">
+                    {p.title}
+                  </Sticker>
                 </Link>
               </li>
-            ))}
-          </ul>
-        </div>
+            );
+          })}
+        </ul>
+
+        <Link to="/archive" className="mt-16 inline-flex items-center min-h-[48px] px-6 border-2 border-foreground bg-background label hover:bg-accent hover:text-accent-foreground transition-colors">
+          Ver archivo completo →
+        </Link>
       </div>
     </section>
   );

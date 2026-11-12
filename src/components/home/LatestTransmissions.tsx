@@ -1,97 +1,109 @@
 import { Link } from "react-router-dom";
-import PlayButton from "./PlayButton";
-import { findTrackIndex } from "@/store/playerStore";
-import { releases, djSets } from "@/data/music";
-import { posts } from "@/data/journal";
-import { projects } from "@/data/projects";
+import { Marquee, Sticker, ThornFrame, FontCycleTitle } from "@/components/flyer";
+import { usePlayerStore, findTrackByAudio } from "@/store/playerStore";
+import { releases } from "@/data/music";
+import { playlist } from "@/data/audio";
+import { Play, Pause } from "lucide-react";
 
-// Primer pantallazo: la publicación más reciente como protagonista + índice de contenidos recientes.
-const release = releases[0];
-const releaseTrack = findTrackIndex(release.title);
+const featured = releases[0];
+const featuredTrack = findTrackByAudio(featured.tracks[0]?.audio);
+const lineup = releases.slice(1);
 
-interface Row {
-  type: string;
-  title: string;
-  when: string;
-  to: string;
-  external?: boolean;
-}
-
-const rows: Row[] = [
-  { type: "Lanzamiento", title: `${release.artist} — ${release.title}`, when: release.type, to: "/music" },
-  ...posts.slice(0, 3).map((p) => ({ type: `Nota · ${p.category}`, title: p.title, when: p.date, to: `/culture/${p.id}` })),
-  ...[...projects]
-    .sort((a, b) => b.year - a.year)
-    .slice(0, 3)
-    .map((p) => ({ type: `Archivo · ${p.kind}`, title: p.title, when: String(p.season ?? p.year), to: `/archive/${p.id}` })),
-  ...(djSets[0] ? [{ type: "DJ set · Video", title: djSets[0].title, when: djSets[0].date, to: djSets[0].url, external: true }] : []),
+// Bloques de color con desplazamiento horizontal distinto (tipo lineup de flyer). A 390 px el desplazamiento baja a 0.
+const BLOCKS = [
+  { cls: "bg-[hsl(var(--a))] text-[hsl(var(--a-fg))]", shift: "md:ml-0" },
+  { cls: "bg-[hsl(var(--b))] text-[hsl(var(--b-fg))]", shift: "md:ml-[12%]" },
+  { cls: "bg-[hsl(var(--paper))] text-[hsl(var(--ink))]", shift: "md:ml-[4%]" },
+  { cls: "bg-background text-foreground border-2 border-[hsl(var(--paper))]", shift: "md:ml-[18%]" },
+  { cls: "bg-[hsl(var(--a))] text-[hsl(var(--a-fg))]", shift: "md:ml-[8%]" },
 ];
 
-export default function LatestTransmissions() {
-  return (
-    <section aria-labelledby="ultimo" className="px-5 md:px-12 pt-8 md:pt-12">
-      <div className="max-w-[1440px] mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-x-8 gap-y-8 items-end">
-          {/* Portada: reproducción completa, sin recorte */}
-          <div className="md:col-span-5 md:order-2">
-            <div className="relative border-2 border-border bg-secondary">
-              <img src={release.cover} alt={`Portada de ${release.title}, de ${release.artist}`} className="w-full aspect-square object-contain" />
-              <span className="absolute -top-0.5 -left-0.5 label bg-accent text-accent-foreground px-3 py-2 border-2 border-border">Último lanzamiento</span>
-            </div>
-          </div>
+const tag = (r: (typeof releases)[number]) => (r.tracks.some((t) => t.preview) ? "[Preview]" : `[${r.type}]`);
 
-          <div className="md:col-span-7 md:order-1">
-            <div className="label text-muted-foreground mb-3">
-              {release.type} · {release.artist}
+function LineupItem({ release, idx, block }: { release: (typeof releases)[number]; idx: number; block: (typeof BLOCKS)[number] }) {
+  const trackIndex = findTrackByAudio(release.tracks.find((t) => t.audio)?.audio);
+  const playing = usePlayerStore((s) => s.index === trackIndex && s.isPlaying);
+  const playTrack = usePlayerStore((s) => s.playTrack);
+  const track = playlist[trackIndex];
+
+  return (
+    <li className={`${block.shift} md:w-[78%]`}>
+      <div className={`${block.cls} flex items-center gap-4 p-3 ${playing ? "outline outline-4 outline-offset-2 outline-[hsl(var(--paper))]" : ""}`}>
+        <img src={release.cover} alt="" loading="lazy" className="w-16 h-16 md:w-20 md:h-20 object-cover shrink-0 border-2 border-[hsl(var(--ink))]" />
+        <div className="min-w-0 flex-1">
+          <div className="label opacity-80">{tag(release)} · {release.artist.replace(/\s+/g, " ")}</div>
+          <div className="f-news font-bold text-xl md:text-3xl leading-tight truncate">{release.title}</div>
+          {playing && <div className="label mt-1">▶ Sonando</div>}
+        </div>
+        {track && (
+          <button
+            type="button"
+            onClick={() => playTrack(trackIndex)}
+            aria-label={playing ? `Pausar ${release.title}` : `Escuchar ${release.title}`}
+            aria-pressed={playing}
+            className="shrink-0 w-12 h-12 flex items-center justify-center border-2 border-current hover:bg-[hsl(var(--ink))] hover:text-[hsl(var(--paper))] transition-colors"
+            data-idx={idx}
+          >
+            {playing ? <Pause className="w-5 h-5 fill-current" /> : <Play className="w-5 h-5 fill-current ml-0.5" />}
+          </button>
+        )}
+      </div>
+    </li>
+  );
+}
+
+export default function LatestTransmissions() {
+  const playing = usePlayerStore((s) => s.index === featuredTrack && s.isPlaying);
+  const playTrack = usePlayerStore((s) => s.playTrack);
+
+  return (
+    <section aria-labelledby="latest" className="relative overflow-hidden pt-16 md:pt-24 pb-20 md:pb-28">
+      <div className="px-5 md:px-12 max-w-[1440px] mx-auto relative">
+        <div className="label text-muted-foreground mb-4">Releases · Preview</div>
+        <FontCycleTitle id="latest" font="doto" as="h2" className="text-[clamp(2.4rem,9vw,9.5rem)] leading-[0.85] t-glitch">
+          <span className="block">Latest</span>
+          <span className="block t-stroke">Transmissions</span>
+        </FontCycleTitle>
+
+        <div className="mt-12 md:mt-16 grid md:grid-cols-12 gap-x-10 gap-y-14">
+          {/* Portada */}
+          <div className="md:col-span-5 relative">
+            <div className="-rotate-[2.5deg] max-w-[520px]">
+              <ThornFrame>
+                <img src={featured.cover} alt={`Portada de ${featured.title}, de ${featured.artist}`} className="w-full aspect-square object-cover block" />
+              </ThornFrame>
+              <Sticker
+                tone="b"
+                rotate={8}
+                onClick={() => playTrack(featuredTrack)}
+                ariaLabel={playing ? `Pausar ${featured.title}` : `Escuchar ${featured.title}`}
+                pressed={playing}
+                className="absolute -bottom-6 -right-2 md:-right-8 z-10"
+              >
+                {playing ? "PAUSA" : "PLAY"}
+              </Sticker>
             </div>
-            <h1 id="ultimo" className="font-display text-hero [text-wrap:balance]">
-              {release.title}
-            </h1>
-            <p className="mt-5 text-lg max-w-[48ch]">
-              {release.note ? `${release.note}. ` : ""}Música de {release.artist}, producida en La Plata.
-            </p>
-            <div className="mt-7 flex flex-wrap gap-3">
-              <PlayButton trackIndex={releaseTrack} label="Escuchar EP" className="!bg-foreground !text-background hover:!bg-accent hover:!text-accent-foreground" />
-              <Link to="/music" className="inline-flex items-center min-h-[48px] px-5 border-2 border-foreground label hover:bg-foreground hover:text-background transition-colors">
-                Ver música
+            <div className="mt-8 max-w-[520px]">
+              <div className="label text-muted-foreground">[{featured.type}] · {featured.artist}</div>
+              <div className="f-news font-bold text-3xl md:text-4xl leading-tight mt-1">{featured.title}</div>
+              {featured.note && <p className="mt-1 italic text-lg">{featured.note}</p>}
+              <Link to="/music" className="inline-flex items-center min-h-[44px] mt-4 label underline underline-offset-4 decoration-2 hover:bg-accent hover:text-accent-foreground">
+                Toda la música →
               </Link>
             </div>
           </div>
-        </div>
 
-        {/* Índice reciente */}
-        <div className="mt-12 md:mt-16">
-          <h2 className="label pb-3 border-b-2 border-border">Reciente</h2>
-          <ul>
-            {rows.map((r) => {
-              const inner = (
-                <>
-                  <span className="label text-muted-foreground md:col-span-3">{r.type}</span>
-                  <span className="font-semibold text-lg leading-snug md:col-span-7 group-hover:underline underline-offset-4 decoration-2">{r.title}</span>
-                  <span className="label text-muted-foreground md:col-span-2 md:text-right">
-                    {r.when}
-                    {r.external ? " ↗" : ""}
-                  </span>
-                </>
-              );
-              const cls =
-                "group grid grid-cols-1 md:grid-cols-12 gap-x-6 gap-y-1 py-4 px-1 border-b border-border min-h-[56px] items-baseline hover:bg-secondary transition-colors";
-              return (
-                <li key={r.to + r.title}>
-                  {r.external ? (
-                    <a href={r.to} target="_blank" rel="noopener noreferrer" className={cls}>
-                      {inner}
-                    </a>
-                  ) : (
-                    <Link to={r.to} className={cls}>
-                      {inner}
-                    </Link>
-                  )}
-                </li>
-              );
-            })}
+          {/* Lineup */}
+          <ul className="md:col-span-7 flex flex-col gap-4 md:gap-5 self-start">
+            {lineup.map((r, i) => (
+              <LineupItem key={r.id} release={r} idx={i} block={BLOCKS[i % BLOCKS.length]} />
+            ))}
           </ul>
         </div>
+      </div>
+
+      <div className="mt-16 bg-[hsl(var(--a))] text-[hsl(var(--a-fg))] rotate-[1.2deg] py-1.5">
+        <Marquee items={releases.map((r) => `${r.artist.replace(/\s+/g, " ")} — ${r.title}`)} itemClassName="f-akira text-sm md:text-lg" speed={50} separator="✕" reverse />
       </div>
     </section>
   );

@@ -18,6 +18,8 @@ import Contact from "./pages/Contact";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
 import Sistema from "./pages/Sistema";
+import { SvgDefs, GrainOverlay, CursorDot } from "./components/flyer";
+import { useMouseParallax } from "./hooks/motion";
 
 // Redirige conservando ?query y #hash (ej: /journal?post=post-01 → /culture?post=post-01)
 function Redirect({ to }: { to: string }) {
@@ -26,10 +28,14 @@ function Redirect({ to }: { to: string }) {
 }
 
 function App() {
+  useMouseParallax();
   return (
     // reducedMotion="user": Framer Motion respeta prefers-reduced-motion en todo el sitio
     <MotionConfig reducedMotion="user">
       <Router>
+        <SvgDefs />
+        <GrainOverlay />
+        <CursorDot />
         <ScrollToTop />
         <Navigation />
 

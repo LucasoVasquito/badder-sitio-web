@@ -1,21 +1,29 @@
-/* Archivo (eje de ancho + peso) para titulares e interfaz; PT Serif para lectura editorial. */
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&family=PT+Serif:ital,wght@0,400;0,700;1,400;1,700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* Fuentes display del repo (public/). Las de Google Fonts se cargan en index.html. */
+@font-face { font-family: 'Akira'; src: url('/Akira Expanded Demo.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Seagram'; src: url('/Seagram tfb.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'HitMePunk'; src: url('/Hit me, punk! 01.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Microgramma'; src: url('/Microgramma D Extended Bold.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Ethnocentric'; src: url('/Ethnocentric-Regular.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'DashEarly'; src: url('/DASH-Early.ttf') format('truetype'); font-display: swap; }
+
 /*
-  Sistema BADDER — editorial.
-  Papel #F0EDE3 · Tinta #181917 · Lima #83CC16 (principal) · Rojo #EF432B (alternativo).
-  Los valores shadcn se mapean a estos tokens para que components/ui siga funcionando.
+  Sistema BADDER — "flyer vivo".
+  Tinta #0A0A09 · Papel #F2EFE6 · A #FF2B1C (domina) · B #9BFF2E.
+  Las variables de shadcn se mapean a estos tokens para que components/ui siga funcionando.
 */
 @layer base {
   :root {
-    --paper: 46 30% 92%;      /* #F0EDE3 */
-    --ink: 90 4% 9%;          /* #181917 */
-    --lime: 84 81% 44%;       /* #83CC16 */
-    --red: 7 86% 55%;         /* #EF432B */
+    --ink: 60 5% 4%;          /* #0A0A09 */
+    --paper: 45 32% 93%;      /* #F2EFE6 */
+    --a: 4 100% 56%;          /* #FF2B1C */
+    --a-fg: var(--ink);
+    --b: 89 100% 59%;         /* #9BFF2E */
+    --b-fg: var(--ink);
+    --tape: rgba(214, 206, 180, 0.85);
 
     --background: var(--ink);
     --foreground: var(--paper);
@@ -25,138 +33,190 @@
     --popover-foreground: var(--paper);
     --primary: var(--paper);
     --primary-foreground: var(--ink);
-    --secondary: 90 4% 14%;           /* tinta un tono más claro, para superficies de apoyo */
+    --secondary: 60 4% 10%;
     --secondary-foreground: var(--paper);
-    --muted: 90 4% 14%;
-    --muted-foreground: 46 14% 72%;   /* ≈ 9:1 sobre tinta */
-    --accent: var(--lime);            /* un acento dominante por pantalla: ver [data-accent] */
-    --accent-foreground: var(--ink);
-    --destructive: 7 90% 64%;         /* rojo aclarado: texto de error con contraste AA sobre tinta */
+    --muted: 60 4% 10%;
+    --muted-foreground: 45 14% 74%;
+    --accent: var(--a);
+    --accent-foreground: var(--a-fg);
+    --destructive: 5 100% 68%;
     --destructive-foreground: var(--ink);
     --border: var(--paper);
     --input: var(--paper);
-    --ring: var(--paper);
+    --ring: var(--a);
     --radius: 0px;
 
-    --font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
-    --font-sans: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
-    --font-serif: 'PT Serif', Georgia, serif;
+    /* Capas tipográficas */
+    --f-display: 'Anton', 'Impact', sans-serif;
+    --f-read: 'Newsreader', Georgia, serif;
+    --f-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+    --f-script: 'Pinyon Script', cursive;
   }
 
-  /* Acento alternativo para campañas y aperturas puntuales: <main data-accent="red"> */
-  [data-accent="red"] {
-    --accent: var(--red);
-    --accent-foreground: var(--ink);
-  }
+  /* Paletas A/B: <html data-palette="vr|ya|ar"> (campañas por ruta o drop). */
+  :root[data-palette="vr"] { --a: 89 100% 59%; --b: 4 100% 56%; }
+  :root[data-palette="ya"] { --a: 54 100% 50%; --b: 233 100% 60%; --b-fg: var(--paper); }
+  :root[data-palette="ar"] { --a: 233 100% 60%; --a-fg: var(--paper); --b: 4 100% 56%; --destructive: 5 100% 68%; --ring: var(--paper); }
 
-  /* Superficie oscura (igual al fondo base): bloques de música, footer y reproductor. */
+  /* Superficie papel: secciones claras. Dentro, todo se invierte. */
+  .surface-paper {
+    --background: var(--paper);
+    --foreground: var(--ink);
+    --card: var(--paper);
+    --card-foreground: var(--ink);
+    --secondary: 45 22% 86%;
+    --muted: 45 22% 86%;
+    --muted-foreground: 60 5% 28%;
+    --border: var(--ink);
+    --input: var(--ink);
+    --ring: var(--ink);
+    --destructive: 5 90% 38%;
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+  }
+  /* Superficie tinta: bloques de música, footer, reproductor y tarjetas oscuras sobre papel. */
   .surface-dark {
     --background: var(--ink);
     --foreground: var(--paper);
     --card: var(--ink);
     --card-foreground: var(--paper);
-    --secondary: 90 4% 14%;
-    --muted: 90 4% 14%;
-    --muted-foreground: 46 14% 72%;
+    --secondary: 60 4% 10%;
+    --muted: 60 4% 10%;
+    --muted-foreground: 45 14% 74%;
     --border: var(--paper);
     --input: var(--paper);
-    --ring: var(--paper);
+    --ring: var(--a);
+    --destructive: 5 100% 68%;
     background-color: hsl(var(--background));
     color: hsl(var(--foreground));
   }
-
-  /* Superficie de apoyo: tinta un tono más clara, para separar bloques. */
+  /* Superficie de apoyo: tinta un tono más clara. */
   .surface-tint {
-    --background: 90 4% 12%;
+    --background: 60 4% 8%;
     background-color: hsl(var(--background));
   }
-
-  * {
-    @apply border-border;
+  /* Superficie de acento B a sangre (texto tinta). */
+  .surface-b {
+    --background: var(--b);
+    --foreground: var(--b-fg);
+    --border: var(--b-fg);
+    --muted-foreground: 60 5% 14%;
+    --ring: var(--b-fg);
+    --accent: var(--ink);
+    --accent-foreground: var(--paper);
+    background-color: hsl(var(--b));
+    color: hsl(var(--b-fg));
   }
+
+  * { @apply border-border; }
 
   html {
     scroll-padding-top: 72px;
+    overflow-x: clip;
   }
 
   body {
     @apply bg-background text-foreground;
-    font-family: var(--font-sans);
-    font-size: 16px;
-    line-height: 1.5;
-    overflow-x: hidden;
+    font-family: var(--f-read);
+    font-size: 18px;
+    line-height: 1.55;
+    overflow-x: clip;
     -webkit-font-smoothing: antialiased;
   }
 
-  ::selection {
-    background: hsl(var(--lime));
-    color: hsl(var(--ink));
-  }
+  ::selection { background: hsl(var(--a)); color: hsl(var(--a-fg)); }
 
-  /* Foco visible: 2 px, siempre con contraste contra la superficie actual. */
-  :focus-visible {
-    outline: 2px solid hsl(var(--ring));
-    outline-offset: 3px;
+  /* Foco visible: 2 px con contraste contra la superficie. */
+  :focus-visible { outline: 2px solid hsl(var(--ring)); outline-offset: 3px; }
+
+  /* El cursor nativo solo se oculta donde hay puntero fino y el CursorDot está activo. */
+  @media (pointer: fine) {
+    html.has-cursor-dot, html.has-cursor-dot a, html.has-cursor-dot button, html.has-cursor-dot [role="button"] { cursor: none; }
   }
 }
 
 @layer utilities {
-  /* Titular de impacto: grotesca condensada pesada en mayúsculas (Archivo, eje de ancho). */
+  /* Display: Anton por defecto en títulos interiores. Cada pieza puede cambiar de fuente (FontCycleTitle). */
   .font-display {
-    font-family: var(--font-display);
-    font-stretch: 72%;
-    font-weight: 800;
+    font-family: var(--f-display);
+    font-weight: 400;
     text-transform: uppercase;
-    letter-spacing: -0.005em;
-    line-height: 0.92;
+    letter-spacing: 0.005em;
+    line-height: 0.9;
   }
-  /* Tamaños con clamp(): portada, editorial, H2. */
-  .text-hero { font-size: clamp(2.75rem, 1.2rem + 7.5vw, 7rem); }
-  .text-title { font-size: clamp(2.25rem, 1.2rem + 4.6vw, 4.5rem); }
-  .text-h2 { font-size: clamp(1.625rem, 1.1rem + 2.4vw, 2.75rem); }
+  .text-hero { font-size: clamp(3.25rem, 1rem + 11vw, 10rem); line-height: 0.85; }
+  .text-title { font-size: clamp(2.75rem, 1rem + 8vw, 7rem); line-height: 0.88; }
+  .text-h2 { font-size: clamp(1.9rem, 1rem + 3.4vw, 3.4rem); line-height: 0.95; }
 
-  /* Lectura editorial */
-  .font-serif { font-family: var(--font-serif); }
-  .reading { font-size: 18px; line-height: 1.65; max-width: 66ch; }
+  /* Fuentes display disponibles (13) */
+  .f-akira { font-family: 'Akira', sans-serif; text-transform: uppercase; }
+  .f-seagram { font-family: 'Seagram', cursive; }
+  .f-hitme { font-family: 'HitMePunk', cursive; }
+  .f-micro { font-family: 'Microgramma', sans-serif; text-transform: uppercase; }
+  .f-ethno { font-family: 'Ethnocentric', sans-serif; text-transform: uppercase; }
+  .f-dash { font-family: 'DashEarly', sans-serif; text-transform: uppercase; }
+  .f-doto { font-family: 'Doto', monospace; font-weight: 900; text-transform: uppercase; }
+  .f-wet { font-family: 'Rubik Wet Paint', cursive; }
+  .f-rye { font-family: 'Rye', serif; }
+  .f-anton { font-family: 'Anton', sans-serif; text-transform: uppercase; }
+  .f-unifraktur { font-family: 'UnifrakturMaguntia', serif; }
+  .f-pirata { font-family: 'Pirata One', serif; }
+  .f-bowlby { font-family: 'Bowlby One', sans-serif; text-transform: uppercase; }
+  .f-script { font-family: var(--f-script); font-weight: 400; text-transform: none; }
+  .f-news { font-family: var(--f-read); text-transform: none; }
 
-  /* Etiqueta: Archivo 12–14 px, peso 600, mayúsculas, tracking moderado. */
+  /* Lectura: Newsreader 20 px, ~66 caracteres */
+  .font-serif { font-family: var(--f-read); }
+  .reading { font-family: var(--f-read); font-size: 20px; line-height: 1.6; max-width: 66ch; }
+
+  /* Datos y etiquetas: IBM Plex Mono 12–13 px, mayúsculas, tracking .12em */
   .label {
-    font-family: var(--font-sans);
-    font-size: 0.8125rem;      /* 13 px */
+    font-family: var(--f-mono);
+    font-size: 0.75rem;
     font-weight: 600;
-    letter-spacing: 0.06em;
+    letter-spacing: 0.12em;
     text-transform: uppercase;
-    line-height: 1.3;
+    line-height: 1.35;
   }
-  /* Alias de compatibilidad con el nombre anterior. */
   .font-mono-tight { @apply label; }
 
-  /* Ancho máximo del sitio (1440 − 2 × 48 de margen) */
   .wrap { width: 100%; max-width: 1344px; margin-inline: auto; }
-
-  /* Controles rectangulares, 44 px mínimo de área táctil. */
   .tap { min-height: 44px; min-width: 44px; }
 
-  /* Trama de impresión: solo dentro de piezas concretas (no global). */
-  .trama {
-    background-image: radial-gradient(hsl(var(--paper)) 0.9px, transparent 1.1px);
-    background-size: 5px 5px;
+  /* Contorno: segunda línea de los títulos */
+  .t-stroke {
+    color: transparent;
+    -webkit-text-stroke: 2px hsl(var(--foreground));
+    padding-left: 0.4em;
   }
+  /* Glitch RGB; se abre al hover/foco */
+  .t-glitch { text-shadow: 4px 0 rgba(0, 255, 240, 0.35), -4px 0 rgba(255, 0, 90, 0.35); transition: text-shadow 0.2s; }
+  .t-glitch:hover, a:hover .t-glitch, a:focus-visible .t-glitch { text-shadow: 8px 0 rgba(0, 255, 240, 0.5), -8px 0 rgba(255, 0, 90, 0.5); }
+  .t-hard { text-shadow: 6px 6px 0 hsl(var(--a)); }
+  .shadow-hard { box-shadow: 6px 6px 0 hsl(var(--a)); }
+
+  /* Imagen desenfocada: se enfoca con hover/foco o al entrar en viewport (touch) */
+  .blur-img { filter: blur(var(--blur, 4px)); transition: filter 0.4s; }
+  .blur-host:hover .blur-img, .blur-host:focus-within .blur-img, .blur-host[data-clear] .blur-img, a:hover .blur-img, a:focus-visible .blur-img { filter: none; }
+
+  /* Tarjetas-recorte: se enderezan al hover */
+  .cut { transition: transform 0.25s ease, z-index 0s; }
+  .cut:hover, .cut:focus-within { transform: rotate(0deg) scale(1.03) !important; z-index: 20; }
 }
 
 @layer base {
-  /* Scrollbar neutro, sin teñir */
   ::-webkit-scrollbar { width: 10px; height: 10px; }
   ::-webkit-scrollbar-track { background: hsl(var(--ink)); }
   ::-webkit-scrollbar-thumb { background: hsl(var(--paper) / 0.45); }
 }
 
+/* Marquee: la velocidad base la pone CSS; el scroll la acelera vía animation-duration en JS (ver Marquee). */
+@keyframes marquee-x { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
 /* Menos movimiento */
 @media (prefers-reduced-motion: reduce) {
   html:focus-within { scroll-behavior: auto; }
-  *,
-  *::before,
-  *::after {
+  *, *::before, *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
