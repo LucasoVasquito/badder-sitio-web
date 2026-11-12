@@ -1,4 +1,4 @@
-import { useState, type ImgHTMLAttributes } from "react";
+import { useEffect, useRef, useState, type ImgHTMLAttributes } from "react";
 
 import { thumbOf } from "@/lib/thumbs";
 
@@ -13,6 +13,12 @@ export default function SmartImage({ src, thumb = false, className = "", alt = "
   const [current, setCurrent] = useState(thumb ? thumbOf(src) : src);
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
+  const ref = useRef<HTMLImageElement>(null);
+
+  // Si la imagen ya estaba en caché, onLoad pudo dispararse antes de montar el handler.
+  useEffect(() => {
+    if (ref.current?.complete && ref.current.naturalWidth > 0) setLoaded(true);
+  }, [current]);
 
   if (failed) {
     return (
@@ -25,6 +31,7 @@ export default function SmartImage({ src, thumb = false, className = "", alt = "
   return (
     <img
       {...rest}
+      ref={ref}
       src={current}
       alt={alt}
       loading={rest.loading ?? "lazy"}

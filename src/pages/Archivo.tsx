@@ -84,7 +84,7 @@ export default function Archivo() {
         ) : (
           <div className="grid md:grid-cols-12 gap-x-10 gap-y-10">
             {/* Destacado */}
-            <Link to={`/archive/${lead.id}`} className="md:col-span-5 group block self-start md:sticky md:top-24">
+            <Link to={`/archive/${lead.id}`} className="md:col-span-5 cut -rotate-[1.5deg] max-md:!rotate-0 group block self-start md:sticky md:top-24">
               <div className={`border border-border ${showWhole(lead) ? "bg-secondary p-3" : "bg-secondary"}`}>
                 <SmartImage src={lead.cover} thumb alt={lead.title} className={`w-full aspect-[4/5] ${showWhole(lead) ? "object-contain" : "object-cover bg-secondary"}`} />
               </div>

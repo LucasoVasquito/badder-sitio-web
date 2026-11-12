@@ -1,156 +1,111 @@
-import { useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import PageHeader from "@/components/site/PageHeader";
-import FilterBar from "@/components/site/FilterBar";
-import Notice from "@/components/site/Notice";
-import PlayButton from "@/components/home/PlayButton";
 import { btn } from "@/lib/ui";
-import { findTrackIndex } from "@/store/playerStore";
-import { releases } from "@/data/music";
-import { projects } from "@/data/projects";
-import { products } from "@/data/products";
-import { displayStatus } from "@/lib/commerce";
-import { summaryLine } from "@/lib/archiveUi";
 import { usePageMeta } from "@/lib/usePageMeta";
+import {
+  BarbedWire, BlurImage, Checker, DISPLAY_FONTS, Duotone, FontCycleTitle, Halftone, Marquee, OpArt, Scanlines, Sticker, Tape, ThornFrame,
+} from "@/components/flyer";
 
-// /sistema — referencia interna del sistema visual (no enlazada desde el menú).
-const swatches = [
-  { name: "Papel", token: "--paper", hex: "#F0EDE3", cls: "bg-paper text-ink" },
-  { name: "Tinta", token: "--ink", hex: "#181917", cls: "bg-secondary text-paper" },
-  { name: "Lima (principal)", token: "--lime", hex: "#83CC16", cls: "bg-lime text-ink" },
-  { name: "Rojo (alternativo)", token: "--red", hex: "#EF432B", cls: "bg-signal text-ink" },
+const PALETTES = [
+  { key: "", label: "Rojo / Verde" },
+  { key: "vr", label: "Verde / Rojo" },
+  { key: "ya", label: "Amarillo / Azul" },
+  { key: "ar", label: "Azul / Rojo" },
 ];
 
-function Block({ id, title, children }: { id: string; title: string; children: React.ReactNode }) {
+function Block({ title, children, className = "" }: { title: string; children: ReactNode; className?: string }) {
   return (
-    <section id={id} aria-labelledby={`${id}-t`} className="mb-16 scroll-mt-20">
-      <h2 id={`${id}-t`} className="label border-b-2 border-border pb-3 mb-6">
-        {title}
-      </h2>
-      {children}
+    <section className="mb-16">
+      <h2 className="label mb-4 pb-2 border-b-2 border-border">{title}</h2>
+      <div className={className}>{children}</div>
     </section>
   );
 }
 
+const Demo = ({ children, h = "h-44" }: { children: ReactNode; h?: string }) => <div className={`relative overflow-hidden border border-border ${h}`}>{children}</div>;
+
+// Referencia interna del sistema "flyer vivo" (no enlazada desde el menú).
 export default function Sistema() {
-  usePageMeta({ title: "Sistema", description: "Sistema visual de BADDER." });
-  const [accent, setAccent] = useState<"lime" | "red">("lime");
-  const [tab, setTab] = useState("a");
-  const release = releases[0];
-  const idx = findTrackIndex(release.title);
-  const project = projects[0];
-  const product = products.find((p) => p.listed)!;
+  usePageMeta({ title: "Sistema", description: "Referencia interna del sistema visual." });
+  const [palette, setPalette] = useState("");
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (palette) root.setAttribute("data-palette", palette);
+    else root.removeAttribute("data-palette");
+    return () => root.removeAttribute("data-palette");
+  }, [palette]);
 
   return (
-    <main data-accent={accent} className="bg-background min-h-screen pt-10 md:pt-16 pb-16">
+    <main className="bg-background min-h-screen pt-10 md:pt-16 pb-24 overflow-hidden">
       <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
-        <PageHeader kicker="Interno · no enlazado" title="Sistema" intro="Componentes del rediseño editorial con sus estados. El acento cambia por pantalla con data-accent en el main.">
-          <div role="group" aria-label="Acento" className="mt-6 flex gap-2">
-            {(["lime", "red"] as const).map((a) => (
-              <button key={a} type="button" aria-pressed={accent === a} onClick={() => setAccent(a)} className={`label min-h-[44px] px-4 border-2 border-foreground ${accent === a ? "bg-accent text-accent-foreground" : "hover:bg-secondary"}`}>
-                Acento {a === "lime" ? "lima" : "rojo"}
-              </button>
-            ))}
+        <PageHeader kicker="Interno · no enlazado" title="Sistema" intro="Texturas, marcos, stickers, títulos, botones y tarjetas del rediseño “flyer vivo”. Cambiá la paleta A/B con los botones." />
+
+        <Block title="Paleta A / B (data-palette en <html>)" className="flex flex-wrap gap-2">
+          {PALETTES.map((p) => (
+            <button key={p.key} type="button" onClick={() => setPalette(p.key)} aria-pressed={palette === p.key} className={`label h-11 px-3 border-2 ${palette === p.key ? "bg-accent text-accent-foreground border-foreground" : "border-border/40 hover:bg-foreground hover:text-background"}`}>
+              {p.label}
+            </button>
+          ))}
+          <div className="w-full flex gap-3 mt-3">
+            <div className="w-24 h-16 bg-[hsl(var(--a))]" /> <div className="w-24 h-16 bg-[hsl(var(--b))]" />
+            <div className="w-24 h-16 bg-[hsl(var(--paper))]" /> <div className="w-24 h-16 border border-border bg-[hsl(var(--ink))]" />
           </div>
-        </PageHeader>
-
-        <Block id="color" title="Color">
-          <ul className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {swatches.map((s) => (
-              <li key={s.token} className={`${s.cls} border-2 border-ink p-4 h-32 flex flex-col justify-end`}>
-                <span className="font-semibold">{s.name}</span>
-                <span className="label">{s.hex}</span>
-              </li>
-            ))}
-          </ul>
-          <p className="mt-4 max-w-[60ch]">El lima no se usa como color de texto sobre papel: va como fondo con texto tinta, o en filetes e indicadores.</p>
         </Block>
 
-        <Block id="tipo" title="Tipografía">
-          <p className="font-display text-hero">Titular de impacto</p>
-          <p className="mt-4 font-serif font-bold text-[clamp(1.75rem,1.2rem+2vw,2.75rem)] leading-tight">Título de artículo en PT Serif</p>
-          <p className="mt-4 reading">Cuerpo a 18 píxeles, alrededor de 66 caracteres por línea, para lectura sostenida de notas e introducciones.</p>
-          <p className="mt-4 label">Etiqueta · Archivo 13 px · 600 · mayúsculas</p>
-        </Block>
-
-        <Block id="nav" title="Cabecera y navegación">
-          <div className="border border-border">
-            <div className="flex flex-wrap items-center gap-6 px-5 h-16">
-              <span className="font-display text-h2">Badder</span>
-              {["Notas", "Música", "Archivo"].map((l, i) => (
-                <span key={l} className={`label inline-flex items-center h-11 border-b-2 ${i === 1 ? "border-foreground" : "border-transparent"}`}>
-                  {l}
-                  {i === 1 && <span className="sr-only"> (activo)</span>}
-                </span>
-              ))}
-              <span className="label inline-flex items-center h-11 px-4 border-2 border-foreground bg-accent text-accent-foreground">Participar (activo)</span>
+        <Block title="Títulos · 13 tipografías display (click en cada una: rota la fuente)" className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,300px),1fr))] gap-x-8 gap-y-6">
+          {DISPLAY_FONTS.map((f) => (
+            <div key={f.key}>
+              <div className="label text-muted-foreground">{f.name}</div>
+              <FontCycleTitle id={`sistema:${f.key}`} font={f.key} as="h3" className="text-[clamp(1.6rem,5vw,3rem)] leading-[0.95] [overflow-wrap:anywhere]">
+                Badder
+              </FontCycleTitle>
             </div>
-          </div>
-          <div className="mt-4 max-w-sm">
-            <FilterBar label="Demo" value={tab} onChange={setTab} options={[{ value: "a", label: "Todo", count: 19 }, { value: "b", label: "Fotografía", count: 11 }, { value: "c", label: "Video", count: 9 }]} />
-          </div>
+          ))}
         </Block>
 
-        <Block id="botones" title="Botones">
-          <div className="flex flex-wrap gap-3">
-            <button className={btn.primary}>Principal</button>
-            <button className={btn.secondary}>Secundario</button>
-            <button className={btn.accent}>Acento</button>
-            <button className={btn.primary} disabled>Deshabilitado</button>
-            <a href="#botones" className={btn.link}>Enlace</a>
-          </div>
+        <Block title="Capas de lectura y datos" className="grid md:grid-cols-3 gap-8">
+          <p className="reading">Newsreader 20 px para lectura: <em>itálica para frases destacadas</em>.</p>
+          <p className="label">IBM Plex Mono · etiqueta 12 px · mayúsculas</p>
+          <p className="f-script text-6xl text-[hsl(var(--a))] -rotate-6">experience</p>
         </Block>
 
-        <Block id="archivo" title="Entrada de archivo">
-          <a href="#archivo" className="group grid grid-cols-[4.5rem_1fr] md:grid-cols-[5.5rem_1fr_auto] gap-x-4 items-center py-3 border-y border-border hover:bg-secondary transition-colors px-1">
-            <img src={project.cover} alt="" className="w-[72px] h-[72px] md:w-[88px] md:h-[88px] object-cover" />
-            <span className="min-w-0">
-              <span className="block label text-muted-foreground">{project.kind} · {project.season ?? project.year}</span>
-              <span className="block font-semibold text-lg group-hover:underline underline-offset-4 decoration-2">{project.title}</span>
-            </span>
-            <span className="label text-muted-foreground">{summaryLine(project)}</span>
-          </a>
+        <Block title="Texturas" className="grid grid-cols-[repeat(auto-fit,minmax(min(100%,250px),1fr))] gap-4">
+          <Demo><Halftone size={8} opacity={0.6} /><span className="label relative p-2 block">Halftone</span></Demo>
+          <Demo><Checker size={64} /><span className="label relative p-2 block">Checker</span></Demo>
+          <Demo><OpArt /><span className="label relative p-2 block bg-background w-max">OpArt</span></Demo>
+          <Demo><Scanlines /><span className="label relative p-2 block">Scanlines</span></Demo>
+          <Demo><Duotone src="/rosset/foto (1).webp" mode="bitmap" className="w-full h-44 object-cover" /></Demo>
+          <Demo><Duotone src="/rosset/foto (1).webp" mode="duo" className="w-full h-44 object-cover" /></Demo>
+          <Demo><BlurImage src="/rosset/foto (1).webp" blur={6} className="w-full h-44 object-cover" /></Demo>
+          <Demo h="h-44"><BarbedWire variant="light" rotate={-4} className="top-8" /><BarbedWire variant="dark" rotate={3} className="top-24 bg-paper" /></Demo>
         </Block>
 
-        <Block id="musica" title="Bloque musical">
-          <div className="surface-dark p-6 grid grid-cols-[6rem_1fr_auto] gap-5 items-center max-w-2xl">
-            <img src={release.cover} alt="" className="w-24 h-24 object-cover" />
-            <div className="min-w-0">
-              <div className="label text-muted-foreground">{release.type} · {release.artist}</div>
-              <div className="font-display text-h2">{release.title}</div>
-            </div>
-            <PlayButton trackIndex={idx} label="Escuchar" />
+        <Block title="Marcos, cinta y stickers" className="flex flex-wrap items-start gap-10">
+          <div className="w-60"><ThornFrame><div className="aspect-square bg-secondary" /></ThornFrame></div>
+          <div className="relative w-56 border-2 border-border p-3 pt-6"><Tape />Tarjeta con cinta</div>
+          <div className="flex flex-wrap gap-4 items-center">
+            <Sticker tone="a">Sticker A</Sticker>
+            <Sticker tone="b" rotate={5}>Sticker B</Sticker>
+            <Sticker tone="paper" rotate={-2}>Papel</Sticker>
+            <Sticker tone="ink" rotate={3}>Tinta</Sticker>
+            <Sticker tone="b" rotate={8} onClick={() => undefined} ariaLabel="Ejemplo de sello PLAY">PLAY</Sticker>
           </div>
         </Block>
 
-        <Block id="producto" title="Ficha de producto / proyecto">
-          <div className="grid md:grid-cols-12 gap-8 max-w-4xl">
-            <img src={product.images[0]} alt="" className="md:col-span-5 w-full aspect-[3/4] object-cover bg-secondary" />
-            <div className="md:col-span-7">
-              <span className="label border-2 border-foreground px-2 py-0.5">{displayStatus(product)}</span>
-              <h3 className="mt-3 font-display text-title">{product.name}</h3>
-              <dl className="mt-6 border-2 border-foreground grid grid-cols-[auto,1fr]">
-                <dt className="col-span-2 label px-4 py-2 bg-foreground text-background">Etiqueta · BADDER</dt>
-                <dt className="label text-muted-foreground px-4 py-3 border-t border-border">Colección</dt>
-                <dd className="px-4 py-3 border-t border-border font-semibold">{product.collection?.name ?? "—"}</dd>
-                <dt className="label text-muted-foreground px-4 py-3 border-t border-border">Diseño</dt>
-                <dd className="px-4 py-3 border-t border-border font-semibold">{product.credits ?? "—"}</dd>
-              </dl>
-              <div className="mt-6"><Notice title="Pieza de archivo">Se conserva como registro y no está a la venta.</Notice></div>
-            </div>
+        <Block title="Marquee (acelera con el scroll)">
+          <div className="bg-[hsl(var(--a))] text-[hsl(var(--a-fg))] -rotate-1 py-2">
+            <Marquee items={["Badder", "La Plata", "Est. 2024"]} itemClassName="f-akira text-xl" />
           </div>
         </Block>
 
-        <Block id="estados" title="Estados">
-          <div className="flex flex-wrap gap-3 items-center">
-            <button className="label min-h-[44px] px-4 border-2 border-foreground">Reposo</button>
-            <button className="label min-h-[44px] px-4 border-2 border-foreground bg-accent text-accent-foreground">Hover / activo</button>
-            <button className="label min-h-[44px] px-4 border-2 border-foreground outline outline-2 outline-offset-4 outline-ring">Foco</button>
-            <button className="label min-h-[44px] px-4 border-2 border-foreground opacity-40" disabled>Deshabilitado</button>
-          </div>
-        </Block>
-
-        <Block id="footer" title="Footer">
-          <p className="max-w-[60ch]">El footer usa la superficie oscura (<code>surface-dark</code>) con las secciones y el contacto. Se ve al final de esta página.</p>
+        <Block title="Botones y tarjetas" className="flex flex-wrap gap-4 items-start">
+          <button className={btn.primary}>Primario</button>
+          <button className={btn.secondary}>Secundario</button>
+          <button className={btn.accent}>Acento</button>
+          <button className={btn.primary} disabled>Deshabilitado</button>
+          <a href="#" className={btn.link}>Enlace</a>
+          <div className="cut -rotate-2 bg-[hsl(var(--paper))] text-[hsl(var(--ink))] p-4 w-56 shadow-hard">Tarjeta recorte: se endereza al hover.</div>
         </Block>
       </div>
     </main>
