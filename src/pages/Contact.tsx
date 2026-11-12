@@ -19,7 +19,7 @@ const subjects = [
   { value: "Otro", label: "Otro" },
 ];
 
-const field = "w-full bg-transparent border-b border-border py-2 text-sm focus:outline-none focus:border-foreground transition-colors rounded-none";
+const field = "w-full bg-transparent border-2 border-border px-3 min-h-[48px] py-2 text-base focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-ring rounded-none";
 
 export default function Contact() {
   usePageMeta({ title: "Contacto", description: "Contacto con BADDER: colaboraciones, Studio, bookings y demos." });
@@ -51,20 +51,20 @@ export default function Contact() {
   };
 
   return (
-    <main className="bg-background min-h-screen pt-10 md:pt-16 pb-0 overflow-hidden">
+    <main data-accent="lime" className="bg-background min-h-screen pt-10 md:pt-16 pb-0 overflow-hidden">
       <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
-        <PageHeader kicker="Contacto / Colaboraciones / Bookings" title="Contact" />
+        <PageHeader kicker="Contacto / Colaboraciones / Bookings" title="Contacto" />
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-16 md:gap-24 mb-16">
           <div className="flex flex-col gap-10">
-            <p className="text-sm text-muted-foreground leading-relaxed max-w-md">
+            <p className="text-lg max-w-[48ch]">
               Para colaboraciones, trabajos de Studio, bookings o para mostrarnos lo que hacés, escribinos por Instagram o por mail.
             </p>
             <dl className="flex flex-col gap-6">
               <div>
                 <dt className="label text-muted-foreground mb-1">Mail</dt>
                 <dd>
-                  <a href={`mailto:${contact.email}`} className="text-foreground hover:text-muted-foreground break-all">
+                  <a href={`mailto:${contact.email}`} className="underline underline-offset-4 decoration-2 hover:bg-accent break-all">
                     {contact.email}
                   </a>
                 </dd>
@@ -72,7 +72,7 @@ export default function Contact() {
               <div>
                 <dt className="label text-muted-foreground mb-1">Instagram</dt>
                 <dd>
-                  <a href={contact.instagramUrl} target="_blank" rel="noreferrer" className="text-foreground hover:text-muted-foreground">
+                  <a href={contact.instagramUrl} target="_blank" rel="noreferrer" className="underline underline-offset-4 decoration-2 hover:bg-accent">
                     {contact.instagramHandle} ↗
                   </a>
                 </dd>
@@ -89,22 +89,22 @@ export default function Contact() {
               Recibimos tu mensaje. Te respondemos a {form.email}.
             </Notice>
           ) : (
-            <form className="flex flex-col gap-7" onSubmit={submit} noValidate>
+            <form className="flex flex-col gap-6" onSubmit={submit} noValidate>
               {!CONTACT_ENDPOINT && (
                 <p className="label text-muted-foreground leading-relaxed">
                   Al enviar se abre tu aplicación de correo con el mensaje listo. El envío se hace desde ahí.
                 </p>
               )}
               <label className="flex flex-col gap-1">
-                <span className="label text-muted-foreground">Nombre / proyecto</span>
+                <span className="label">Nombre / proyecto</span>
                 <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className={field} autoComplete="name" />
               </label>
               <label className="flex flex-col gap-1">
-                <span className="label text-muted-foreground">Mail</span>
+                <span className="label">Mail</span>
                 <input type="email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} className={field} autoComplete="email" />
               </label>
               <label className="flex flex-col gap-1">
-                <span className="label text-muted-foreground">Asunto</span>
+                <span className="label">Asunto</span>
                 <select value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} className={`${field} appearance-none cursor-pointer`}>
                   {subjects.map((s) => (
                     <option key={s.value} value={s.value} className="bg-background">
@@ -114,8 +114,8 @@ export default function Contact() {
                 </select>
               </label>
               <label className="flex flex-col gap-1">
-                <span className="label text-muted-foreground">Mensaje</span>
-                <textarea rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className={`${field} resize-none`} />
+                <span className="label">Mensaje</span>
+                <textarea rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} className={`${field} resize-none py-3`} />
               </label>
               {state === "error" && <Notice title="No se pudo enviar" tone="error">{error}</Notice>}
               <button type="submit" disabled={state === "sending"} className={btn.primary}>
@@ -126,7 +126,7 @@ export default function Contact() {
         </div>
       </div>
 
-      <div className="border-t border-border" id="bookings">
+      <div className="border-t-2 border-border" id="bookings">
         <ArtistsSection />
       </div>
     </main>

@@ -9,14 +9,14 @@ const NotFound = () => {
   usePageMeta({ title: "No encontrado" });
 
   return (
-    <main className="bg-background min-h-screen pt-10 md:pt-16 pb-16">
+    <main data-accent="red" className="bg-background min-h-screen pt-10 md:pt-16 pb-16">
       <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
-        <PageHeader kicker={`404 / ${pathname}`} title="Señal perdida" intro="Esta página no existe o se movió. Probá desde alguna de las secciones." />
+        <PageHeader kicker={`Error 404 · ${pathname}`} title="Página no encontrada" intro="Esta página no existe o se movió. Probá desde alguna de las secciones." />
         <div className="flex flex-wrap gap-3">
-          <Link to="/" className={btn.primary}>
+          <Link to="/" className={btn.accent}>
             Volver al inicio
           </Link>
-          {mainSections.slice(1).map((s) => (
+          {mainSections.map((s) => (
             <Link key={s.path} to={s.path} className={btn.secondary}>
               {s.label}
             </Link>

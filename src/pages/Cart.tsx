@@ -11,7 +11,7 @@ import Notice, { EmptyState } from "@/components/site/Notice";
 import { btn } from "@/lib/ui";
 
 const inputCls =
- "w-full bg-transparent border-b border-border py-2 text-sm focus:outline-none focus:border-foreground transition-colors rounded-none";
+ "w-full bg-transparent border-2 border-border px-3 min-h-[48px] text-base rounded-none";
 
 export default function Cart() {
   usePageMeta({ title: "Carrito" });
@@ -59,7 +59,7 @@ export default function Cart() {
 
   if (confirmed) {
     return (
-      <main className="bg-background min-h-screen pt-10 md:pt-16 pb-16">
+      <main data-accent="red" className="bg-background min-h-screen pt-10 md:pt-16 pb-16">
         <div className="px-5 md:px-12 max-w-3xl mx-auto">
           <PageHeader kicker="Pedido recibido" title="Gracias" />
           <Notice title="Recibimos tu pedido" tone="success">
@@ -72,29 +72,29 @@ export default function Cart() {
   }
 
   return (
-    <main className="bg-background min-h-screen pt-10 md:pt-16 pb-16 overflow-hidden">
+    <main data-accent="red" className="bg-background min-h-screen pt-10 md:pt-16 pb-16 overflow-hidden">
       <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
-        <PageHeader kicker={`Carrito / ${rows.length} ítem${rows.length === 1 ? "" : "s"}`} title="Cart" />
+        <PageHeader kicker={`Carrito / ${rows.length} ítem${rows.length === 1 ? "" : "s"}`} title="Carrito" />
 
         {rows.length === 0 ? (
           <EmptyState title="El carrito está vacío.">
             <Link to="/shop" className={btn.primary}>
-              Ir al Shop
+              Ver indumentaria
             </Link>
           </EmptyState>
         ) : (
           <div className="grid lg:grid-cols-12 gap-12">
             {/* Líneas */}
-            <ul className="lg:col-span-7 flex flex-col border-t border-border">
+            <ul className="lg:col-span-7 flex flex-col border-t-2 border-border">
               {rows.map(({ line, product, variant, stock, subtotal }) => (
                 <li key={`${line.productId}-${line.sku ?? ""}`} className="flex gap-4 py-5 border-b border-border">
-                  <Link to={`/shop/${product.id}`} className="w-20 h-24 shrink-0 bg-secondary border border-border overflow-hidden">
+                  <Link to={`/shop/${product.id}`} className="w-20 h-24 shrink-0 bg-secondary overflow-hidden">
                     <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
                   </Link>
                   <div className="flex-1 min-w-0 flex flex-col justify-between gap-3">
                     <div className="flex justify-between gap-3">
                       <div className="min-w-0">
-                        <h2 className="font-display text-xl text-foreground truncate">{product.name}</h2>
+                        <h2 className="font-semibold text-lg truncate">{product.name}</h2>
                         {variant && (
                           <div className="label text-muted-foreground mt-1">
                             {[variant.size && `Talle ${variant.size}`, variant.color].filter(Boolean).join(" · ")}
@@ -102,21 +102,21 @@ export default function Cart() {
                         )}
                         <div className="label text-muted-foreground mt-1">{formatPrice(product.price!)} c/u</div>
                       </div>
-                      <button type="button" onClick={() => removeItem(line.productId, line.sku)} aria-label={`Quitar ${product.name}`} className="text-muted-foreground hover:text-foreground self-start p-1">
+                      <button type="button" onClick={() => removeItem(line.productId, line.sku)} aria-label={`Quitar ${product.name}`} className="self-start w-11 h-11 -mr-2 -mt-2 inline-flex items-center justify-center hover:bg-accent">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
                     <div className="flex items-center justify-between">
-                      <div className="flex items-center border border-border">
-                        <button type="button" aria-label="Restar uno" disabled={line.quantity <= 1} onClick={() => setQuantity(line.productId, line.sku, line.quantity - 1)} className="p-2 disabled:opacity-30">
+                      <div className="flex items-center border-2 border-border">
+                        <button type="button" aria-label="Restar uno" disabled={line.quantity <= 1} onClick={() => setQuantity(line.productId, line.sku, line.quantity - 1)} className="w-11 h-11 inline-flex items-center justify-center disabled:opacity-30 hover:bg-accent">
                           <Minus className="w-3 h-3" />
                         </button>
-                        <span className="w-8 text-center label text-foreground" aria-live="polite">{line.quantity}</span>
-                        <button type="button" aria-label="Sumar uno" disabled={line.quantity >= stock} onClick={() => setQuantity(line.productId, line.sku, line.quantity + 1)} className="p-2 disabled:opacity-30">
+                        <span className="w-10 text-center label text-foreground" aria-live="polite">{line.quantity}</span>
+                        <button type="button" aria-label="Sumar uno" disabled={line.quantity >= stock} onClick={() => setQuantity(line.productId, line.sku, line.quantity + 1)} className="w-11 h-11 inline-flex items-center justify-center disabled:opacity-30 hover:bg-accent">
                           <Plus className="w-3 h-3" />
                         </button>
                       </div>
-                      <span className="font-mono text-sm tracking-widest text-foreground">{formatPrice(subtotal)}</span>
+                      <span className="font-semibold">{formatPrice(subtotal)}</span>
                     </div>
                     {line.quantity >= stock && <span className="label text-muted-foreground">Máximo disponible</span>}
                   </div>
@@ -126,11 +126,11 @@ export default function Cart() {
 
             {/* Resumen y checkout */}
             <aside className="lg:col-span-5 flex flex-col gap-8">
-              <div className="flex justify-between font-mono text-lg uppercase tracking-widest border-b border-border pb-4">
-                <span className="text-muted-foreground">Total</span>
+              <div className="flex justify-between font-display text-h2 border-b-2 border-border pb-4">
+                <span>Total</span>
                 <span>{formatPrice(total)}</span>
               </div>
-              <p className="label text-muted-foreground leading-relaxed">Envío no incluido: se coordina al confirmar el pedido.</p>
+              <p className="text-muted-foreground">Envío no incluido: se coordina al confirmar el pedido.</p>
 
               {commerce.checkoutEnabled ? (
                 <form onSubmit={submit} className="flex flex-col gap-6" noValidate>
@@ -140,14 +140,14 @@ export default function Cart() {
                     ["phone", "Teléfono *", "tel"],
                   ].map(([key, label, type]) => (
                     <label key={key} className="flex flex-col gap-1">
-                      <span className="label text-muted-foreground">{label}</span>
+                      <span className="label">{label}</span>
                       <input type={type} value={form[key as keyof typeof form]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} className={inputCls} required />
                     </label>
                   ))}
                   <fieldset className="flex gap-4">
-                    <legend className="label text-muted-foreground mb-2">Entrega</legend>
+                    <legend className="label mb-2">Entrega</legend>
                     {["RETIRO", "ENVIO"].map((d) => (
-                      <label key={d} className="flex items-center gap-2 text-sm">
+                      <label key={d} className="flex items-center gap-2 min-h-[44px]">
                         <input type="radio" name="delivery" value={d} checked={form.delivery === d} onChange={() => setForm({ ...form, delivery: d })} />
                         {d === "RETIRO" ? "Retiro en La Plata" : "Envío"}
                       </label>
@@ -155,7 +155,7 @@ export default function Cart() {
                   </fieldset>
                   {form.delivery === "ENVIO" && (
                     <label className="flex flex-col gap-1">
-                      <span className="label text-muted-foreground">Dirección *</span>
+                      <span className="label">Dirección *</span>
                       <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className={inputCls} />
                     </label>
                   )}

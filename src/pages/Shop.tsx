@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import PageHeader from "@/components/site/PageHeader";
 import Notice from "@/components/site/Notice";
@@ -8,39 +7,29 @@ import { contact } from "@/data/site";
 import { usePageMeta } from "@/lib/usePageMeta";
 import type { Product } from "@/data/products";
 
-function ProductCard({ product, i }: { product: Product; i: number }) {
+function ProductCard({ product }: { product: Product }) {
   const forSale = isForSale(product);
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 12 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ delay: (i % 4) * 0.05 }}
-    >
+    <li>
       <Link to={`/shop/${product.id}`} className="group flex flex-col">
-        <div className="aspect-[3/4] overflow-hidden bg-secondary border border-border relative mb-3">
-          <SmartImage
-            src={product.images[0]}
-            thumb
-            alt={product.name}
-            className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03] ${forSale ? "" : ""}`}
-          />
-          <span className="absolute top-2 left-2 bg-background/90 border border-border px-2 py-1 label text-foreground">
+        <div className="aspect-[3/4] overflow-hidden bg-secondary relative mb-3">
+          <SmartImage src={product.images[0]} thumb alt={product.name} className="w-full h-full object-cover" />
+          <span className={`absolute top-0 left-0 px-2 py-1 label ${forSale ? "bg-accent text-accent-foreground" : "bg-background border-b border-r border-border"}`}>
             {displayStatus(product)}
           </span>
         </div>
-        <div className="label text-muted-foreground">
-          {product.collection ? `${product.collection.name} · ${product.collection.season}` : product.category}
-        </div>
-        <h3 className="mt-1 font-display text-xl tracking-wide text-foreground">{product.name}</h3>
-        {forSale && product.price && <div className="mt-1 label text-foreground">{formatPrice(product.price)}</div>}
+        <div className="label text-muted-foreground">{product.collection ? `${product.collection.name} · ${product.collection.season}` : product.category}</div>
+        <h3 className="mt-1 font-semibold text-lg group-hover:underline underline-offset-4 decoration-2">{product.name}</h3>
+        {forSale && product.price && <div className="mt-1 label">{formatPrice(product.price)}</div>}
       </Link>
-    </motion.div>
+    </li>
   );
 }
 
+const grid = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 md:gap-x-6 gap-y-12";
+
 export default function Shop() {
-  usePageMeta({ title: "Shop", description: "Prendas y objetos físicos de BADDER, y archivo de prendas de drops anteriores." });
+  usePageMeta({ title: "Indumentaria", description: "Prendas y objetos de BADDER, y archivo de prendas de drops anteriores." });
 
   const all = publicProducts();
   const forSale = all.filter(isForSale);
@@ -48,28 +37,27 @@ export default function Shop() {
   const archive = all.filter((p) => p.status === "ARCHIVE");
 
   return (
-    <main className="bg-background min-h-screen pt-10 md:pt-16 pb-16 overflow-hidden">
+    <main data-accent="lime" className="bg-background min-h-screen pt-10 md:pt-16 pb-16 overflow-hidden">
       <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
-        <PageHeader kicker="Prendas & objetos" title="Shop" />
+        <PageHeader kicker="Prendas y objetos" title="Indumentaria" />
 
         {/* Disponibles */}
         <section aria-labelledby="shop-available" className="mb-20">
-          <h2 id="shop-available" className="label text-foreground border-b border-border pb-3 mb-8 flex justify-between">
+          <h2 id="shop-available" className="label border-b-2 border-border pb-3 mb-8 flex justify-between">
             <span>Disponible ahora</span>
-            <span className="text-muted-foreground">{String(forSale.length).padStart(2, "0")}</span>
+            <span className="text-muted-foreground">{forSale.length}</span>
           </h2>
 
           {forSale.length > 0 ? (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 md:gap-x-6 gap-y-12">
-              {forSale.map((p, i) => (
-                <ProductCard key={p.id} product={p} i={i} />
+            <ul className={grid}>
+              {forSale.map((p) => (
+                <ProductCard key={p.id} product={p} />
               ))}
-            </div>
+            </ul>
           ) : (
             <Notice title="Nuevo drop en preparación">
-              Por ahora no hay prendas a la venta en la web. Las próximas remeras de BADDER se van a publicar acá.
-              Para consultas escribinos a{" "}
-              <a className="text-foreground underline underline-offset-4" href={contact.instagramUrl} target="_blank" rel="noreferrer">
+              Por ahora no hay prendas a la venta en la web. Las próximas remeras de BADDER se van a publicar acá. Para consultas escribinos a{" "}
+              <a className="underline underline-offset-4 decoration-2" href={contact.instagramUrl} target="_blank" rel="noreferrer">
                 {contact.instagramHandle}
               </a>
               .
@@ -77,44 +65,40 @@ export default function Shop() {
           )}
 
           {forSale.length > 0 && !commerce.checkoutEnabled && (
-            <p className="mt-8 label text-muted-foreground">
-              Las compras online todavía no están habilitadas: consultá disponibilidad por Instagram o mail.
-            </p>
+            <p className="mt-8 label text-muted-foreground">Las compras online todavía no están habilitadas: consultá disponibilidad por Instagram o mail.</p>
           )}
         </section>
 
         {upcoming.length > 0 && (
           <section aria-labelledby="shop-upcoming" className="mb-20">
-            <h2 id="shop-upcoming" className="label text-foreground border-b border-border pb-3 mb-8">
+            <h2 id="shop-upcoming" className="label border-b-2 border-border pb-3 mb-8">
               Próximamente
             </h2>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 md:gap-x-6 gap-y-12">
-              {upcoming.map((p, i) => (
-                <ProductCard key={p.id} product={p} i={i} />
+            <ul className={grid}>
+              {upcoming.map((p) => (
+                <ProductCard key={p.id} product={p} />
               ))}
-            </div>
+            </ul>
           </section>
         )}
 
         {/* Archivo de prendas */}
         {archive.length > 0 && (
           <section aria-labelledby="shop-archive">
-            <div className="border-b border-border pb-3 mb-8 flex flex-wrap justify-between gap-2">
-              <h2 id="shop-archive" className="label text-foreground">
+            <div className="border-b-2 border-border pb-3 mb-6 flex flex-wrap items-center justify-between gap-2">
+              <h2 id="shop-archive" className="label">
                 Archivo de prendas
               </h2>
-              <Link to="/archive?filter=collections" className="label text-muted-foreground hover:text-foreground">
+              <Link to="/archive?filter=collections" className="label inline-flex items-center min-h-[44px] underline underline-offset-4 decoration-2 hover:bg-accent">
                 Ver colecciones completas →
               </Link>
             </div>
-            <p className="text-sm text-muted-foreground mb-8 max-w-xl">
-              Piezas de drops anteriores. Se conservan como registro; no están a la venta.
-            </p>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 md:gap-x-6 gap-y-12">
-              {archive.map((p, i) => (
-                <ProductCard key={p.id} product={p} i={i} />
+            <p className="text-lg mb-8 max-w-[56ch]">Piezas de drops anteriores. Se conservan como registro; no están a la venta.</p>
+            <ul className={grid}>
+              {archive.map((p) => (
+                <ProductCard key={p.id} product={p} />
               ))}
-            </div>
+            </ul>
           </section>
         )}
       </div>

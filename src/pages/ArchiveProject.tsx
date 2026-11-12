@@ -12,7 +12,7 @@ const PAGE = 18;
 function Block({ id, title, count, children }: { id: string; title: string; count: number; children: React.ReactNode }) {
   return (
     <section aria-labelledby={id} className="mt-16 md:mt-20">
-      <h2 id={id} className="label text-foreground border-b border-border pb-3 mb-6 flex justify-between">
+      <h2 id={id} className="label text-foreground border-b-2 border-border pb-3 mb-6 flex justify-between">
         <span>{title}</span>
         <span className="text-muted-foreground">{String(count).padStart(2, "0")}</span>
       </h2>
@@ -22,7 +22,7 @@ function Block({ id, title, count, children }: { id: string; title: string; coun
 }
 
 /** Grilla de imágenes con carga progresiva: muestra PAGE y suma de a PAGE. */
-function ImageGrid({ images, onOpen, captions = false, cols = "grid-cols-2 md:grid-cols-3 lg:grid-cols-4" }: { images: ArchiveImage[]; onOpen: (i: number) => void; captions?: boolean; cols?: string }) {
+function ImageGrid({ images, onOpen, captions = false, whole = false, cols = "grid-cols-2 md:grid-cols-3 lg:grid-cols-4" }: { images: ArchiveImage[]; onOpen: (i: number) => void; captions?: boolean; whole?: boolean; cols?: string }) {
   const [shown, setShown] = useState(PAGE);
   return (
     <>
@@ -30,8 +30,8 @@ function ImageGrid({ images, onOpen, captions = false, cols = "grid-cols-2 md:gr
         {images.slice(0, shown).map((img, i) => (
           <li key={img.src}>
             <button type="button" onClick={() => onOpen(i)} className="group block w-full text-left" aria-label={`Ampliar ${img.title ?? `imagen ${i + 1}`}`}>
-              <div className="aspect-[4/5] overflow-hidden bg-secondary border border-border">
-                <SmartImage src={img.src} thumb alt={img.title ?? ""} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
+              <div className={`aspect-[4/5] overflow-hidden bg-secondary ${whole ? "p-2" : ""}`}>
+                <SmartImage src={img.src} thumb alt={img.title ?? ""} className={`w-full h-full ${whole ? "object-contain" : "object-cover"}`} />
               </div>
               {captions && (img.title || img.credit) && (
                 <div className="mt-2">
@@ -85,32 +85,32 @@ export default function ArchiveProject() {
     });
 
   return (
-    <main key={p.id} className="bg-background min-h-screen pt-10 md:pt-16 pb-16 overflow-hidden">
+    <main key={p.id} data-accent="lime" className="bg-background min-h-screen pt-10 md:pt-16 pb-16 overflow-hidden">
       <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
-        <Link to="/archive" className="inline-block mb-10 label text-muted-foreground hover:text-foreground transition-colors">
+        <Link to="/archive" className="inline-flex items-center min-h-[44px] mb-6 label underline underline-offset-4 decoration-2 hover:bg-accent">
           ← Volver al archivo
         </Link>
 
-        <header className="grid md:grid-cols-12 gap-8 border-b border-border pb-10">
+        <header className="grid md:grid-cols-12 gap-8 border-b-2 border-border pb-10">
           <div className="md:col-span-7">
             <div className="label text-muted-foreground mb-4 flex flex-wrap gap-x-4">
               <span className="text-foreground">{p.kind}</span>
               <span>{p.season ?? p.year}</span>
               {p.location && <span>{p.location}</span>}
             </div>
-            <h1 className="font-display text-foreground leading-[0.95] tracking-tight text-[clamp(2.25rem,7vw,5rem)] break-words">{p.title}</h1>
-            {p.summary && <p className="mt-6 text-sm text-muted-foreground leading-relaxed max-w-xl">{p.summary}</p>}
+            <h1 className="font-display text-title [text-wrap:balance]">{p.title}</h1>
+            {p.summary && <p className="mt-6 text-lg max-w-[56ch]">{p.summary}</p>}
             <div className="mt-6 flex flex-wrap gap-2">
               {categoriesOf(p).map((c) => (
-                <Link key={c} to={`/archive?filter=${c}`} className="label border border-border px-2 py-1 text-muted-foreground hover:text-foreground">
+                <Link key={c} to={`/archive?filter=${c}`} className="label inline-flex items-center min-h-[36px] border-2 border-foreground px-3 hover:bg-accent hover:text-accent-foreground">
                   {categoryLabels[c]}
                 </Link>
               ))}
             </div>
           </div>
           {p.credits.length > 0 && (
-            <dl className="md:col-span-5 md:pl-8 md:border-l border-border grid grid-cols-[auto,1fr] gap-x-6 gap-y-3 content-start text-sm">
-              <dt className="col-span-2 label text-foreground mb-1">Créditos</dt>
+            <dl className="md:col-span-5 md:pl-8 md:border-l-2 border-border grid grid-cols-[auto,1fr] gap-x-6 gap-y-3 content-start">
+              <dt className="col-span-2 label mb-1">Créditos</dt>
               {p.credits.map((c) => (
                 <div key={c.role} className="contents">
                   <dt className="label text-muted-foreground pt-0.5">{c.role}</dt>
@@ -130,7 +130,7 @@ export default function ArchiveProject() {
 
         {p.graphics.length > 0 && (
           <Block id="graphics" title="Gráfica / Flyers" count={p.graphics.length}>
-            <ImageGrid images={p.graphics} captions onOpen={open(p.graphics, p.title)} cols="grid-cols-2 md:grid-cols-4" />
+            <ImageGrid images={p.graphics} whole captions onOpen={open(p.graphics, p.title)} cols="grid-cols-2 md:grid-cols-4" />
           </Block>
         )}
 
@@ -140,17 +140,17 @@ export default function ArchiveProject() {
               {p.videos.map((v) => (
                 <li key={v.url}>
                   <a href={v.url} target="_blank" rel="noopener noreferrer" className="group block">
-                    <div className="relative aspect-video overflow-hidden bg-secondary border border-border">
-                      <img src={v.thumb} alt={v.title} loading="lazy" className="w-full h-full object-cover opacity-85 transition-all duration-700 group-hover:opacity-100" />
-                      <span className="absolute bottom-2 right-2 bg-background/80 label text-foreground px-2 py-1">▶ {v.duration ?? "Ver"}</span>
+                    <div className="relative aspect-video overflow-hidden bg-secondary">
+                      <img src={v.thumb} alt={v.title} loading="lazy" className="w-full h-full object-cover" />
+                      <span className="absolute bottom-0 right-0 bg-accent text-accent-foreground label px-2 py-1">▶ {v.duration ?? "Ver"}</span>
                     </div>
                     <div className="mt-3 label text-muted-foreground flex flex-wrap gap-x-3">
                       <span className="text-foreground">{v.kind}</span>
                       {v.date && <span>{v.date}</span>}
                       <span>YouTube ↗</span>
                     </div>
-                    <h3 className="mt-1 text-foreground group-hover:text-foreground/70">{v.title}</h3>
-                    {v.description && <p className="mt-1 text-xs text-muted-foreground">{v.description}</p>}
+                    <h3 className="mt-1 font-semibold text-lg group-hover:underline underline-offset-4 decoration-2">{v.title}</h3>
+                    {v.description && <p className="mt-1 text-muted-foreground">{v.description}</p>}
                     {v.credit && <p className="mt-1 label text-muted-foreground">{v.credit}</p>}
                   </a>
                 </li>
@@ -161,29 +161,25 @@ export default function ArchiveProject() {
 
         {p.designs.length > 0 && (
           <Block id="designs" title="Lookbook / Diseños" count={p.designs.length}>
-            <ImageGrid images={p.designs} captions onOpen={open(p.designs, p.title)} />
+            <ImageGrid images={p.designs} whole captions onOpen={open(p.designs, p.title)} />
           </Block>
         )}
 
         {p.process.length > 0 && (
           <Block id="process" title="Procesos / Conceptos, mockups y referencias" count={p.process.length}>
-            <ImageGrid images={p.process} captions onOpen={open(p.process, p.title)} />
+            <ImageGrid images={p.process} whole captions onOpen={open(p.process, p.title)} />
           </Block>
         )}
 
-        <nav aria-label="Otros proyectos" className="mt-20 pt-8 border-t border-border grid grid-cols-2 gap-6 label">
+        <nav aria-label="Otros proyectos" className="mt-20 pt-6 border-t-2 border-border grid grid-cols-2 gap-6">
           <div>
             {nav.prev && (
-              <Link to={`/archive/${nav.prev.id}`} className="text-muted-foreground hover:text-foreground">
-                ← {nav.prev.title}
-              </Link>
+              <Link to={`/archive/${nav.prev.id}`} className="group block min-h-[44px]"><span className="label text-muted-foreground">← Anterior</span><span className="block font-semibold group-hover:underline underline-offset-4 decoration-2">{nav.prev.title}</span></Link>
             )}
           </div>
           <div className="text-right">
             {nav.next && (
-              <Link to={`/archive/${nav.next.id}`} className="text-muted-foreground hover:text-foreground">
-                {nav.next.title} →
-              </Link>
+              <Link to={`/archive/${nav.next.id}`} className="group block min-h-[44px]"><span className="label text-muted-foreground">Siguiente →</span><span className="block font-semibold group-hover:underline underline-offset-4 decoration-2">{nav.next.title}</span></Link>
             )}
           </div>
         </nav>
