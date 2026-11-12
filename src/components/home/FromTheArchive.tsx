@@ -16,7 +16,7 @@ export default function FromTheArchive() {
 
         <div className="grid grid-cols-1 md:grid-cols-12 gap-x-10 gap-y-10">
           <Link to={`/archive/${featured.id}`} className="md:col-span-5 group block">
-            <div className="bg-paper border border-border p-3">
+            <div className="bg-ink p-3">
               <SmartImage src={featured.cover} thumb alt={featured.title} className="w-full aspect-[4/5] object-contain" />
             </div>
             <div className="mt-3 label text-muted-foreground">
@@ -33,7 +33,7 @@ export default function FromTheArchive() {
                   to={`/archive/${p.id}`}
                   className="group grid grid-cols-[3.5rem_1fr] md:grid-cols-[4.5rem_1fr_auto] gap-x-4 gap-y-1 py-3 items-center hover:bg-paper transition-colors"
                 >
-                  <SmartImage src={p.cover} thumb alt="" className="w-14 h-14 md:w-[72px] md:h-[72px] object-cover row-span-2 md:row-span-1" />
+                  <SmartImage src={p.cover} thumb alt="" className="w-14 h-14 md:w-[72px] md:h-[72px] object-cover bg-ink row-span-2 md:row-span-1" />
                   <span className="min-w-0">
                     <span className="block label text-muted-foreground">
                       {p.kind} · {p.season ?? p.year}

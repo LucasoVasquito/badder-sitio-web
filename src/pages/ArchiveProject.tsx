@@ -30,7 +30,7 @@ function ImageGrid({ images, onOpen, captions = false, whole = false, cols = "gr
         {images.slice(0, shown).map((img, i) => (
           <li key={img.src}>
             <button type="button" onClick={() => onOpen(i)} className="group block w-full text-left" aria-label={`Ampliar ${img.title ?? `imagen ${i + 1}`}`}>
-              <div className={`aspect-[4/5] overflow-hidden bg-secondary ${whole ? "p-2" : ""}`}>
+              <div className={`aspect-[4/5] overflow-hidden ${whole ? "bg-ink p-2" : "bg-secondary"}`}>
                 <SmartImage src={img.src} thumb alt={img.title ?? ""} className={`w-full h-full ${whole ? "object-contain" : "object-cover"}`} />
               </div>
               {captions && (img.title || img.credit) && (

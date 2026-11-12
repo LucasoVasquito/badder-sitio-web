@@ -54,7 +54,7 @@ export default function ProductDetail() {
             <button
               type="button"
               onClick={() => setLightbox(imageIndex)}
-              className="block w-full aspect-[4/5] bg-secondary overflow-hidden cursor-zoom-in"
+              className="block w-full aspect-[4/5] bg-ink overflow-hidden cursor-zoom-in"
               aria-label="Ampliar imagen"
             >
               <img src={p.images[imageIndex]} alt={images[imageIndex].alt} className="w-full h-full object-contain" />
@@ -68,7 +68,7 @@ export default function ProductDetail() {
                     onClick={() => setImageIndex(i)}
                     aria-label={`Ver imagen ${i + 1}`}
                     aria-current={i === imageIndex}
-                    className={`aspect-square overflow-hidden bg-secondary border-2 ${i === imageIndex ? "border-foreground" : "border-transparent hover:border-foreground/40"}`}
+                    className={`aspect-square overflow-hidden bg-ink border-2 ${i === imageIndex ? "border-foreground" : "border-transparent hover:border-foreground/40"}`}
                   >
                     <img src={src} alt="" loading="lazy" className="w-full h-full object-cover" />
                   </button>

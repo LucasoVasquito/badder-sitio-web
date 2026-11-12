@@ -85,8 +85,8 @@ export default function Archivo() {
           <div className="grid md:grid-cols-12 gap-x-10 gap-y-10">
             {/* Destacado */}
             <Link to={`/archive/${lead.id}`} className="md:col-span-5 group block self-start md:sticky md:top-24">
-              <div className={`border border-border ${showWhole(lead) ? "bg-secondary p-3" : "bg-secondary"}`}>
-                <SmartImage src={lead.cover} thumb alt={lead.title} className={`w-full aspect-[4/5] ${showWhole(lead) ? "object-contain" : "object-cover"}`} />
+              <div className={`border border-border ${showWhole(lead) ? "bg-ink p-3" : "bg-secondary"}`}>
+                <SmartImage src={lead.cover} thumb alt={lead.title} className={`w-full aspect-[4/5] ${showWhole(lead) ? "object-contain" : "object-cover bg-ink"}`} />
               </div>
               <div className="mt-3 label text-muted-foreground">
                 Destacado · {lead.kind} · {lead.season ?? lead.year}
@@ -108,7 +108,7 @@ export default function Archivo() {
                       src={p.cover}
                       thumb
                       alt=""
-                      className={`w-[72px] h-[72px] md:w-[88px] md:h-[88px] row-span-2 md:row-span-1 ${showWhole(p) ? "object-contain bg-secondary" : "object-cover"}`}
+                      className={`w-[72px] h-[72px] md:w-[88px] md:h-[88px] row-span-2 md:row-span-1 ${showWhole(p) ? "object-contain bg-ink" : "object-cover bg-ink"}`}
                     />
                     <span className="min-w-0">
                       <span className="block label text-muted-foreground">

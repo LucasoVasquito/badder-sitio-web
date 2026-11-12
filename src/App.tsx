@@ -17,6 +17,7 @@ import Community from "./pages/Community";
 import Contact from "./pages/Contact";
 import ProductDetail from "./pages/ProductDetail";
 import Cart from "./pages/Cart";
+import Sistema from "./pages/Sistema";
 
 // Redirige conservando ?query y #hash (ej: /journal?post=post-01 → /culture?post=post-01)
 function Redirect({ to }: { to: string }) {
@@ -48,6 +49,9 @@ function App() {
 
           <Route path="/cart" element={<Cart />} />
           <Route path="/contact" element={<Contact />} />
+
+          {/* Referencia interna del sistema visual (no enlazada desde el menú) */}
+          <Route path="/sistema" element={<Sistema />} />
 
           {/* Rutas anteriores: redirigen a la sección nueva */}
           <Route path="/journal" element={<Redirect to="/culture" />} />
