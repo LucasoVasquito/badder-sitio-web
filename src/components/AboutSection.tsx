@@ -6,8 +6,8 @@ import { crewNames } from "@/data/credits";
 // Manifiesto breve al cierre de la Home (+ créditos de la crew, ancla #crew)
 export default function AboutSection() {
   return (
-    <section id="about" className="scroll-mt-20 relative px-6 md:px-16 py-16 md:py-24 border-t border-border wavy-grid overflow-hidden">
-      <div className="grid md:grid-cols-12 gap-12 md:gap-8 max-w-6xl mx-auto items-center">
+    <section id="about" className="scroll-mt-20 relative px-5 md:px-12 py-16 md:py-24 border-t border-border overflow-hidden">
+      <div className="grid md:grid-cols-12 gap-12 md:gap-8 wrap items-center">
         {/* Texto */}
         <motion.div
           initial={{ opacity: 0, y: 16 }}
@@ -16,10 +16,10 @@ export default function AboutSection() {
           transition={{ duration: 0.5 }}
           className="md:col-span-7"
         >
-          <div className="font-mono-tight text-muted-foreground mb-3">
-            <span className="text-cobalt">08</span> — About / Manifiesto
+          <div className="label text-muted-foreground mb-3">
+            <span className="text-foreground">08</span> — About / Manifiesto
           </div>
-          <h2 className="font-serif text-5xl md:text-7xl text-foreground uppercase leading-[0.9] tracking-tight mb-8">
+          <h2 className="font-display text-5xl md:text-7xl text-foreground leading-[0.9] tracking-tight mb-8">
             Nacido
             <br />
             en la pista
@@ -40,7 +40,7 @@ export default function AboutSection() {
               ["Ciudad", "La Plata"],
             ].map(([k, v]) => (
               <div key={k}>
-                <div className="font-mono-tight text-muted-foreground mb-1">{k}</div>
+                <div className="label text-muted-foreground mb-1">{k}</div>
                 <div className="font-serif text-2xl text-foreground">{v}</div>
               </div>
             ))}
@@ -58,35 +58,35 @@ export default function AboutSection() {
           <div className="relative border border-foreground/20 p-3 rotate-2 max-w-[320px] md:max-w-[360px]">
             <img src={badderLogo} alt="" className="relative z-0 w-full" loading="lazy" />
             <div className="absolute z-20 -bottom-10 left-1/2 -translate-x-[140%] w-[96px] h-[126px] border border-foreground/10 rotate-[-5deg] shadow-lg overflow-hidden bg-muted">
-              <img src="/cuchate.esta/foto (10).webp" alt="Archivo BADDER — Cuchate.esta" loading="lazy" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" />
+              <img src="/cuchate.esta/foto (10).webp" alt="Archivo BADDER — Cuchate.esta" loading="lazy" className="w-full h-full object-cover transition-all duration-500" />
             </div>
             <div className="absolute z-30 -bottom-12 left-1/2 -translate-x-1/2 w-[104px] h-[136px] border border-foreground/10 shadow-xl overflow-hidden bg-muted">
-              <img src="/cuchate.esta/foto (4).webp" alt="Archivo BADDER — Cuchate.esta" loading="lazy" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" />
+              <img src="/cuchate.esta/foto (4).webp" alt="Archivo BADDER — Cuchate.esta" loading="lazy" className="w-full h-full object-cover transition-all duration-500" />
             </div>
             <div className="absolute z-20 -bottom-10 left-1/2 translate-x-[40%] w-[92px] h-[122px] border border-foreground/10 rotate-[5deg] shadow-lg overflow-hidden bg-muted">
-              <img src="/capital/foto (21).webp" alt="Archivo BADDER — Capital" loading="lazy" className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-500" />
+              <img src="/capital/foto (21).webp" alt="Archivo BADDER — Capital" loading="lazy" className="w-full h-full object-cover transition-all duration-500" />
             </div>
           </div>
         </motion.div>
       </div>
 
       {/* Crew / créditos */}
-      <div id="crew" className="scroll-mt-24 max-w-6xl mx-auto mt-16 pt-8 border-t border-border grid md:grid-cols-12 gap-8">
+      <div id="crew" className="scroll-mt-24 wrap mt-16 pt-8 border-t border-border grid md:grid-cols-12 gap-8">
         <div className="md:col-span-4">
-          <h3 className="font-mono-tight text-foreground">Crew / Créditos</h3>
+          <h3 className="label text-foreground">Crew / Créditos</h3>
           <p className="mt-3 text-xs text-muted-foreground leading-relaxed max-w-xs">
             Las personas que forjaron la experiencia BADDER. Pasado y presente.
           </p>
           <Link
             to="/contact#bookings"
-            className="inline-block mt-5 font-mono-tight text-foreground border-b border-foreground/40 pb-1 hover:border-foreground transition-colors"
+            className="inline-block mt-5 label text-foreground border-b border-foreground/40 pb-1 hover:border-foreground transition-colors"
           >
             Conocé a los integrantes →
           </Link>
         </div>
         <ul className="md:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-x-6 gap-y-3">
           {crewNames.map((name) => (
-            <li key={name} className="font-mono-tight text-muted-foreground">
+            <li key={name} className="label text-muted-foreground">
               {name}
             </li>
           ))}

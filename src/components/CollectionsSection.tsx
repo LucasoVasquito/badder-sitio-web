@@ -23,8 +23,8 @@ export default function CollectionsSection() {
   const [activeCollection, setActiveCollection] = useState(null);
 
   return (
-    <section className="min-h-screen py-32 px-6 md:px-16">
-      <div className="max-w-6xl mx-auto">
+    <section className="min-h-screen py-32 px-5 md:px-12">
+      <div className="wrap">
 
         <AnimatePresence mode="wait">
           {!activeCollection ? (
@@ -35,7 +35,7 @@ export default function CollectionsSection() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <div className="font-mono-tight text-muted-foreground mb-2">DESIGN & CONCEPT ART</div>
+              <div className="label text-muted-foreground mb-2">DESIGN & CONCEPT ART</div>
               <motion.h2
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -64,7 +64,7 @@ export default function CollectionsSection() {
                       />
 
                       {/* ACÁ VUELVE EL RECUADRO DEL LOGO */}
-                      <div className="absolute bottom-4 right-4 z-10 w-[120px] h-[80px] flex items-center justify-center bg-background/40 backdrop-blur-sm border border-foreground/20 p-2">
+                      <div className="absolute bottom-4 right-4 z-10 w-[120px] h-[80px] flex items-center justify-center bg-background/40 border border-foreground/20 p-2">
                         {col.logo ? (
                           <img
                             src={col.logo}
@@ -81,7 +81,7 @@ export default function CollectionsSection() {
 
                     {/* Info */}
                     <div className="py-8">
-                      <div className="font-mono-tight text-muted-foreground mb-4">{col.season} — {col.pieces} PIECES</div>
+                      <div className="label text-muted-foreground mb-4">{col.season} — {col.pieces} PIECES</div>
                       <h3 className="font-serif text-4xl md:text-6xl text-foreground mb-6 leading-none">{col.name}</h3>
 
                       {/* ACÁ ESTÁ LA MAGIA, AHORA ES DINÁMICO */}
@@ -91,7 +91,7 @@ export default function CollectionsSection() {
 
                       <button
                         onClick={() => setActiveCollection(col)}
-                        className="border border-foreground/40 px-8 py-3 font-mono-tight text-foreground hover:bg-foreground hover:text-background transition-all duration-200 tracking-wider"
+                        className="border border-foreground/40 px-8 py-3 label text-foreground hover:bg-foreground hover:text-background transition-all duration-200 tracking-wider"
                       >
                         EXPLORAR LOOKBOOK
                       </button>
@@ -113,13 +113,13 @@ export default function CollectionsSection() {
             >
               <button
                 onClick={() => setActiveCollection(null)}
-                className="mb-12 font-mono-tight text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-colors"
+                className="mb-12 label text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-colors"
               >
                 ← Volver al Archivo
               </button>
 
               <div className="mb-24 text-center md:text-left border-b border-border pb-8">
-                <div className="font-mono-tight text-muted-foreground mb-2">{activeCollection.season} — LOOKBOOK</div>
+                <div className="label text-muted-foreground mb-2">{activeCollection.season} — LOOKBOOK</div>
                 <h2 className="font-serif text-5xl md:text-7xl text-foreground mb-4">
                   {activeCollection.name}
                 </h2>
@@ -152,10 +152,10 @@ export default function CollectionsSection() {
 
                       {/* ACÁ ESTÁ LA MAGIA: El bloque de texto estilo Galería */}
                       <div className="mt-8 text-center w-full max-w-xl border-t border-foreground/20 pt-6">
-                        <h4 className="font-serif text-2xl md:text-3xl text-foreground tracking-wide mb-2 uppercase">
+                        <h4 className="font-display text-2xl md:text-3xl text-foreground tracking-wide mb-2">
                           {item.title}
                         </h4>
-                        <p className="font-mono-tight text-muted-foreground text-xs tracking-[0.2em] uppercase">
+                        <p className="label text-muted-foreground text-xs tracking-[0.2em] uppercase">
                           {item.designers}
                         </p>
                       </div>

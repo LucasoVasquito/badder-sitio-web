@@ -11,7 +11,7 @@ import Notice, { EmptyState } from "@/components/site/Notice";
 import { btn } from "@/lib/ui";
 
 const inputCls =
-  "w-full bg-transparent border-b border-border py-2 text-sm focus:outline-none focus:border-foreground transition-colors rounded-none";
+ "w-full bg-transparent border-b border-border py-2 text-sm focus:outline-none focus:border-foreground transition-colors rounded-none";
 
 export default function Cart() {
   usePageMeta({ title: "Carrito" });
@@ -60,7 +60,7 @@ export default function Cart() {
   if (confirmed) {
     return (
       <main className="bg-background min-h-screen pt-32 pb-16">
-        <div className="px-6 md:px-16 max-w-3xl mx-auto">
+        <div className="px-5 md:px-12 max-w-3xl mx-auto">
           <PageHeader kicker="Pedido recibido" title="Gracias" />
           <Notice title="Recibimos tu pedido" tone="success">
             {confirmed.reference && <>Referencia: <span className="text-foreground">{confirmed.reference}</span>. </>}
@@ -73,7 +73,7 @@ export default function Cart() {
 
   return (
     <main className="bg-background min-h-screen pt-32 pb-16 overflow-hidden">
-      <div className="px-6 md:px-16 max-w-6xl mx-auto">
+      <div className="px-5 md:px-12 wrap">
         <PageHeader kicker={`Carrito / ${rows.length} ítem${rows.length === 1 ? "" : "s"}`} title="Cart" />
 
         {rows.length === 0 ? (
@@ -88,19 +88,19 @@ export default function Cart() {
             <ul className="lg:col-span-7 flex flex-col border-t border-border">
               {rows.map(({ line, product, variant, stock, subtotal }) => (
                 <li key={`${line.productId}-${line.sku ?? ""}`} className="flex gap-4 py-5 border-b border-border">
-                  <Link to={`/shop/${product.id}`} className="w-20 h-24 shrink-0 bg-black border border-border overflow-hidden">
+                  <Link to={`/shop/${product.id}`} className="w-20 h-24 shrink-0 bg-secondary border border-border overflow-hidden">
                     <img src={product.images[0]} alt={product.name} className="w-full h-full object-cover" />
                   </Link>
                   <div className="flex-1 min-w-0 flex flex-col justify-between gap-3">
                     <div className="flex justify-between gap-3">
                       <div className="min-w-0">
-                        <h2 className="font-serif text-xl uppercase text-foreground truncate">{product.name}</h2>
+                        <h2 className="font-display text-xl text-foreground truncate">{product.name}</h2>
                         {variant && (
-                          <div className="font-mono-tight text-muted-foreground mt-1">
+                          <div className="label text-muted-foreground mt-1">
                             {[variant.size && `Talle ${variant.size}`, variant.color].filter(Boolean).join(" · ")}
                           </div>
                         )}
-                        <div className="font-mono-tight text-muted-foreground mt-1">{formatPrice(product.price!)} c/u</div>
+                        <div className="label text-muted-foreground mt-1">{formatPrice(product.price!)} c/u</div>
                       </div>
                       <button type="button" onClick={() => removeItem(line.productId, line.sku)} aria-label={`Quitar ${product.name}`} className="text-muted-foreground hover:text-foreground self-start p-1">
                         <Trash2 className="w-4 h-4" />
@@ -111,14 +111,14 @@ export default function Cart() {
                         <button type="button" aria-label="Restar uno" disabled={line.quantity <= 1} onClick={() => setQuantity(line.productId, line.sku, line.quantity - 1)} className="p-2 disabled:opacity-30">
                           <Minus className="w-3 h-3" />
                         </button>
-                        <span className="w-8 text-center font-mono-tight text-foreground" aria-live="polite">{line.quantity}</span>
+                        <span className="w-8 text-center label text-foreground" aria-live="polite">{line.quantity}</span>
                         <button type="button" aria-label="Sumar uno" disabled={line.quantity >= stock} onClick={() => setQuantity(line.productId, line.sku, line.quantity + 1)} className="p-2 disabled:opacity-30">
                           <Plus className="w-3 h-3" />
                         </button>
                       </div>
                       <span className="font-mono text-sm tracking-widest text-foreground">{formatPrice(subtotal)}</span>
                     </div>
-                    {line.quantity >= stock && <span className="font-mono-tight text-muted-foreground">Máximo disponible</span>}
+                    {line.quantity >= stock && <span className="label text-muted-foreground">Máximo disponible</span>}
                   </div>
                 </li>
               ))}
@@ -130,7 +130,7 @@ export default function Cart() {
                 <span className="text-muted-foreground">Total</span>
                 <span>{formatPrice(total)}</span>
               </div>
-              <p className="font-mono-tight text-muted-foreground leading-relaxed">Envío no incluido: se coordina al confirmar el pedido.</p>
+              <p className="label text-muted-foreground leading-relaxed">Envío no incluido: se coordina al confirmar el pedido.</p>
 
               {commerce.checkoutEnabled ? (
                 <form onSubmit={submit} className="flex flex-col gap-6" noValidate>
@@ -140,12 +140,12 @@ export default function Cart() {
                     ["phone", "Teléfono *", "tel"],
                   ].map(([key, label, type]) => (
                     <label key={key} className="flex flex-col gap-1">
-                      <span className="font-mono-tight text-muted-foreground">{label}</span>
+                      <span className="label text-muted-foreground">{label}</span>
                       <input type={type} value={form[key as keyof typeof form]} onChange={(e) => setForm({ ...form, [key]: e.target.value })} className={inputCls} required />
                     </label>
                   ))}
                   <fieldset className="flex gap-4">
-                    <legend className="font-mono-tight text-muted-foreground mb-2">Entrega</legend>
+                    <legend className="label text-muted-foreground mb-2">Entrega</legend>
                     {["RETIRO", "ENVIO"].map((d) => (
                       <label key={d} className="flex items-center gap-2 text-sm">
                         <input type="radio" name="delivery" value={d} checked={form.delivery === d} onChange={() => setForm({ ...form, delivery: d })} />
@@ -155,7 +155,7 @@ export default function Cart() {
                   </fieldset>
                   {form.delivery === "ENVIO" && (
                     <label className="flex flex-col gap-1">
-                      <span className="font-mono-tight text-muted-foreground">Dirección *</span>
+                      <span className="label text-muted-foreground">Dirección *</span>
                       <input value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className={inputCls} />
                     </label>
                   )}

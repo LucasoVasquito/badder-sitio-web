@@ -12,17 +12,17 @@ export default function SectionHeader({ index, title, kicker, link }: SectionHea
   return (
     <div className="flex flex-wrap items-end justify-between gap-x-6 gap-y-4 mb-10 md:mb-14">
       <div>
-        <div className="font-mono-tight text-muted-foreground mb-3">
-          <span className="text-cobalt">{index}</span> — {kicker}
+        <div className="label text-muted-foreground mb-3">
+          <span className="text-foreground">{index}</span> — {kicker}
         </div>
-        <h2 className="font-serif text-4xl md:text-6xl text-foreground uppercase leading-[0.95] tracking-tight">
+        <h2 className="font-display text-4xl md:text-6xl text-foreground leading-[0.95] tracking-tight">
           {title}
         </h2>
       </div>
       {link && (
         <Link
           to={link.to}
-          className="group font-mono-tight text-foreground border-b border-foreground/40 pb-1 hover:border-foreground transition-colors"
+          className="group label text-foreground border-b border-foreground/40 pb-1 hover:border-foreground transition-colors"
         >
           {link.label} <span className="inline-block transition-transform group-hover:translate-x-1">→</span>
         </Link>

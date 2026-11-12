@@ -10,7 +10,7 @@ const NotFound = () => {
 
   return (
     <main className="bg-background min-h-screen pt-32 pb-16">
-      <div className="px-6 md:px-16 max-w-6xl mx-auto">
+      <div className="px-5 md:px-12 wrap">
         <PageHeader kicker={`404 / ${pathname}`} title="Señal perdida" intro="Esta página no existe o se movió. Probá desde alguna de las secciones." />
         <div className="flex flex-wrap gap-3">
           <Link to="/" className={btn.primary}>

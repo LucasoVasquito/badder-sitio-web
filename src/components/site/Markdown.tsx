@@ -50,17 +50,17 @@ export default function Markdown({ source }: { source: string }) {
         const key = `b${b}`;
         const h = block.match(/^(#{1,3})\s+(.*)$/);
         if (h && lines.length === 1) {
-          const cls = "font-serif uppercase text-foreground leading-tight mt-4";
+          const cls = "font-display text-foreground leading-tight mt-4";
           if (h[1].length === 1) return <h2 key={key} className={`${cls} text-3xl md:text-4xl`}>{inline(h[2], key)}</h2>;
           if (h[1].length === 2) return <h3 key={key} className={`${cls} text-2xl md:text-3xl`}>{inline(h[2], key)}</h3>;
-          return <h4 key={key} className="font-mono-tight text-foreground mt-4">{inline(h[2], key)}</h4>;
+          return <h4 key={key} className="label text-foreground mt-4">{inline(h[2], key)}</h4>;
         }
         const img = block.match(/^!\[([^\]]*)\]\(([^)\s]+)(?:\s+"([^"]*)")?\)$/);
         if (img) {
           return (
             <figure key={key} className="my-4">
               <img src={img[2]} alt={img[1]} loading="lazy" className="w-full h-auto border border-border" />
-              {img[3] && <figcaption className="mt-2 font-mono-tight text-muted-foreground">{img[3]}</figcaption>}
+              {img[3] && <figcaption className="mt-2 label text-muted-foreground">{img[3]}</figcaption>}
             </figure>
           );
         }
@@ -69,7 +69,7 @@ export default function Markdown({ source }: { source: string }) {
             <ol key={key} className="flex flex-col border-t border-border">
               {lines.map((l, i) => (
                 <li key={i} className="flex gap-4 py-2 border-b border-border">
-                  <span className="font-mono-tight text-muted-foreground pt-1 w-6">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="label text-muted-foreground pt-1 w-6">{String(i + 1).padStart(2, "0")}</span>
                   <span className="text-foreground">{inline(l.replace(/^\d+\.\s+/, ""), `${key}-${i}`)}</span>
                 </li>
               ))}
@@ -78,7 +78,7 @@ export default function Markdown({ source }: { source: string }) {
         }
         if (lines.every((l) => /^[-*]\s+/.test(l))) {
           return (
-            <ul key={key} className="flex flex-col gap-2 pl-4 list-disc marker:text-cobalt">
+            <ul key={key} className="flex flex-col gap-2 pl-4 list-disc marker:text-foreground">
               {lines.map((l, i) => (
                 <li key={i}>{inline(l.replace(/^[-*]\s+/, ""), `${key}-${i}`)}</li>
               ))}
@@ -87,7 +87,7 @@ export default function Markdown({ source }: { source: string }) {
         }
         if (lines.every((l) => l.startsWith(">"))) {
           return (
-            <blockquote key={key} className="border-l-2 border-cobalt pl-5 font-serif text-xl md:text-2xl text-foreground leading-snug">
+            <blockquote key={key} className="border-l-2 border-accent pl-5 font-serif text-xl md:text-2xl text-foreground leading-snug">
               {inline(lines.map((l) => l.replace(/^>\s?/, "")).join(" "), key)}
             </blockquote>
           );

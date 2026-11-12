@@ -137,8 +137,8 @@ export default function PhotoSection() {
 };
 
   return (
-    <section className="min-h-screen py-32 px-6 md:px-16">
-      <div className="max-w-6xl mx-auto">
+    <section className="min-h-screen py-32 px-5 md:px-12">
+      <div className="wrap">
         
         {/* Usamos AnimatePresence para hacer una transición suave entre la grilla y el álbum */}
         <AnimatePresence mode="wait">
@@ -151,7 +151,7 @@ export default function PhotoSection() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <div className="font-mono-tight text-muted-foreground mb-2">Fotos</div>
+              <div className="label text-muted-foreground mb-2">Fotos</div>
               <h2 className="font-serif text-5xl md:text-7xl text-foreground mb-16">
                 Archivo Fotográfico
               </h2>
@@ -164,10 +164,10 @@ export default function PhotoSection() {
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
-                    className="relative mb-2 break-inside-avoid group cursor-pointer crt-scanlines"
+                    className="relative mb-2 break-inside-avoid group cursor-pointer "
                     onClick={() => setActiveEvent(event)} // Al hacer clic, activamos el evento
                   >
-                    <div className="relative overflow-hidden border border-border bg-black">
+                    <div className="relative overflow-hidden border border-border bg-secondary">
                       <img
                         src={event.coverSrc}
                         alt={event.coverTitle}
@@ -199,7 +199,7 @@ export default function PhotoSection() {
               {/* Botón para volver atrás */}
               <button 
                 onClick={() => setActiveEvent(null)}
-                className="mb-12 font-mono-tight text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-colors"
+                className="mb-12 label text-xs tracking-widest uppercase text-muted-foreground hover:text-foreground transition-colors"
               >
                 ← Volver al Archivo
               </button>
@@ -209,7 +209,7 @@ export default function PhotoSection() {
                 <h2 className="font-serif text-5xl md:text-7xl text-foreground mb-4 tracking-wider">
                   {activeEvent.title}
                 </h2>
-                <div className="font-mono-tight text-muted-foreground text-sm uppercase tracking-[0.2em] flex flex-col gap-1">
+                <div className="label text-muted-foreground text-sm uppercase tracking-[0.2em] flex flex-col gap-1">
                   <p>{activeEvent.meta}</p>
                 </div>
               </div>

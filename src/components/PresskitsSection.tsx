@@ -20,16 +20,16 @@ const presskits = [
 
 export default function PresskitsSection() {
   return (
-    <section className="py-32 px-6 md:px-16 wavy-grid relative overflow-hidden">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-32 px-5 md:px-12 relative overflow-hidden">
+      <div className="wrap">
         
-        <div className="font-mono-tight text-muted-foreground mb-2">BOOKINGS / INFO</div>
+        <div className="label text-muted-foreground mb-2">BOOKINGS / INFO</div>
         <div className="mb-16">
           <motion.h2
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-5xl md:text-7xl text-foreground uppercase tracking-wide"
+            className="font-display text-5xl md:text-7xl text-foreground tracking-wide"
           >
             Presskits
           </motion.h2>
@@ -54,7 +54,7 @@ export default function PresskitsSection() {
                 <h3 className="text-xl md:text-2xl font-bold tracking-wider text-foreground uppercase">
                   {p.name}
                 </h3>
-                <span className="font-mono-tight text-muted-foreground text-xs tracking-widest uppercase hidden md:block">
+                <span className="label text-muted-foreground text-xs tracking-widest uppercase hidden md:block">
                   PDF / INFO
                 </span>
               </div>
@@ -69,8 +69,8 @@ export default function PresskitsSection() {
                 />
                 
                 {/* Overlay mágico al hacer hover */}
-                <div className="absolute inset-0 bg-background/20 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                  <span className="font-mono-tight border border-foreground px-8 py-3 bg-background text-foreground tracking-widest text-sm uppercase">
+                <div className="absolute inset-0 bg-background/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                  <span className="label border border-foreground px-8 py-3 bg-background text-foreground tracking-widest text-sm uppercase">
                     Abrir Documento
                   </span>
                 </div>
@@ -78,7 +78,7 @@ export default function PresskitsSection() {
 
               {/* Nombre de los diseñadores */}
               <div className="mt-6 text-center w-full border-t border-foreground/20 pt-4">
-                <p className="font-mono-tight text-muted-foreground text-xs tracking-[0.2em] uppercase">
+                <p className="label text-muted-foreground text-xs tracking-[0.2em] uppercase">
                   {p.designers}
                 </p>
               </div>

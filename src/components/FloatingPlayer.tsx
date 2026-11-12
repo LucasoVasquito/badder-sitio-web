@@ -38,7 +38,7 @@ export default function FloatingPlayer() {
       <button 
         onClick={togglePlay}
         aria-label={isPlaying ? "Pausar" : `Reproducir ${currentTrack.artist} — ${currentTrack.title}`}
-        className="flex items-center justify-center w-12 h-12 shrink-0 bg-background/40 backdrop-blur-md border border-foreground/30 text-foreground hover:bg-foreground hover:text-background transition-all duration-300"
+        className="flex items-center justify-center w-12 h-12 shrink-0 bg-background/40 border border-foreground/30 text-foreground hover:bg-foreground hover:text-background transition-all duration-300"
       >
         {isPlaying ? (
           <Square className="w-4 h-4 fill-current" />
@@ -48,7 +48,7 @@ export default function FloatingPlayer() {
       </button>
 
       {error && !isPlaying && (
-        <span role="status" className="font-mono-tight text-muted-foreground bg-background/70 border border-border px-2 py-1 max-w-[calc(100vw-9.5rem)] truncate">
+        <span role="status" className="label text-muted-foreground bg-background/70 border border-border px-2 py-1 max-w-[calc(100vw-9.5rem)] truncate">
           {error}
         </span>
       )}
@@ -62,12 +62,12 @@ export default function FloatingPlayer() {
         <img
           src={currentTrack.cover}
           alt={currentTrack.title}
-          className="w-12 h-12 shrink-0 object-cover border border-foreground/30 bg-background/40 backdrop-blur-md"
+          className="w-12 h-12 shrink-0 object-cover border border-foreground/30 bg-background/40 "
           onError={(e) => { e.currentTarget.style.display = 'none'; }}
         />
 
         <div className="flex flex-col justify-center gap-1 overflow-hidden min-w-0 pr-2 md:pr-4">
-          <div className="font-mono-tight text-[10px] tracking-[0.2em] uppercase text-muted-foreground flex items-center gap-2 shrink-0">
+          <div className="label text-[10px] tracking-[0.2em] uppercase text-muted-foreground flex items-center gap-2 shrink-0">
             <span>NOW PLAYING</span>
             <span className="w-1.5 h-1.5 bg-foreground rounded-full animate-pulse"></span>
           </div>
@@ -96,11 +96,11 @@ export default function FloatingPlayer() {
     <Link 
       to="/cart"
       aria-label={`Carrito${cartItemCount > 0 ? ` (${cartItemCount})` : ""}`}
-      className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 flex items-center justify-center w-12 h-12 shrink-0 bg-background/40 backdrop-blur-md border border-foreground/30 text-foreground hover:bg-foreground hover:text-background transition-all duration-300 group"
+      className="fixed bottom-4 right-4 md:bottom-6 md:right-6 z-50 flex items-center justify-center w-12 h-12 shrink-0 bg-background/40 border border-foreground/30 text-foreground hover:bg-foreground hover:text-background transition-all duration-300 group"
     >
       <ShoppingBag className="w-5 h-5 fill-transparent group-hover:fill-current transition-colors" strokeWidth={1.5} />
       {cartItemCount > 0 && (
-        <span className="absolute -top-1 -right-1 bg-foreground text-background text-[9px] font-mono-tight w-4 h-4 flex items-center justify-center rounded-none border border-background">
+        <span className="absolute -top-1 -right-1 bg-foreground text-background text-[9px] label w-4 h-4 flex items-center justify-center rounded-none border border-background">
           {cartItemCount}
         </span>
       )}

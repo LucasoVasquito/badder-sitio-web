@@ -18,11 +18,11 @@ const sections = [
 function SectionTitle({ id, n, title, count }: { id: string; n: string; title: string; count: number }) {
   return (
     <div className="flex items-end justify-between gap-4 border-b border-border pb-4 mb-8">
-      <h2 id={`${id}-title`} className="font-serif text-3xl md:text-5xl uppercase text-foreground leading-none">
-        <span className="font-mono-tight text-cobalt align-top mr-3">{n}</span>
+      <h2 id={`${id}-title`} className="font-display text-3xl md:text-5xl text-foreground leading-none">
+        <span className="label text-foreground align-top mr-3">{n}</span>
         {title}
       </h2>
-      <span className="font-mono-tight text-muted-foreground">{String(count).padStart(2, "0")}</span>
+      <span className="label text-muted-foreground">{String(count).padStart(2, "0")}</span>
     </div>
   );
 }
@@ -30,19 +30,19 @@ function SectionTitle({ id, n, title, count }: { id: string; n: string; title: s
 function VideoCard({ v, large = false }: { v: VideoEntry; large?: boolean }) {
   return (
     <a href={v.url} target="_blank" rel="noopener noreferrer" className="group block">
-      <div className="relative aspect-video overflow-hidden bg-black border border-border">
+      <div className="relative aspect-video overflow-hidden bg-secondary border border-border">
         <img src={v.thumb} alt={v.title} loading="lazy" className="w-full h-full object-cover opacity-85 transition-all duration-700 group-hover:opacity-100 group-hover:scale-[1.03]" />
-        <span className="absolute bottom-2 right-2 bg-background/80 font-mono-tight text-foreground px-2 py-1">▶ {v.duration}</span>
+        <span className="absolute bottom-2 right-2 bg-background/80 label text-foreground px-2 py-1">▶ {v.duration}</span>
       </div>
-      <div className="mt-3 font-mono-tight text-muted-foreground flex flex-wrap gap-x-3">
+      <div className="mt-3 label text-muted-foreground flex flex-wrap gap-x-3">
         <span>{v.date}</span>
         <span>YouTube ↗</span>
       </div>
-      <h3 className={`mt-1 text-foreground leading-snug group-hover:text-foreground/70 transition-colors ${large ? "font-serif text-2xl md:text-3xl uppercase" : "text-sm"}`}>
+      <h3 className={`mt-1 text-foreground leading-snug group-hover:text-foreground/70 transition-colors ${large ? "font-display text-2xl md:text-3xl " : "text-sm"}`}>
         {v.title}
       </h3>
       {(v.master || v.edition) && (
-        <div className="mt-2 font-mono-tight text-muted-foreground leading-relaxed">
+        <div className="mt-2 label text-muted-foreground leading-relaxed">
           {v.master && <div>Master: {v.master}</div>}
           {v.edition && <div>Edición: {v.edition}</div>}
         </div>
@@ -56,11 +56,11 @@ export default function Music() {
 
   return (
     <main className="bg-background min-h-screen pt-32 pb-16 overflow-hidden">
-      <div className="px-6 md:px-16 max-w-6xl mx-auto">
+      <div className="px-5 md:px-12 wrap">
         <PageHeader kicker="Releases / DJ sets / Sessions / Artists" title="Music">
           <nav aria-label="Secciones de Music" className="mt-8 flex flex-wrap gap-2">
             {sections.map((s) => (
-              <a key={s.id} href={`#${s.id}`} className="font-mono-tight border border-border px-3 py-2 text-muted-foreground hover:text-foreground hover:border-foreground/50 transition-colors">
+              <a key={s.id} href={`#${s.id}`} className="label border border-border px-3 py-2 text-muted-foreground hover:text-foreground hover:border-foreground/50 transition-colors">
                 {s.label}
               </a>
             ))}
@@ -79,29 +79,29 @@ export default function Music() {
                 viewport={{ once: true }}
                 transition={{ delay: (i % 3) * 0.05 }}
               >
-                <div className="relative aspect-square overflow-hidden bg-black border border-border">
+                <div className="relative aspect-square overflow-hidden bg-secondary border border-border">
                   <img src={r.cover} alt={`${r.artist} — ${r.title}`} loading="lazy" className="w-full h-full object-cover" />
-                  <span className="absolute top-2 left-2 bg-background/90 border border-border px-2 py-1 font-mono-tight text-foreground">{r.type}</span>
+                  <span className="absolute top-2 left-2 bg-background/90 border border-border px-2 py-1 label text-foreground">{r.type}</span>
                 </div>
-                <div className="mt-3 font-mono-tight text-muted-foreground flex flex-wrap gap-x-3">
+                <div className="mt-3 label text-muted-foreground flex flex-wrap gap-x-3">
                   <span>{r.artist}</span>
                   {r.year && <span>{r.year}</span>}
                   {r.note && <span>{r.note}</span>}
                 </div>
-                <h3 className="mt-1 font-serif text-2xl uppercase text-foreground leading-tight">{r.title}</h3>
+                <h3 className="mt-1 font-display text-2xl text-foreground leading-tight">{r.title}</h3>
 
                 <ol className="mt-4 border-t border-border">
                   {r.tracks.map((t, n) => {
                     const idx = findTrackByAudio(t.audio);
                     return (
                       <li key={t.title} className="flex items-center gap-3 py-2 border-b border-border/60">
-                        <span className="font-mono-tight text-muted-foreground w-5">{String(n + 1).padStart(2, "0")}</span>
+                        <span className="label text-muted-foreground w-5">{String(n + 1).padStart(2, "0")}</span>
                         <span className="flex-1 min-w-0 text-sm text-foreground truncate">{t.title}</span>
-                        {t.preview && <span className="font-mono-tight text-muted-foreground">Preview</span>}
+                        {t.preview && <span className="label text-muted-foreground">Preview</span>}
                         {idx >= 0 ? (
                           <PlayButton trackIndex={idx} className="!w-9 !h-9" />
                         ) : (
-                          <span className="font-mono-tight text-muted-foreground">Sin audio</span>
+                          <span className="label text-muted-foreground">Sin audio</span>
                         )}
                       </li>
                     );
@@ -111,7 +111,7 @@ export default function Music() {
                 {r.links.length > 0 && (
                   <div className="mt-3 flex flex-wrap gap-4">
                     {r.links.map((l) => (
-                      <a key={l.url} href={l.url} target="_blank" rel="noopener noreferrer" className="font-mono-tight text-foreground border-b border-foreground/40 pb-0.5">
+                      <a key={l.url} href={l.url} target="_blank" rel="noopener noreferrer" className="label text-foreground border-b border-foreground/40 pb-0.5">
                         {l.label} ↗
                       </a>
                     ))}
@@ -142,7 +142,7 @@ export default function Music() {
               <VideoCard key={v.id} v={v} large />
             ))}
           </div>
-          <p className="mt-8 font-mono-tight text-muted-foreground">
+          <p className="mt-8 label text-muted-foreground">
             Motion, visualizers y más registros en el{" "}
             <Link to="/archive?filter=video" className="text-foreground underline underline-offset-4">
               archivo de video →
@@ -160,30 +160,30 @@ export default function Music() {
                 <article key={a.id} className="grid grid-cols-5 gap-5">
                   {a.presskit && (
                     <a href={a.presskit.url} target="_blank" rel="noopener noreferrer" className="col-span-2 group block">
-                      <div className="aspect-[4/5] overflow-hidden border border-border bg-black">
+                      <div className="aspect-[4/5] overflow-hidden border border-border bg-secondary">
                         <img src={a.presskit.cover} alt={`Presskit de ${a.name}`} loading="lazy" className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03]" />
                       </div>
                     </a>
                   )}
                   <div className={a.presskit ? "col-span-3" : "col-span-5"}>
-                    <h3 className="font-serif text-3xl uppercase text-foreground leading-none">{a.name}</h3>
-                    <p className="mt-2 font-mono-tight text-muted-foreground">{a.roles}</p>
+                    <h3 className="font-display text-3xl text-foreground leading-none">{a.name}</h3>
+                    <p className="mt-2 label text-muted-foreground">{a.roles}</p>
                     {own.length > 0 && (
                       <ul className="mt-4 text-sm text-muted-foreground space-y-1">
                         {own.map((r) => (
                           <li key={r.id}>
-                            <span className="font-mono-tight mr-2">{r.type}</span>
+                            <span className="label mr-2">{r.type}</span>
                             <span className="text-foreground">{r.title}</span>
                           </li>
                         ))}
                       </ul>
                     )}
                     {a.presskit && (
-                      <a href={a.presskit.url} target="_blank" rel="noopener noreferrer" className="mt-5 inline-block font-mono-tight text-foreground border-b border-foreground/40 pb-1 hover:border-foreground">
+                      <a href={a.presskit.url} target="_blank" rel="noopener noreferrer" className="mt-5 inline-block label text-foreground border-b border-foreground/40 pb-1 hover:border-foreground">
                         Presskit / Booking ↗
                       </a>
                     )}
-                    {a.presskit && <p className="mt-3 font-mono-tight text-muted-foreground">Diseño presskit: {a.presskit.design}</p>}
+                    {a.presskit && <p className="mt-3 label text-muted-foreground">Diseño presskit: {a.presskit.design}</p>}
                   </div>
                 </article>
               );

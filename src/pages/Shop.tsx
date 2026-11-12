@@ -18,22 +18,22 @@ function ProductCard({ product, i }: { product: Product; i: number }) {
       transition={{ delay: (i % 4) * 0.05 }}
     >
       <Link to={`/shop/${product.id}`} className="group flex flex-col">
-        <div className="aspect-[3/4] overflow-hidden bg-black border border-border relative mb-3">
+        <div className="aspect-[3/4] overflow-hidden bg-secondary border border-border relative mb-3">
           <SmartImage
             src={product.images[0]}
             thumb
             alt={product.name}
-            className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03] ${forSale ? "" : "grayscale"}`}
+            className={`w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.03] ${forSale ? "" : ""}`}
           />
-          <span className="absolute top-2 left-2 bg-background/90 border border-border px-2 py-1 font-mono-tight text-foreground">
+          <span className="absolute top-2 left-2 bg-background/90 border border-border px-2 py-1 label text-foreground">
             {displayStatus(product)}
           </span>
         </div>
-        <div className="font-mono-tight text-muted-foreground">
+        <div className="label text-muted-foreground">
           {product.collection ? `${product.collection.name} · ${product.collection.season}` : product.category}
         </div>
-        <h3 className="mt-1 font-serif text-xl uppercase tracking-wide text-foreground">{product.name}</h3>
-        {forSale && product.price && <div className="mt-1 font-mono-tight text-foreground">{formatPrice(product.price)}</div>}
+        <h3 className="mt-1 font-display text-xl tracking-wide text-foreground">{product.name}</h3>
+        {forSale && product.price && <div className="mt-1 label text-foreground">{formatPrice(product.price)}</div>}
       </Link>
     </motion.div>
   );
@@ -49,12 +49,12 @@ export default function Shop() {
 
   return (
     <main className="bg-background min-h-screen pt-32 pb-16 overflow-hidden">
-      <div className="px-6 md:px-16 max-w-6xl mx-auto">
+      <div className="px-5 md:px-12 wrap">
         <PageHeader kicker="Prendas & objetos" title="Shop" />
 
         {/* Disponibles */}
         <section aria-labelledby="shop-available" className="mb-20">
-          <h2 id="shop-available" className="font-mono-tight text-foreground border-b border-border pb-3 mb-8 flex justify-between">
+          <h2 id="shop-available" className="label text-foreground border-b border-border pb-3 mb-8 flex justify-between">
             <span>Disponible ahora</span>
             <span className="text-muted-foreground">{String(forSale.length).padStart(2, "0")}</span>
           </h2>
@@ -77,7 +77,7 @@ export default function Shop() {
           )}
 
           {forSale.length > 0 && !commerce.checkoutEnabled && (
-            <p className="mt-8 font-mono-tight text-muted-foreground">
+            <p className="mt-8 label text-muted-foreground">
               Las compras online todavía no están habilitadas: consultá disponibilidad por Instagram o mail.
             </p>
           )}
@@ -85,7 +85,7 @@ export default function Shop() {
 
         {upcoming.length > 0 && (
           <section aria-labelledby="shop-upcoming" className="mb-20">
-            <h2 id="shop-upcoming" className="font-mono-tight text-foreground border-b border-border pb-3 mb-8">
+            <h2 id="shop-upcoming" className="label text-foreground border-b border-border pb-3 mb-8">
               Próximamente
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 md:gap-x-6 gap-y-12">
@@ -100,10 +100,10 @@ export default function Shop() {
         {archive.length > 0 && (
           <section aria-labelledby="shop-archive">
             <div className="border-b border-border pb-3 mb-8 flex flex-wrap justify-between gap-2">
-              <h2 id="shop-archive" className="font-mono-tight text-foreground">
+              <h2 id="shop-archive" className="label text-foreground">
                 Archivo de prendas
               </h2>
-              <Link to="/archive?filter=collections" className="font-mono-tight text-muted-foreground hover:text-foreground">
+              <Link to="/archive?filter=collections" className="label text-muted-foreground hover:text-foreground">
                 Ver colecciones completas →
               </Link>
             </div>

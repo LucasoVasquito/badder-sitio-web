@@ -43,28 +43,28 @@ export default function CultureArticle() {
 
   return (
     <main className="bg-background min-h-screen pt-32 pb-16 overflow-hidden">
-      <article className="px-6 md:px-16 max-w-6xl mx-auto">
-        <Link to="/culture" className="inline-block mb-10 font-mono-tight text-muted-foreground hover:text-foreground transition-colors">
+      <article className="px-5 md:px-12 wrap">
+        <Link to="/culture" className="inline-block mb-10 label text-muted-foreground hover:text-foreground transition-colors">
           ← Culture
         </Link>
 
         <motion.header initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl">
-          <div className="font-mono-tight text-muted-foreground flex flex-wrap gap-x-4">
+          <div className="label text-muted-foreground flex flex-wrap gap-x-4">
             <Link to={`/culture?cat=${a.category.toLowerCase()}`} className="text-foreground hover:underline underline-offset-4">
               {a.category}
             </Link>
             <time dateTime={a.date}>{formatDate(a.date)}</time>
           </div>
-          <h1 className="mt-4 font-serif uppercase text-foreground leading-[0.95] tracking-tight text-[clamp(2.25rem,7vw,5.5rem)] break-words">{a.title}</h1>
+          <h1 className="mt-4 font-display text-foreground leading-[0.95] tracking-tight text-[clamp(2.25rem,7vw,5.5rem)] break-words">{a.title}</h1>
           <p className="mt-5 text-lg text-muted-foreground max-w-2xl">{a.subtitle}</p>
         </motion.header>
 
-        <div className="mt-10 aspect-[16/9] w-full overflow-hidden bg-black border border-border">
+        <div className="mt-10 aspect-[16/9] w-full overflow-hidden bg-secondary border border-border">
           <img src={a.cover} alt={a.title} className="w-full h-full object-cover" />
         </div>
 
         <div className="mt-12 grid md:grid-cols-12 gap-10">
-          <aside className="md:col-span-3 order-2 md:order-1 font-mono-tight text-muted-foreground flex md:flex-col gap-4 md:sticky md:top-28 self-start">
+          <aside className="md:col-span-3 order-2 md:order-1 label text-muted-foreground flex md:flex-col gap-4 md:sticky md:top-28 self-start">
             <button type="button" onClick={share} className="text-left text-foreground border-b border-foreground/40 pb-1 w-fit hover:border-foreground">
               {copied ? "Link copiado ✓" : "Compartir"}
             </button>
@@ -78,7 +78,7 @@ export default function CultureArticle() {
                 {a.images.map((img, i) => (
                   <button key={img.src} type="button" onClick={() => setViewer(i)} className="block text-left">
                     <img src={img.src} alt={img.caption ?? ""} loading="lazy" className="w-full aspect-[4/5] object-cover border border-border" />
-                    {img.caption && <span className="mt-2 block font-mono-tight text-muted-foreground">{img.caption}</span>}
+                    {img.caption && <span className="mt-2 block label text-muted-foreground">{img.caption}</span>}
                   </button>
                 ))}
               </section>
@@ -86,7 +86,7 @@ export default function CultureArticle() {
 
             {a.references.length > 0 && (
               <section aria-labelledby="refs" className="mt-12 border-t border-border pt-6">
-                <h2 id="refs" className="font-mono-tight text-foreground mb-4">Referencias / fuentes</h2>
+                <h2 id="refs" className="label text-foreground mb-4">Referencias / fuentes</h2>
                 <ol className="space-y-2 text-sm text-muted-foreground list-decimal pl-5">
                   {a.references.map((r) => (
                     <li key={r.text}>
@@ -107,17 +107,17 @@ export default function CultureArticle() {
 
         {related.length > 0 && (
           <section aria-labelledby="related" className="mt-20 border-t border-border pt-10">
-            <h2 id="related" className="font-mono-tight text-foreground mb-8">Seguí leyendo</h2>
+            <h2 id="related" className="label text-foreground mb-8">Seguí leyendo</h2>
             <ul className="grid sm:grid-cols-2 gap-8">
               {related.map((r) => (
                 <li key={r.id}>
                   <Link to={`/culture/${r.id}`} className="group grid grid-cols-3 gap-4">
-                    <img src={r.cover} alt="" loading="lazy" className="col-span-1 aspect-square object-cover border border-border grayscale group-hover:grayscale-0 transition-all duration-700" />
+                    <img src={r.cover} alt="" loading="lazy" className="col-span-1 aspect-square object-cover border border-border transition-all duration-700" />
                     <div className="col-span-2">
-                      <div className="font-mono-tight text-muted-foreground">
+                      <div className="label text-muted-foreground">
                         {r.category} · {formatDate(r.date)}
                       </div>
-                      <div className="mt-2 font-serif text-xl uppercase leading-tight text-foreground group-hover:text-foreground/70">{r.title}</div>
+                      <div className="mt-2 font-display text-xl leading-tight text-foreground group-hover:text-foreground/70">{r.title}</div>
                     </div>
                   </Link>
                 </li>
@@ -126,7 +126,7 @@ export default function CultureArticle() {
           </section>
         )}
 
-        <nav aria-label="Más publicaciones" className="mt-16 pt-8 border-t border-border grid grid-cols-2 gap-6 font-mono-tight">
+        <nav aria-label="Más publicaciones" className="mt-16 pt-8 border-t border-border grid grid-cols-2 gap-6 label">
           <div>{older && <Link to={`/culture/${older.id}`} className="text-muted-foreground hover:text-foreground">← {older.title}</Link>}</div>
           <div className="text-right">{newer && <Link to={`/culture/${newer.id}`} className="text-muted-foreground hover:text-foreground">{newer.title} →</Link>}</div>
         </nav>

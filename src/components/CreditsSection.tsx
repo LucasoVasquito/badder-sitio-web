@@ -5,7 +5,7 @@ import { crewNames as names } from "@/data/credits";
 
 export default function CreditsSection() {
   return (
-    <section className="py-32 px-6 md:px-16 max-w-6xl mx-auto">
+    <section className="py-32 px-5 md:px-12 wrap">
       <motion.div
         initial={{ opacity: 0, y: 40 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -15,7 +15,7 @@ export default function CreditsSection() {
         <h2 className="font-serif text-6xl md:text-8xl tracking-tight text-foreground mb-6">
           Créditos
         </h2>
-        <p className="font-mono-tight text-sm md:text-base text-muted-foreground max-w-md leading-relaxed">
+        <p className="label text-sm md:text-base text-muted-foreground max-w-md leading-relaxed">
           Un archivo de los operativos, creativos, amigos y conocidos que forjaron la experiencia Badder. Pasado y presente. Este es nuestro registro. <br /> Muchas Gracias.
         </p>
       </motion.div>

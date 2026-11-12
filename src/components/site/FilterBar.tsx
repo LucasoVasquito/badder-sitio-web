@@ -24,7 +24,7 @@ export default function FilterBar({ label, options, value, onChange }: FilterBar
               type="button"
               onClick={() => onChange(o.value)}
               aria-pressed={active}
-              className={`font-mono-tight px-3 py-2 border whitespace-nowrap transition-colors duration-200 ${
+              className={`label px-3 py-2 border whitespace-nowrap transition-colors duration-200 ${
                 active
                   ? "border-foreground bg-foreground text-background"
                   : "border-border text-muted-foreground hover:border-foreground/50 hover:text-foreground"

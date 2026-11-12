@@ -67,13 +67,13 @@ const flyers = [
 
 export default function FlyerSection() {
   return (
-    <section className="min-h-screen py-32 px-6 md:px-16 bg-background">
-      <div className="max-w-6xl mx-auto">
+    <section className="min-h-screen py-32 px-5 md:px-12 bg-background">
+      <div className="wrap">
         
         {/* Header de la sección */}
         <div className="flex items-end justify-between mb-20 border-b border-border pb-8">
           <div>
-            <div className="font-mono-tight text-muted-foreground mb-2">GRAPHIC & MOTION DESIGN</div>
+            <div className="label text-muted-foreground mb-2">GRAPHIC & MOTION DESIGN</div>
             <motion.h2
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -83,7 +83,7 @@ export default function FlyerSection() {
               Visuals & Flyers
             </motion.h2>
           </div>
-          <span className="font-mono-tight text-muted-foreground hidden md:block">
+          <span className="label text-muted-foreground hidden md:block">
             {String(flyers.length).padStart(2, "0")} PIECES
           </span>
         </div>
@@ -103,8 +103,8 @@ export default function FlyerSection() {
               className="group relative cursor-pointer block"
             >
               {/* Etiqueta STATIC / MOTION */}
-              <div className="absolute top-2 right-2 z-10 bg-background/80 backdrop-blur-md border border-foreground/20 px-2 py-1">
-                <span className="font-mono-tight text-[10px] text-foreground tracking-widest">
+              <div className="absolute top-2 right-2 z-10 bg-background/80 border border-foreground/20 px-2 py-1">
+                <span className="label text-[10px] text-foreground tracking-widest">
                   {f.type}
                 </span>
               </div>
@@ -121,13 +121,13 @@ export default function FlyerSection() {
 
               {/* METADATA: Estilo Galería / Lookbook */}
               <div className="mt-5 border-t border-foreground/20 pt-4 text-left">
-                <h4 className="font-serif text-lg md:text-xl text-foreground tracking-wide mb-1 uppercase truncate">
+                <h4 className="font-display text-lg md:text-xl text-foreground tracking-wide mb-1 truncate">
                   {f.title}
                 </h4>
-                <p className="font-mono-tight text-muted-foreground text-[10px] md:text-xs tracking-[0.15em] uppercase truncate">
+                <p className="label text-muted-foreground text-[10px] md:text-xs tracking-[0.15em] uppercase truncate">
                   {f.designer}
                 </p>
-                <div className="font-mono-tight text-foreground/40 text-[9px] mt-2 tracking-widest">
+                <div className="label text-foreground/40 text-[9px] mt-2 tracking-widest">
                   {f.date}
                 </div>
               </div>

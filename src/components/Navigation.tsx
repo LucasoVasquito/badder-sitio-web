@@ -41,7 +41,7 @@ export default function Navigation() {
             <Link to="/" aria-label="BADDER — Home" className="flex items-center justify-center transition-opacity hover:opacity-80">
               <img src={badderLogo} alt="Badder" className="h-8 w-auto object-contain relative -top-[2px]" />
             </Link>
-            <span className="hidden xl:inline font-mono-tight text-muted-foreground">
+            <span className="hidden xl:inline label text-muted-foreground">
               Est. 2024 · La Plata, ARG
             </span>
           </div>
@@ -56,7 +56,7 @@ export default function Navigation() {
                     <Link
                       to={item.path}
                       aria-current={active ? "page" : undefined}
-                      className={`relative block font-mono-tight !text-[11px] !tracking-[0.2em] py-2 transition-colors duration-200 ${
+                      className={`relative block label  py-2 transition-colors duration-200 ${
                         active ? "text-foreground" : "text-foreground/55 hover:text-foreground"
                       }`}
                     >
@@ -78,7 +78,7 @@ export default function Navigation() {
             <Link
               to={communitySection.path}
               aria-current={communityActive ? "page" : undefined}
-              className={`font-mono-tight !text-[11px] !tracking-[0.2em] border px-3 py-1.5 transition-colors duration-200 ${
+              className={`label  border px-3 py-1.5 transition-colors duration-200 ${
                 communityActive
                   ? "bg-foreground text-background border-foreground"
                   : "border-foreground/50 text-foreground hover:bg-foreground hover:text-background"
@@ -134,10 +134,10 @@ export default function Navigation() {
                       aria-current={active ? "page" : undefined}
                       className="flex items-baseline justify-between py-3"
                     >
-                      <span className={`font-serif text-4xl sm:text-5xl uppercase tracking-wide ${active ? "text-foreground" : "text-foreground/55"}`}>
+                      <span className={`font-display text-4xl sm:text-5xl tracking-wide ${active ? "text-foreground" : "text-foreground/55"}`}>
                         {item.label}
                       </span>
-                      <span className={`font-mono-tight ${active ? "text-cobalt" : "text-muted-foreground"}`}>
+                      <span className={`label ${active ? "text-foreground" : "text-muted-foreground"}`}>
                         {active ? "● " : ""}
                         {String(i + 1).padStart(2, "0")}
                       </span>
@@ -156,12 +156,12 @@ export default function Navigation() {
               <Link
                 to={communitySection.path}
                 onClick={() => setOpen(false)}
-                className="border border-foreground px-5 py-4 font-mono-tight !text-xs !tracking-[0.25em] text-foreground flex justify-between"
+                className="border border-foreground px-5 py-4 label  text-foreground flex justify-between"
               >
                 <span>↳ {communitySection.label}</span>
                 <span aria-hidden>→</span>
               </Link>
-              <div className="flex justify-between font-mono-tight text-muted-foreground">
+              <div className="flex justify-between label text-muted-foreground">
                 <Link to="/contact" onClick={() => setOpen(false)} className="hover:text-foreground">
                   Contacto
                 </Link>

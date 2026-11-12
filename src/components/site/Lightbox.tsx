@@ -64,7 +64,7 @@ export default function Lightbox({ images, index, onClose, onIndex }: LightboxPr
         touchX.current = null;
       }}
     >
-      <div className="flex items-center justify-between px-4 md:px-6 py-4 font-mono-tight text-muted-foreground">
+      <div className="flex items-center justify-between px-4 md:px-6 py-4 label text-muted-foreground">
         <span>
           {String(index + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
         </span>
@@ -88,8 +88,8 @@ export default function Lightbox({ images, index, onClose, onIndex }: LightboxPr
       </div>
 
       <div className="px-4 md:px-6 py-4 min-h-[64px] border-t border-border">
-        {img.caption && <div className="font-serif text-lg uppercase text-foreground">{img.caption}</div>}
-        {img.credit && <div className="font-mono-tight text-muted-foreground mt-1">{img.credit}</div>}
+        {img.caption && <div className="font-display text-lg text-foreground">{img.caption}</div>}
+        {img.credit && <div className="label text-muted-foreground mt-1">{img.credit}</div>}
       </div>
     </div>,
     document.body

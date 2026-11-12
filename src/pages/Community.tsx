@@ -47,7 +47,7 @@ export default function Community() {
 
   return (
     <main className="bg-background min-h-screen pt-32 pb-16 overflow-hidden">
-      <div className="px-6 md:px-16 max-w-6xl mx-auto">
+      <div className="px-5 md:px-12 wrap">
         <PageHeader
           kicker="Community / Participar"
           title="Community"
@@ -64,16 +64,16 @@ export default function Community() {
               transition={{ delay: i * 0.04 }}
               className="grid md:grid-cols-12 gap-4 md:gap-8 py-8 border-b border-border items-start"
             >
-              <span className="md:col-span-1 font-mono-tight text-cobalt">{w.id}</span>
+              <span className="md:col-span-1 label text-foreground">{w.id}</span>
               <div className="md:col-span-7">
-                <h2 className="font-serif text-2xl md:text-3xl uppercase text-foreground leading-tight">{w.title}</h2>
+                <h2 className="font-display text-2xl md:text-3xl text-foreground leading-tight">{w.title}</h2>
                 <p className="mt-2 text-sm text-muted-foreground leading-relaxed max-w-lg">{w.desc}</p>
               </div>
               <div className="md:col-span-4 md:text-right">
                 <a
                   href={w.action.href}
                   {...(w.action.external ? { target: "_blank", rel: "noreferrer" } : {})}
-                  className="inline-block font-mono-tight text-foreground border border-foreground/50 px-4 py-3 hover:bg-foreground hover:text-background transition-colors"
+                  className="inline-block label text-foreground border border-foreground/50 px-4 py-3 hover:bg-foreground hover:text-background transition-colors"
                 >
                   {w.action.label} {w.action.external ? "↗" : "→"}
                 </a>
@@ -82,7 +82,7 @@ export default function Community() {
           ))}
         </ol>
 
-        <p className="mt-10 font-mono-tight text-muted-foreground">
+        <p className="mt-10 label text-muted-foreground">
           ¿Buscás a alguien de la crew?{" "}
           <Link to="/contact#bookings" className="text-foreground underline underline-offset-4">
             Integrantes y presskits →

@@ -30,7 +30,7 @@ export default function PlayButton({ trackIndex, className = "" }: PlayButtonPro
       className={`flex items-center justify-center w-11 h-11 shrink-0 border transition-colors duration-200 disabled:opacity-30 disabled:pointer-events-none ${
         isCurrent
           ? "bg-foreground text-background border-foreground"
-          : "bg-background/60 backdrop-blur-sm border-foreground/40 text-foreground hover:bg-foreground hover:text-background"
+          : "bg-background/60 border-foreground/40 text-foreground hover:bg-foreground hover:text-background"
       } ${className}`}
     >
       {isCurrent ? <Square className="w-3.5 h-3.5 fill-current" /> : <Play className="w-4 h-4 fill-current ml-0.5" />}

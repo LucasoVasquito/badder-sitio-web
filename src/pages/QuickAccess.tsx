@@ -12,8 +12,8 @@ const accessLinks = [
 
 export default function QuickAccess() {
   return (
-    <section className="py-24 px-6 md:px-16 border-y border-foreground/10 bg-muted/5">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-24 px-5 md:px-12 border-y border-foreground/10 bg-muted/5">
+      <div className="wrap">
         <motion.h2 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

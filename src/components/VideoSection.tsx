@@ -65,20 +65,20 @@ const videos = [
 
 export default function VideoSection() {
   return (
-    <section className="min-h-screen py-32 px-6 md:px-16">
-      <div className="max-w-6xl mx-auto">
+    <section className="min-h-screen py-32 px-5 md:px-12">
+      <div className="wrap">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
         >
-          <div className="font-mono-tight text-muted-foreground mb-2">Videos</div>
+          <div className="label text-muted-foreground mb-2">Videos</div>
           <div className="flex items-end justify-between mb-16">
             <h2 className="font-serif text-5xl md:text-7xl text-foreground">
               Archivo de Video
             </h2>
-            <span className="font-mono-tight text-muted-foreground hidden md:block">
+            <span className="label text-muted-foreground hidden md:block">
               {String(videos.length).padStart(2, "0")} ENTRIES
             </span>
           </div>
@@ -122,21 +122,21 @@ export default function VideoSection() {
                 <div className="flex items-start justify-between gap-2">
                   <div>
                     <div className="text-sm font-bold tracking-wider text-foreground">{v.title}</div>
-                    <div className="font-mono-tight text-muted-foreground mt-1">{v.date}</div>
+                    <div className="label text-muted-foreground mt-1">{v.date}</div>
                   </div>
-                  <div className="font-mono-tight text-muted-foreground shrink-0">{v.duration}</div>
+                  <div className="label text-muted-foreground shrink-0">{v.duration}</div>
                 </div>
 
                 {/* Bloque Inferior: Créditos (Renderizado Condicional) */}
                 {(v.master || v.edition) && (
                   <div className="mt-4 pt-3 border-t border-border/50 flex flex-col gap-1">
                     {v.master && (
-                      <div className="font-mono-tight text-[10px] tracking-[0.1em] uppercase text-muted-foreground">
+                      <div className="label text-[10px] tracking-[0.1em] uppercase text-muted-foreground">
                         Master: <span className="text-foreground">{v.master}</span>
                       </div>
                     )}
                     {v.edition && (
-                      <div className="font-mono-tight text-[10px] tracking-[0.1em] uppercase text-muted-foreground">
+                      <div className="label text-[10px] tracking-[0.1em] uppercase text-muted-foreground">
                         Edición: <span className="text-foreground">{v.edition}</span>
                       </div>
                     )}

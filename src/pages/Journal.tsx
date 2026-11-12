@@ -26,7 +26,7 @@ export default function Journal() {
 
   return (
     <main className="bg-background min-h-screen pt-32 pb-16 overflow-hidden">
-      <div className="px-6 md:px-16 max-w-6xl mx-auto">
+      <div className="px-5 md:px-12 wrap">
         <PageHeader
           kicker="Editorial / Música · Diseño · Escenas · Referencias"
           title="Culture"
@@ -52,20 +52,20 @@ export default function Journal() {
             {/* Nota principal */}
             <motion.article initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} className="group mb-16">
               <Link to={`/culture/${lead.id}`} className="grid md:grid-cols-12 gap-6 md:gap-10 items-end">
-                <div className="md:col-span-7 aspect-[16/10] overflow-hidden bg-black border border-border">
+                <div className="md:col-span-7 aspect-[16/10] overflow-hidden bg-secondary border border-border">
                   <SmartImage src={lead.cover} alt={lead.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.02]" />
                 </div>
                 <div className="md:col-span-5">
-                  <div className="font-mono-tight text-muted-foreground flex gap-3">
+                  <div className="label text-muted-foreground flex gap-3">
                     <span className="text-foreground">{lead.category}</span>
                     <time dateTime={lead.date}>{formatDate(lead.date)}</time>
                   </div>
-                  <h2 className="mt-3 font-serif text-3xl md:text-5xl uppercase leading-[0.95] text-foreground group-hover:text-foreground/70 transition-colors">
+                  <h2 className="mt-3 font-display text-3xl md:text-5xl leading-[0.95] text-foreground group-hover:text-foreground/70 transition-colors">
                     {lead.title}
                   </h2>
-                  <p className="mt-3 font-mono-tight text-muted-foreground">{lead.subtitle}</p>
+                  <p className="mt-3 label text-muted-foreground">{lead.subtitle}</p>
                   <p className="mt-4 text-sm text-muted-foreground leading-relaxed">{excerptOf(lead.body)}</p>
-                  <span className="mt-6 inline-block font-mono-tight text-foreground border-b border-foreground/40 pb-1">Leer →</span>
+                  <span className="mt-6 inline-block label text-foreground border-b border-foreground/40 pb-1">Leer →</span>
                 </div>
               </Link>
             </motion.article>
@@ -76,14 +76,14 @@ export default function Journal() {
                 {rest.map((a, i) => (
                   <motion.li key={a.id} initial={{ opacity: 0, y: 12 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
                     <Link to={`/culture/${a.id}`} className="group block">
-                      <div className="aspect-[4/3] overflow-hidden bg-black border border-border">
-                        <SmartImage src={a.cover} alt={a.title} className="w-full h-full object-cover grayscale transition-all duration-700 group-hover:grayscale-0" />
+                      <div className="aspect-[4/3] overflow-hidden bg-secondary border border-border">
+                        <SmartImage src={a.cover} alt={a.title} className="w-full h-full object-cover transition-all duration-700 " />
                       </div>
-                      <div className="mt-4 font-mono-tight text-muted-foreground flex gap-3">
+                      <div className="mt-4 label text-muted-foreground flex gap-3">
                         <span className="text-foreground">{a.category}</span>
                         <time dateTime={a.date}>{formatDate(a.date)}</time>
                       </div>
-                      <h2 className="mt-2 font-serif text-2xl uppercase leading-tight text-foreground group-hover:text-foreground/70 transition-colors">{a.title}</h2>
+                      <h2 className="mt-2 font-display text-2xl leading-tight text-foreground group-hover:text-foreground/70 transition-colors">{a.title}</h2>
                       <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{a.subtitle}</p>
                     </Link>
                   </motion.li>

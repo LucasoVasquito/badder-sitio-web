@@ -52,8 +52,8 @@ export default function ProductDetail() {
 
   return (
     <main className="bg-background min-h-screen pt-32 pb-16 overflow-hidden">
-      <div className="px-6 md:px-16 max-w-6xl mx-auto">
-        <Link to="/shop" className="mb-10 inline-block font-mono-tight text-muted-foreground hover:text-foreground transition-colors">
+      <div className="px-5 md:px-12 wrap">
+        <Link to="/shop" className="mb-10 inline-block label text-muted-foreground hover:text-foreground transition-colors">
           ← Volver al Shop
         </Link>
 
@@ -63,10 +63,10 @@ export default function ProductDetail() {
             <button
               type="button"
               onClick={() => setLightbox(imageIndex)}
-              className="block w-full aspect-[3/4] bg-black border border-border overflow-hidden cursor-zoom-in"
+              className="block w-full aspect-[3/4] bg-secondary border border-border overflow-hidden cursor-zoom-in"
               aria-label="Ampliar imagen"
             >
-              <img src={p.images[imageIndex]} alt={images[imageIndex].alt} className={`w-full h-full object-cover ${forSale ? "" : "grayscale"}`} />
+              <img src={p.images[imageIndex]} alt={images[imageIndex].alt} className={`w-full h-full object-cover ${forSale ? "" : ""}`} />
             </button>
             {p.images.length > 1 && (
               <div className="mt-3 grid grid-cols-5 gap-2">
@@ -88,12 +88,12 @@ export default function ProductDetail() {
 
           {/* Información */}
           <div className="flex flex-col">
-            <div className="font-mono-tight text-muted-foreground mb-4 flex flex-wrap gap-x-4 gap-y-1">
+            <div className="label text-muted-foreground mb-4 flex flex-wrap gap-x-4 gap-y-1">
               <span className="text-foreground">{displayStatus(p)}</span>
               {p.collection && <span>{p.collection.name} · {p.collection.season}</span>}
               <span>{p.kind === "physical" ? "Objeto físico" : "Digital"}</span>
             </div>
-            <h1 className="font-serif text-4xl md:text-6xl uppercase text-foreground leading-none mb-6">{p.name}</h1>
+            <h1 className="font-display text-4xl md:text-6xl text-foreground leading-none mb-6">{p.name}</h1>
 
             {forSale && p.price ? (
               <div className="font-mono text-2xl tracking-widest text-foreground mb-6">{formatPrice(p.price)}</div>
@@ -104,25 +104,25 @@ export default function ProductDetail() {
             <dl className="grid grid-cols-[auto,1fr] gap-x-6 gap-y-2 text-sm border-t border-border pt-6 mb-8">
               {p.credits && (
                 <>
-                  <dt className="font-mono-tight text-muted-foreground pt-0.5">Diseño</dt>
+                  <dt className="label text-muted-foreground pt-0.5">Diseño</dt>
                   <dd className="text-foreground">{p.credits}</dd>
                 </>
               )}
               {forSale && p.materials && (
                 <>
-                  <dt className="font-mono-tight text-muted-foreground pt-0.5">Material</dt>
+                  <dt className="label text-muted-foreground pt-0.5">Material</dt>
                   <dd className="text-foreground">{p.materials}</dd>
                 </>
               )}
               {forSale && p.printing && (
                 <>
-                  <dt className="font-mono-tight text-muted-foreground pt-0.5">Estampado</dt>
+                  <dt className="label text-muted-foreground pt-0.5">Estampado</dt>
                   <dd className="text-foreground">{p.printing}</dd>
                 </>
               )}
               {forSale && typeof stock === "number" && (
                 <>
-                  <dt className="font-mono-tight text-muted-foreground pt-0.5">Stock</dt>
+                  <dt className="label text-muted-foreground pt-0.5">Stock</dt>
                   <dd className="text-foreground">{stock > 0 ? `${stock} disponible${stock === 1 ? "" : "s"}` : "Sin stock"}</dd>
                 </>
               )}
@@ -132,7 +132,7 @@ export default function ProductDetail() {
               <>
                 {hasVariants && (
                   <fieldset className="mb-6">
-                    <legend className="font-mono-tight text-muted-foreground mb-3">Talle</legend>
+                    <legend className="label text-muted-foreground mb-3">Talle</legend>
                     <div className="flex flex-wrap gap-2">
                       {p.variants!.map((v) => (
                         <button
@@ -144,7 +144,7 @@ export default function ProductDetail() {
                             setMessage(null);
                           }}
                           aria-pressed={sku === v.sku}
-                          className={`min-w-12 px-3 py-2 border font-mono-tight transition-colors ${
+                          className={`min-w-12 px-3 py-2 border label transition-colors ${
                             sku === v.sku ? "bg-foreground text-background border-foreground" : "border-border text-foreground hover:border-foreground"
                           } disabled:opacity-30 disabled:line-through`}
                         >
@@ -158,7 +158,7 @@ export default function ProductDetail() {
                   Agregar al carrito <ShoppingBag className="w-4 h-4" />
                 </button>
                 {message && (
-                  <p role="status" className={`mt-4 font-mono-tight ${message.ok ? "text-foreground" : "text-destructive"}`}>
+                  <p role="status" className={`mt-4 label ${message.ok ? "text-foreground" : "text-destructive"}`}>
                     {message.ok && <Check className="inline w-3 h-3 mr-1" />}
                     {message.text}{" "}
                     {message.ok && (
@@ -185,7 +185,7 @@ export default function ProductDetail() {
             {/* Envío y retiro */}
             {p.kind === "physical" && forSale && (
               <div className="mt-10 border-t border-border pt-6">
-                <h2 className="font-mono-tight text-foreground mb-3">Envío y retiro</h2>
+                <h2 className="label text-foreground mb-3">Envío y retiro</h2>
                 <ul className="space-y-2 text-sm text-muted-foreground">
                   {commerce.shipping.map((s) => (
                     <li key={s.title}>

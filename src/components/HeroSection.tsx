@@ -28,7 +28,7 @@ export default function HeroSection() {
     <section
       ref={containerRef}
       aria-label="BADDER"
-      className="relative h-[88svh] md:h-[80vh] min-h-[480px] max-h-[900px] w-full flex items-center justify-center overflow-hidden plastic-wrap"
+      className="relative h-[88svh] md:h-[80vh] min-h-[480px] max-h-[900px] w-full flex items-center justify-center overflow-hidden "
     >
       {/* Logo original con parallax */}
       <motion.img
@@ -46,7 +46,7 @@ export default function HeroSection() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 0.8, duration: 0.6 }}
-        className="absolute bottom-6 md:bottom-8 left-6 right-6 md:left-16 md:right-16 flex items-end justify-between gap-6 font-mono-tight text-muted-foreground"
+        className="absolute bottom-6 md:bottom-8 left-6 right-6 md:left-16 md:right-16 flex items-end justify-between gap-6 label text-muted-foreground"
       >
         <p className="leading-relaxed">
           <span className="text-foreground">Independent creative culture</span>

@@ -33,8 +33,8 @@ const picks: ArchivePick[] = [
 
 export default function FromTheArchive() {
   return (
-    <section className="px-6 md:px-16 py-16 md:py-24 border-t border-border bg-secondary/40">
-      <div className="max-w-6xl mx-auto">
+    <section className="px-5 md:px-12 py-16 md:py-24 border-t border-border bg-secondary/40">
+      <div className="wrap">
         <SectionHeader
           index="04"
           kicker="Foto · Flyers · Colecciones"
@@ -53,18 +53,18 @@ export default function FromTheArchive() {
               className={`group relative ${item.span}`}
             >
               <Link to={item.to} className="flex flex-col h-full">
-                <div className={`relative overflow-hidden bg-black border border-border ${item.media}`}>
+                <div className={`relative overflow-hidden bg-secondary border border-border ${item.media}`}>
                   <img
                     src={item.image}
                     alt={item.title}
                     loading="lazy"
-                    className="absolute inset-0 w-full h-full object-cover grayscale contrast-125 transition-all duration-700 group-hover:grayscale-0 group-hover:contrast-100"
+                    className="absolute inset-0 w-full h-full object-cover transition-all duration-700 "
                   />
-                  <span className="absolute top-2 left-2 font-mono-tight bg-background/85 text-foreground px-1.5 py-0.5">
+                  <span className="absolute top-2 left-2 label bg-background/85 text-foreground px-1.5 py-0.5">
                     {item.ref}
                   </span>
                 </div>
-                <figcaption className="mt-2 font-mono-tight text-muted-foreground">
+                <figcaption className="mt-2 label text-muted-foreground">
                   <span className="flex items-baseline justify-between gap-3">
                     <span className="truncate text-foreground/90">{item.title}</span>
                     <span className="shrink-0">{item.type}</span>

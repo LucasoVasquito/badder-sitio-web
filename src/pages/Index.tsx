@@ -27,7 +27,7 @@ const sectionMap: Record<string, string> = {
 const reverseSectionMap: Record<string, string> = {
   hero: "INDEX",
   about: "ACERCA",
-  "badder-4ever": "BADDER4EVER",
+ "badder-4ever": "BADDER4EVER",
   video: "VIDEO",
   visuals: "VISUALS",
   photo: "FOTOS",
@@ -54,7 +54,7 @@ const Index = () => {
   const refs: Record<string, React.RefObject<HTMLElement>> = {
     hero: heroRef,
     about: aboutRef,
-    "badder-4ever": badderForeverRef,
+ "badder-4ever": badderForeverRef,
     video: videoRef,
     photo: photoRef,
     visuals: flyersRef,
@@ -120,8 +120,8 @@ const Index = () => {
       {/* Footer */}
       <div className="mt-32 border-t border-border pt-8 mx-6 md:mx-16 max-w-6xl lg:mx-auto flex flex-col md:flex-row justify-between gap-4 pb-12">
         <span className="font-serif text-lg text-foreground">Badder</span>
-        <span className="font-mono-tight text-muted-foreground">© 2026 BADDER EXPERIENCE. Diseñado y desarrollado por Lucas Nicolas Bengochea.</span>
-        <span className="font-mono-tight text-muted-foreground">LA PLATA, ARG</span>
+        <span className="label text-muted-foreground">© 2026 BADDER EXPERIENCE. Diseñado y desarrollado por Lucas Nicolas Bengochea.</span>
+        <span className="label text-muted-foreground">LA PLATA, ARG</span>
       </div>
     </div>
   );

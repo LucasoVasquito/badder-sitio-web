@@ -11,8 +11,8 @@ export default function Notice({ title, children, tone = "info" }: NoticeProps) 
   const border = tone === "error" ? "border-destructive" : tone === "success" ? "border-foreground" : "border-border";
   return (
     <div role={tone === "error" ? "alert" : "status"} className={`border ${border} p-5 md:p-6`}>
-      <div className={`font-mono-tight mb-2 ${tone === "error" ? "text-destructive" : "text-foreground"}`}>
-        <span className="text-cobalt">●</span> {title}
+      <div className={`label mb-2 ${tone === "error" ? "text-destructive" : "text-foreground"}`}>
+        <span className="text-foreground">●</span> {title}
       </div>
       {children && <div className="text-sm text-muted-foreground leading-relaxed">{children}</div>}
     </div>
@@ -22,7 +22,7 @@ export default function Notice({ title, children, tone = "info" }: NoticeProps) 
 export function EmptyState({ title, children }: { title: string; children?: ReactNode }) {
   return (
     <div className="border border-dashed border-border py-14 px-6 text-center">
-      <p className="font-mono-tight text-muted-foreground">{title}</p>
+      <p className="label text-muted-foreground">{title}</p>
       {children && <div className="mt-6 flex justify-center">{children}</div>}
     </div>
   );

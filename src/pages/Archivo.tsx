@@ -64,7 +64,7 @@ export default function Archivo() {
 
   return (
     <main className="bg-background min-h-screen pt-32 pb-16 overflow-hidden">
-      <div className="px-6 md:px-16 max-w-6xl mx-auto">
+      <div className="px-5 md:px-12 wrap">
         <PageHeader
           kicker="Archivo visual / Documentación 2024—"
           title="Archive"
@@ -99,26 +99,26 @@ export default function Archivo() {
                 transition={{ duration: 0.4, delay: (i % 3) * 0.05 }}
               >
                 <Link to={`/archive/${p.id}`} className="group block">
-                  <div className="relative aspect-[4/5] overflow-hidden bg-black border border-border">
+                  <div className="relative aspect-[4/5] overflow-hidden bg-secondary border border-border">
                     <SmartImage
                       src={p.cover}
                       thumb
                       alt={p.title}
-                      className="absolute inset-0 w-full h-full object-cover grayscale contrast-125 transition-all duration-700 group-hover:grayscale-0 group-hover:contrast-100"
+                      className="absolute inset-0 w-full h-full object-cover transition-all duration-700 "
                     />
-                    <span className="absolute top-2 left-2 font-mono-tight bg-background/85 text-foreground px-1.5 py-0.5">
+                    <span className="absolute top-2 left-2 label bg-background/85 text-foreground px-1.5 py-0.5">
                       A—{String(projects.indexOf(p) + 1).padStart(3, "0")}
                     </span>
                   </div>
-                  <div className="mt-3 font-mono-tight text-muted-foreground flex flex-wrap gap-x-3">
+                  <div className="mt-3 label text-muted-foreground flex flex-wrap gap-x-3">
                     <span className="text-foreground">{p.kind}</span>
                     <span>{p.season ?? p.year}</span>
                     {p.location && <span>{p.location}</span>}
                   </div>
-                  <h2 className="mt-1 font-serif text-lg md:text-2xl uppercase leading-tight text-foreground group-hover:text-foreground/70 transition-colors">
+                  <h2 className="mt-1 font-display text-lg md:text-2xl leading-tight text-foreground group-hover:text-foreground/70 transition-colors">
                     {p.title}
                   </h2>
-                  <p className="mt-1 font-mono-tight text-muted-foreground leading-relaxed">{summaryLine(p)}</p>
+                  <p className="mt-1 label text-muted-foreground leading-relaxed">{summaryLine(p)}</p>
                 </Link>
               </motion.li>
             ))}

@@ -16,7 +16,7 @@ export default function SmartImage({ src, thumb = false, className = "", alt = "
 
   if (failed) {
     return (
-      <div className={`flex items-center justify-center bg-secondary font-mono-tight text-muted-foreground ${className}`}>
+      <div className={`flex items-center justify-center bg-secondary label text-muted-foreground ${className}`}>
         Imagen no disponible
       </div>
     );
