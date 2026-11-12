@@ -17,25 +17,25 @@
     --lime: 84 81% 44%;       /* #83CC16 */
     --red: 7 86% 55%;         /* #EF432B */
 
-    --background: var(--paper);
-    --foreground: var(--ink);
-    --card: var(--paper);
-    --card-foreground: var(--ink);
-    --popover: var(--paper);
-    --popover-foreground: var(--ink);
-    --primary: var(--ink);
-    --primary-foreground: var(--paper);
-    --secondary: 46 22% 86%;          /* papel un tono más oscuro, para superficies de apoyo */
-    --secondary-foreground: var(--ink);
-    --muted: 46 22% 86%;
-    --muted-foreground: 80 3% 34%;    /* ≈ 6:1 sobre papel */
+    --background: var(--ink);
+    --foreground: var(--paper);
+    --card: var(--ink);
+    --card-foreground: var(--paper);
+    --popover: var(--ink);
+    --popover-foreground: var(--paper);
+    --primary: var(--paper);
+    --primary-foreground: var(--ink);
+    --secondary: 90 4% 14%;           /* tinta un tono más claro, para superficies de apoyo */
+    --secondary-foreground: var(--paper);
+    --muted: 90 4% 14%;
+    --muted-foreground: 46 14% 72%;   /* ≈ 9:1 sobre tinta */
     --accent: var(--lime);            /* un acento dominante por pantalla: ver [data-accent] */
     --accent-foreground: var(--ink);
-    --destructive: 7 86% 42%;         /* rojo oscurecido: texto de error con contraste AA */
-    --destructive-foreground: var(--paper);
-    --border: var(--ink);
-    --input: var(--ink);
-    --ring: var(--ink);
+    --destructive: 7 90% 64%;         /* rojo aclarado: texto de error con contraste AA sobre tinta */
+    --destructive-foreground: var(--ink);
+    --border: var(--paper);
+    --input: var(--paper);
+    --ring: var(--paper);
     --radius: 0px;
 
     --font-display: 'Archivo', 'Helvetica Neue', Arial, sans-serif;
@@ -49,15 +49,15 @@
     --accent-foreground: var(--ink);
   }
 
-  /* Superficie oscura: música, destacados, contraste estructural. Invierte los tokens. */
+  /* Superficie oscura (igual al fondo base): bloques de música, footer y reproductor. */
   .surface-dark {
     --background: var(--ink);
     --foreground: var(--paper);
     --card: var(--ink);
     --card-foreground: var(--paper);
-    --secondary: 90 4% 15%;
-    --muted: 90 4% 15%;
-    --muted-foreground: 46 14% 70%;
+    --secondary: 90 4% 14%;
+    --muted: 90 4% 14%;
+    --muted-foreground: 46 14% 72%;
     --border: var(--paper);
     --input: var(--paper);
     --ring: var(--paper);
@@ -65,9 +65,9 @@
     color: hsl(var(--foreground));
   }
 
-  /* Superficie de apoyo: papel un tono más oscuro. */
+  /* Superficie de apoyo: tinta un tono más clara, para separar bloques. */
   .surface-tint {
-    --background: 46 22% 86%;
+    --background: 90 4% 12%;
     background-color: hsl(var(--background));
   }
 
@@ -139,7 +139,7 @@
 
   /* Trama de impresión: solo dentro de piezas concretas (no global). */
   .trama {
-    background-image: radial-gradient(hsl(var(--ink)) 0.9px, transparent 1.1px);
+    background-image: radial-gradient(hsl(var(--paper)) 0.9px, transparent 1.1px);
     background-size: 5px 5px;
   }
 }
@@ -147,8 +147,8 @@
 @layer base {
   /* Scrollbar neutro, sin teñir */
   ::-webkit-scrollbar { width: 10px; height: 10px; }
-  ::-webkit-scrollbar-track { background: hsl(var(--paper)); }
-  ::-webkit-scrollbar-thumb { background: hsl(var(--ink) / 0.55); }
+  ::-webkit-scrollbar-track { background: hsl(var(--ink)); }
+  ::-webkit-scrollbar-thumb { background: hsl(var(--paper) / 0.45); }
 }
 
 /* Menos movimiento */

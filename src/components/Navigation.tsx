@@ -6,7 +6,7 @@ import badderLogo from "@/assets/badder_logo_original.webp";
 import { mainSections, communitySection, isSectionActive } from "@/data/site";
 import { useCartCount } from "@/store/cartStore";
 
-// Cabecera compacta sobre papel. El logo es crema sobre transparente: brightness(0) lo pasa a tinta.
+// Cabecera compacta sobre tinta. El logo es crema sobre transparente y se ve tal cual.
 export default function Navigation() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
@@ -47,7 +47,7 @@ export default function Navigation() {
       <header className="sticky top-0 z-[70] bg-background border-b border-border">
         <nav aria-label="Principal" className="flex items-center justify-between gap-6 px-5 md:px-12 h-16 max-w-[1440px] mx-auto">
           <Link to="/" aria-label="BADDER — Inicio" className="shrink-0 flex items-center tap">
-            <img src={badderLogo} alt="Badder" className="h-12 w-auto object-contain -my-2" style={{ filter: "brightness(0)" }} />
+            <img src={badderLogo} alt="Badder" className="h-12 w-auto object-contain -my-2" />
           </Link>
 
           {/* Escritorio */}

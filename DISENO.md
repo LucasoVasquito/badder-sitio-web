@@ -8,7 +8,7 @@ El sitio se comporta como **un libro de archivo** (papel, serif, márgenes, índ
 
 Decisiones:
 
-- Fondo papel `#F0EDE3` para lectura y archivo; bloques en tinta `#181917` para música, el footer y el reproductor. Los bloques oscuros invierten los tokens con la clase `surface-dark`.
+- **Tema oscuro por pedido:** fondo tinta `#181917` y texto papel `#F0EDE3` en todo el sitio. Los bloques de apoyo usan una tinta un tono más clara (`surface-tint`). El papel queda como color de texto, de filetes y de chips.
 - Un acento dominante por pantalla, vía `data-accent` en `<main>`: lima por defecto; rojo en Participar, Carrito y 404.
 - Cada sección tiene el formato que le corresponde: Archivo = destacado + índice con año/tipo/lugar/material; Notas = nota principal + índice de lectura; Música = portada + título + acción de escucha; Indumentaria = fotografía + etiqueta de prenda.
 - Las obras se muestran completas (`object-contain`) sobre tinta o papel y nunca se tiñen. Las gráficas crema sobre transparente (p. ej. BUNKER 001) se montan sobre tinta, como fueron pensadas.
@@ -23,15 +23,15 @@ Decisiones:
 
 | Token | Valor | Uso |
 |---|---|---|
-| `--paper` | `#F0EDE3` | Fondo de lectura y archivo |
-| `--ink` | `#181917` | Texto; superficies oscuras |
+| `--paper` | `#F0EDE3` | Texto y filetes |
+| `--ink` | `#181917` | Fondo base; texto sobre acento |
 | `--lime` | `#83CC16` | Acento principal: estados activos, fondo de acciones |
 | `--red` | `#EF432B` | Acento alternativo por pantalla |
 | `--muted-foreground` | `hsl(80 3% 34%)` | Texto secundario (≈ 6:1 sobre papel) |
 | `--secondary` | `hsl(46 22% 86%)` | Superficie de apoyo (`surface-tint`) |
 | `--destructive` | `hsl(7 86% 42%)` | Texto de error con contraste AA |
 
-Las variables de shadcn (`background`, `foreground`, `border`, `muted`, `ring`, `accent`…) se mapean a estos tokens para no romper `components/ui`. **El lima no se usa como texto sobre papel** (no pasa AA): va como fondo con texto tinta, o en filetes e indicadores.
+Las variables de shadcn (`background`, `foreground`, `border`, `muted`, `ring`, `accent`…) se mapean a estos tokens para no romper `components/ui`. **El lima no se usa como texto** (no pasa AA): va como fondo con texto tinta, o en filetes e indicadores.
 
 **Tipografía** (Google Fonts): Archivo 100–900 con eje de ancho; PT Serif 400/700.
 

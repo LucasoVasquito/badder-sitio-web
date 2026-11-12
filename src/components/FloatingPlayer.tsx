@@ -21,7 +21,7 @@ export default function FloatingPlayer() {
     <div
       role="region"
       aria-label="Reproductor BADDER"
-      className="surface-dark fixed bottom-0 left-0 right-0 md:right-auto md:left-6 md:bottom-6 md:w-[460px] z-50 flex items-stretch border-t-2 md:border-2 border-paper/0 md:border-foreground/0"
+      className="surface-dark fixed bottom-0 left-0 right-0 md:right-auto md:left-6 md:bottom-6 md:w-[460px] z-50 flex items-stretch border-t border-foreground/50 md:border md:border-foreground/50"
     >
       <audio
         ref={audioRef}

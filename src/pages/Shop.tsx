@@ -12,7 +12,7 @@ function ProductCard({ product }: { product: Product }) {
   return (
     <li>
       <Link to={`/shop/${product.id}`} className="group flex flex-col">
-        <div className="aspect-[3/4] overflow-hidden bg-ink relative mb-3">
+        <div className="aspect-[3/4] overflow-hidden bg-secondary relative mb-3">
           <SmartImage src={product.images[0]} thumb alt={product.name} className="w-full h-full object-cover" />
           <span className={`absolute top-0 left-0 px-2 py-1 label ${forSale ? "bg-accent text-accent-foreground" : "bg-paper text-ink"}`}>
             {displayStatus(product)}

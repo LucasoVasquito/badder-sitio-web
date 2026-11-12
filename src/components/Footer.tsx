@@ -5,7 +5,7 @@ export default function Footer() {
   const a = "inline-flex items-center min-h-[44px] hover:underline underline-offset-4";
   return (
     // pb extra: la barra del reproductor es fija y no debe tapar la última línea
-    <footer className="surface-dark relative z-10 mt-24 md:mt-32 px-5 md:px-12 pt-14 pb-32 md:pb-28">
+    <footer className="surface-dark relative z-10 border-t border-border mt-24 md:mt-32 px-5 md:px-12 pt-14 pb-32 md:pb-28">
       <div className="wrap grid grid-cols-2 md:grid-cols-12 gap-x-6 gap-y-12">
         <div className="col-span-2 md:col-span-6">
           <span className="font-display text-hero block">Badder</span>

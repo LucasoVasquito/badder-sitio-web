@@ -26,7 +26,7 @@ export default function CurrentDrop() {
             return (
               <li key={p.id}>
                 <Link to={`/shop/${p.id}`} className="group block">
-                  <div className="aspect-[3/4] overflow-hidden bg-ink">
+                  <div className="aspect-[3/4] overflow-hidden bg-secondary">
                     <img src={p.images[0]} alt={p.name} loading="lazy" className="w-full h-full object-cover" />
                   </div>
                   <div className="mt-3 label text-muted-foreground">{p.collection ? `${p.collection.name} · ${p.collection.season}` : "BADDER"}</div>

@@ -15,7 +15,7 @@ import { usePageMeta } from "@/lib/usePageMeta";
 // /sistema — referencia interna del sistema visual (no enlazada desde el menú).
 const swatches = [
   { name: "Papel", token: "--paper", hex: "#F0EDE3", cls: "bg-paper text-ink" },
-  { name: "Tinta", token: "--ink", hex: "#181917", cls: "bg-ink text-paper" },
+  { name: "Tinta", token: "--ink", hex: "#181917", cls: "bg-secondary text-paper" },
   { name: "Lima (principal)", token: "--lime", hex: "#83CC16", cls: "bg-lime text-ink" },
   { name: "Rojo (alternativo)", token: "--red", hex: "#EF432B", cls: "bg-signal text-ink" },
 ];
@@ -124,7 +124,7 @@ export default function Sistema() {
 
         <Block id="producto" title="Ficha de producto / proyecto">
           <div className="grid md:grid-cols-12 gap-8 max-w-4xl">
-            <img src={product.images[0]} alt="" className="md:col-span-5 w-full aspect-[3/4] object-cover bg-ink" />
+            <img src={product.images[0]} alt="" className="md:col-span-5 w-full aspect-[3/4] object-cover bg-secondary" />
             <div className="md:col-span-7">
               <span className="label border-2 border-foreground px-2 py-0.5">{displayStatus(product)}</span>
               <h3 className="mt-3 font-display text-title">{product.name}</h3>

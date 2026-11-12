@@ -31,7 +31,7 @@ export default function FromTheArchive() {
               <li key={p.id} className="border-b border-border">
                 <Link
                   to={`/archive/${p.id}`}
-                  className="group grid grid-cols-[3.5rem_1fr] md:grid-cols-[4.5rem_1fr_auto] gap-x-4 gap-y-1 py-3 items-center hover:bg-paper transition-colors"
+                  className="group grid grid-cols-[3.5rem_1fr] md:grid-cols-[4.5rem_1fr_auto] gap-x-4 gap-y-1 py-3 items-center hover:bg-background transition-colors"
                 >
                   <SmartImage src={p.cover} thumb alt="" className="w-14 h-14 md:w-[72px] md:h-[72px] object-cover bg-ink row-span-2 md:row-span-1" />
                   <span className="min-w-0">
