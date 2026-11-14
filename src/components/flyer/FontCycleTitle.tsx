@@ -11,7 +11,7 @@ const FAMILY: Record<DisplayFontKey, string> = {
   ethno: "1em 'Ethnocentric'",
   wet: "1em 'Rubik Wet Paint'",
   micro: "1em 'Microgramma'",
-  anton: "1em 'Anton'",
+  anton: "1em 'Roboto Condensed Bold'",
   rye: "1em 'Rye'",
   unifraktur: "1em 'UnifrakturMaguntia'",
   pirata: "1em 'Pirata One'",

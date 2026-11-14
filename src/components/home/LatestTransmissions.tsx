@@ -14,11 +14,11 @@ const THORN = (h: number) => (
 
 const A = "var(--a-c,#FF2B1C)";
 const ROWS = [
-  { i: 0, label: "Not Rules", tag: "EP", ml: undefined, font: "'Anton',sans-serif", size: "clamp(30px,3.6vw,54px)", paper: false, doto: false },
+  { i: 0, label: "Not Rules", tag: "EP", ml: undefined, font: "'Roboto Condensed Bold',sans-serif", size: "clamp(30px,3.6vw,54px)", paper: false, doto: false },
   { i: 1, label: "Beeacks Breck Me", tag: "EP", ml: "clamp(20px,8vw,120px)", font: "'Doto',monospace", size: "clamp(28px,3.3vw,50px)", paper: false, doto: true },
-  { i: 2, label: "Club Motion", tag: "Preview", ml: "clamp(8px,3vw,40px)", font: "'Anton',sans-serif", size: "clamp(30px,3.6vw,54px)", paper: true, doto: false },
+  { i: 2, label: "Club Motion", tag: "Preview", ml: "clamp(8px,3vw,40px)", font: "'Roboto Condensed Bold',sans-serif", size: "clamp(30px,3.6vw,54px)", paper: true, doto: false },
   { i: 3, label: "Dope Energy", tag: "Preview", ml: "clamp(30px,12vw,200px)", font: "'Doto',monospace", size: "clamp(28px,3.3vw,50px)", paper: false, doto: true },
-  { i: 4, label: "Power Up", tag: "Preview", ml: "clamp(14px,5vw,80px)", font: "'Anton',sans-serif", size: "clamp(30px,3.6vw,54px)", paper: false, doto: false },
+  { i: 4, label: "Power Up", tag: "Preview", ml: "clamp(14px,5vw,80px)", font: "'Roboto Condensed Bold',sans-serif", size: "clamp(30px,3.6vw,54px)", paper: false, doto: false },
   { i: 5, label: "Talk Like That", tag: "Preview", ml: "clamp(26px,10vw,160px)", font: "'Doto',monospace", size: "clamp(28px,3.3vw,50px)", paper: true, doto: true },
 ];
 
@@ -33,7 +33,7 @@ export default function LatestTransmissions() {
       <div style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(0deg,rgba(242,239,230,.045) 0 1px,transparent 1px 4px)", pointerEvents: "none" }} />
       <h2
         {...title.bind}
-        className="hv-glitch"
+        className="hv-glitch t-trans"
         style={{ position: "relative", margin: 0, cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 900, fontSize: "clamp(40px,8.6vw,160px)", lineHeight: 0.86, textTransform: "uppercase", color: A, textShadow: "4px 0 0 rgba(0,255,240,.35),-4px 0 0 rgba(255,0,90,.35)" }}
       >
         <span style={{ display: "block" }}>Latest</span>
@@ -51,7 +51,7 @@ export default function LatestTransmissions() {
             aria-label={playingFirst ? "Pausar Not Rules EP" : "Escuchar Not Rules EP"}
             aria-pressed={playingFirst}
             className="hv-sello"
-            style={{ all: "unset", cursor: "pointer", position: "absolute", right: -18, bottom: -26, width: 128, height: 128, borderRadius: "50%", background: A, color: "#0A0A09", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", transform: "rotate(12deg)", fontFamily: "'Anton',sans-serif", fontSize: 30, lineHeight: 0.9, textTransform: "uppercase", textAlign: "center", boxShadow: `0 0 0 3px #0A0A09,0 0 0 5px ${A}` }}
+            style={{ all: "unset", cursor: "pointer", position: "absolute", right: -18, bottom: -26, width: 128, height: 128, borderRadius: "50%", background: A, color: "#0A0A09", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", transform: "rotate(12deg)", fontFamily: "'Roboto Condensed Bold',sans-serif", fontSize: 30, lineHeight: 0.9, textTransform: "uppercase", textAlign: "center", boxShadow: `0 0 0 3px #0A0A09,0 0 0 5px ${A}` }}
           >
             <span>{playingFirst ? "Pausa" : "Play"}</span>
             <span style={{ fontFamily: MONO, fontSize: 11, letterSpacing: ".14em", marginTop: 6 }}>Not Rules EP</span>

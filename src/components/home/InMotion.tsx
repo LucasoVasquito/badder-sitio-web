@@ -20,7 +20,7 @@ export default function InMotion() {
       <img data-depth="-18" src="/img/p-flash.webp" width={720} height={480} alt="" aria-hidden loading="lazy" style={{ position: "absolute", inset: "-6%", width: "112%", height: "112%", objectFit: "cover", filter: "blur(10px) saturate(1.4) contrast(1.2)" }} />
       <div style={{ position: "absolute", inset: 0, background: "linear-gradient(180deg,rgba(10,10,9,.2),rgba(10,10,9,.85))" }} />
       <div style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(0deg,rgba(0,0,0,.45) 0 2px,transparent 2px 4px)", mixBlendMode: "multiply" }} />
-      <h2 {...title.bind} style={{ position: "relative", margin: "0 0 clamp(28px,4vw,56px)", cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 400, fontSize: "clamp(46px,8.4vw,150px)", lineHeight: 0.9, textTransform: "uppercase", color: "#F2EFE6", mixBlendMode: "difference", filter: "url(#warp)" }}>
+      <h2 {...title.bind} className="t-motion" style={{ position: "relative", margin: "0 0 clamp(28px,4vw,56px)", cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 400, fontSize: "clamp(46px,8.4vw,150px)", lineHeight: 0.9, textTransform: "uppercase", color: "#F2EFE6", mixBlendMode: "difference", filter: "url(#warp)" }}>
         <span style={{ display: "block" }}>Badder</span>
         <span style={{ display: "block", paddingLeft: "clamp(30px,20vw,380px)" }}>in motion</span>
       </h2>

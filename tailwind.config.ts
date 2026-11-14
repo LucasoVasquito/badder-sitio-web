@@ -33,7 +33,7 @@ export default {
         signal: "hsl(var(--a))",
       },
       fontFamily: {
-        display: ["Anton", "Impact", "sans-serif"],
+        display: ["Roboto Condensed Bold", "Impact", "sans-serif"],
         sans: ["Newsreader", "Georgia", "serif"],
         serif: ["Newsreader", "Georgia", "serif"],
         mono: ['"IBM Plex Mono"',"ui-monospace", "monospace"],

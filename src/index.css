@@ -9,6 +9,12 @@
 @font-face { font-family: 'HitMePunk'; src: url('/fonts/hitmepunk.woff2') format('woff2'), url('/Hit me, punk! 01.ttf') format('truetype'); font-display: swap; }
 @font-face { font-family: 'Microgramma'; src: url('/fonts/microgramma.woff2') format('woff2'), url('/Microgramma D Extended Bold.otf') format('opentype'); font-display: swap; }
 @font-face { font-family: 'Ethnocentric'; src: url('/fonts/ethnocentric.woff2') format('woff2'), url('/Ethnocentric-Regular.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Roboto Condensed'; font-weight: 400; font-style: normal; src: url('/fonts/RobotoCondensed-Regular.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Roboto Condensed'; font-weight: 500; font-style: normal; src: url('/fonts/RobotoCondensed-Medium.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Roboto Condensed'; font-weight: 700; font-style: normal; src: url('/fonts/RobotoCondensed-Bold.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Roboto Condensed Bold'; font-weight: 400; font-style: normal; src: url('/fonts/RobotoCondensed-Bold.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Roboto Condensed Bold'; font-weight: 700; font-style: normal; src: url('/fonts/RobotoCondensed-Bold.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Roboto Condensed'; font-weight: 400; font-style: italic; src: url('/fonts/RobotoCondensed-Italic.ttf') format('truetype'); font-display: swap; }
 @font-face { font-family: 'DashEarly'; src: url('/fonts/dash-early.woff2') format('woff2'), url('/DASH-Early.ttf') format('truetype'); font-display: swap; }
 
 /*
@@ -52,7 +58,8 @@
     --radius: 0px;
 
     /* Capas tipográficas */
-    --f-display: 'Anton', 'Impact', sans-serif;
+    --f-display: 'Roboto Condensed Bold', 'Impact', sans-serif;
+    --f-condensed: 'Roboto Condensed', 'Arial Narrow', sans-serif;
     --f-read: 'Newsreader', Georgia, serif;
     --f-mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
     --f-script: 'Pinyon Script', cursive;
@@ -147,7 +154,7 @@
 }
 
 @layer utilities {
-  /* Display: Anton por defecto en títulos interiores. Cada pieza puede cambiar de fuente (FontCycleTitle). */
+  /* Display: Roboto Condensed Bold por defecto en títulos interiores. Cada pieza puede cambiar de fuente (FontCycleTitle). */
   .font-display {
     font-family: var(--f-display);
     font-weight: 400;
@@ -156,7 +163,7 @@
     line-height: 0.9;
   }
   .text-hero { font-size: clamp(3.25rem, 1rem + 11vw, 10rem); line-height: 0.85; }
-  .text-title { font-size: clamp(2.75rem, 1rem + 8vw, 7rem); line-height: 0.88; }
+  .text-title { font-size: clamp(2rem, 0.5rem + 8vw, 7rem); line-height: 0.88; overflow-wrap: anywhere; }
   .text-h2 { font-size: clamp(1.9rem, 1rem + 3.4vw, 3.4rem); line-height: 0.95; }
 
   /* Fuentes display disponibles (13) */
@@ -169,7 +176,7 @@
   .f-doto { font-family: 'Doto', monospace; font-weight: 900; text-transform: uppercase; }
   .f-wet { font-family: 'Rubik Wet Paint', cursive; }
   .f-rye { font-family: 'Rye', serif; }
-  .f-anton { font-family: 'Anton', sans-serif; text-transform: uppercase; }
+  .f-anton { font-family: 'Roboto Condensed Bold', sans-serif; text-transform: uppercase; }
   .f-unifraktur { font-family: 'UnifrakturMaguntia', serif; }
   .f-pirata { font-family: 'Pirata One', serif; }
   .f-bowlby { font-family: 'Bowlby One', sans-serif; text-transform: uppercase; }
@@ -282,6 +289,30 @@
 .fx-blur { filter: blur(var(--blur, 4px)) var(--fx, ); }
 .fx-blur[data-clear], .fx-blur[data-active] { filter: none !important; }
 .stretch::after { content: ""; position: absolute; inset: 0; }
+
+/* Móvil: los títulos display (fuentes anchas, a veces rotados) escalan con el ancho para no salirse de la pantalla,
+   y las imágenes de las grillas no ocupan todo el ancho (menos scroll para verlas). */
+@media (max-width: 767px) {
+  .t-join { font-size: 9.5vw !important; max-width: 100% !important; }
+  .t-drop { font-size: 14vw !important; }
+  .t-archive { font-size: 10.5vw !important; }
+  .t-culture { font-size: 12vw !important; }
+  .t-studio { font-size: 14vw !important; }
+  .t-trans { font-size: 6.6vw !important; }
+  .t-motion { font-size: 7.5vw !important; }
+  .t-motion span:last-child { padding-left: 8vw !important; }
+  .hv-arch { width: 100%; max-width: 70%; justify-self: center; }
+}
+
+/* Escritorio: las fuentes display son anchas; se limitan los títulos más largos para que no se corten en pantallas grandes. */
+@media (min-width: 768px) {
+  .t-trans { font-size: min(6.4vw, 125px) !important; }
+  .t-trans span:last-child { padding-left: clamp(12px, 5vw, 100px) !important; }
+  .t-culture { font-size: min(11.5vw, 230px) !important; }
+  .t-motion { font-size: min(7.2vw, 140px) !important; }
+  .t-motion span:last-child { padding-left: clamp(30px, 12vw, 260px) !important; }
+  .t-archive { font-size: min(9.5vw, 180px) !important; }
+}
 
 /* Alto de pantalla estable en iOS: 100vh de respaldo, 100svh donde existe (no salta con la barra de Safari). */
 .min-h-svh-fb { min-height: 100vh; min-height: 100svh; }

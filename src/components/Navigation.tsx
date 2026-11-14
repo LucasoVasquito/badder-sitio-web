@@ -23,7 +23,7 @@ const SAFE_L = "max(clamp(16px,3vw,40px), env(safe-area-inset-left, 0px))";
 const SAFE_R = "max(clamp(16px,3vw,40px), env(safe-area-inset-right, 0px))";
 
 // Nav fija (z 80, mix-blend-mode: difference), logo 30 px, mono 13 px .14em, respeta el notch (safe-area).
-// Mobile: menú a pantalla completa en Anton 48–64 px, un ítem por línea con rotación alternada; la bolsa sigue en la barra.
+// Mobile: menú a pantalla completa en Roboto Condensed 48–64 px, un ítem por línea con rotación alternada; la bolsa sigue en la barra.
 export default function Navigation() {
   const [open, setOpen] = useState(false);
   const { pathname } = useLocation();
@@ -153,7 +153,7 @@ export default function Navigation() {
                         aria-current={on ? "page" : undefined}
                         className="inline-flex items-center min-h-[56px] my-1"
                         style={{
-                          fontFamily: "'Anton',sans-serif",
+                          fontFamily: "'Roboto Condensed Bold',sans-serif",
                           fontSize: "clamp(48px,14vw,64px)",
                           lineHeight: 1,
                           textTransform: "uppercase",

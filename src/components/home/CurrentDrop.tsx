@@ -5,7 +5,7 @@ import { useFontCycle } from "./useFontCycle";
 
 const MONO = "'IBM Plex Mono',monospace";
 const A = "var(--a-c,#FF2B1C)";
-const ITEMS = ["Drop 3", "/", "SS25", "/", "Bunker 001", "/", "Noise for the Dancefloor", "/", "The Showcase", "/", "Blue Clifford", "/", "La Plata — AR", "/"];
+const ITEMS = ["Drop 3", "/", "SS26", "/", "Bunker 001", "/", "Noise for the Dancefloor", "/", "The Showcase", "/", "Blue Clifford", "/", "La Plata — AR", "/"];
 const THORN = (
   <>
     <svg aria-hidden style={{ position: "absolute", left: 0, top: 0, width: "100%", height: 24 }}><rect width="100%" height="24" fill="url(#thornH)" /></svg>
@@ -45,9 +45,6 @@ export default function CurrentDrop() {
           </div>
           <div data-depth="-22" style={{ position: "relative", width: "88%", marginLeft: "12%", paddingTop: "10%" }}>
             <div aria-hidden style={{ position: "absolute", left: "8%", right: "8%", top: "18%", bottom: "4%", background: A, transform: "rotate(5deg)", boxShadow: "8px 8px 0 #F2EFE6" }} />
-            <svg aria-hidden viewBox="0 0 400 60" style={{ position: "relative", display: "block", width: "100%", marginBottom: "-3%" }}>
-              <path d="M200 6 q14 0 14 12 q0 10 -14 16 L40 56 h320 L200 34" fill="none" stroke="#F2EFE6" strokeWidth="5" strokeLinejoin="round" />
-            </svg>
             <TeeMockup fabric="#151513" print="/img/d3-bunker.webp" style={{ position: "relative", display: "block", width: "100%", filter: "drop-shadow(10px 14px 0 rgba(0,0,0,.55))" }} />
             <span style={{ position: "absolute", right: "-2%", bottom: "10%", background: "#F2EFE6", color: "#0A0A09", fontFamily: MONO, fontSize: 12, letterSpacing: ".12em", padding: "5px 8px", transform: "rotate(-5deg)", textTransform: "uppercase" }}>Bunker 001 Tee</span>
           </div>
@@ -56,11 +53,10 @@ export default function CurrentDrop() {
 
         <div style={{ position: "relative", display: "flex", flexDirection: "column", gap: 20 }}>
           <span aria-hidden style={{ fontFamily: "'Pinyon Script',cursive", fontSize: "clamp(44px,5vw,80px)", lineHeight: 0.8, color: A }}>current</span>
-          <h2 {...title.bind} className="hv-red" style={{ margin: "-10px 0 0", cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 400, fontSize: "clamp(72px,11vw,190px)", lineHeight: 0.85, textTransform: "uppercase", color: "#F2EFE6", WebkitTextStroke: "1px #0A0A09" }}>Drop 3</h2>
+          <h2 {...title.bind} className="hv-red t-drop" style={{ margin: "-10px 0 0", cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 400, fontSize: "clamp(72px,11vw,190px)", lineHeight: 0.85, textTransform: "uppercase", color: "#F2EFE6", WebkitTextStroke: "1px #0A0A09" }}>Drop 3</h2>
           <div style={{ display: "flex", gap: 10, flexWrap: "wrap", fontFamily: MONO, fontSize: 13, letterSpacing: ".14em", textTransform: "uppercase" }}>
-            <span style={{ background: "#F2EFE6", color: "#0A0A09", padding: "5px 9px" }}>SS25</span>
-            <span style={{ border: "1px solid #F2EFE6", padding: "5px 9px" }}>Archivo</span>
-            <span style={{ border: `1px dashed ${A}`, color: A, background: "#0A0A09", padding: "5px 9px" }}>Compras online deshabilitadas</span>
+            <span style={{ background: "#F2EFE6", color: "#0A0A09", padding: "5px 9px" }}>SS26</span>
+            <span style={{ border: `1px dashed ${A}`, color: A, background: "#0A0A09", padding: "5px 9px" }}>Disponible en el shop</span>
           </div>
           <p style={{ margin: 0, maxWidth: "44ch", fontFamily: "'Newsreader',serif", fontSize: 20, lineHeight: 1.45, textWrap: "pretty" }}><span style={{ background: "#0A0A09", padding: "2px 6px", boxDecorationBreak: "clone", WebkitBoxDecorationBreak: "clone" }}>Bunker 001, Noise for the Dancefloor, The Showcase y Blue Clifford. Diseño de Lucas Nicolas Bengochea y Juan Francisco Arias.</span></p>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(4,minmax(0,1fr))", gap: 10, marginTop: 8, maxWidth: 520 }}>
@@ -69,7 +65,7 @@ export default function CurrentDrop() {
             {thumb("#F2EFE6", -1, "/img/d3-showcase.webp", "The Showcase")}
             {thumb("#1a1a18", 3, "/img/d3-blue-clifford-front.webp", "Blue Clifford Knit")}
           </div>
-          <Link to="/shop" className="hv-cta inline-flex items-center min-h-[44px]" style={{ alignSelf: "flex-start", marginTop: 10, background: A, color: "#0A0A09", fontFamily: "'Anton',sans-serif", fontSize: 28, textTransform: "uppercase", padding: "12px 24px", transform: "rotate(-2deg)", boxShadow: "6px 6px 0 #F2EFE6" }}>Ir al shop →</Link>
+          <Link to="/shop" className="hv-cta inline-flex items-center min-h-[44px]" style={{ alignSelf: "flex-start", marginTop: 10, background: A, color: "#0A0A09", fontFamily: "'Roboto Condensed Bold',sans-serif", fontSize: 28, textTransform: "uppercase", padding: "12px 24px", transform: "rotate(-2deg)", boxShadow: "6px 6px 0 #F2EFE6" }}>Ir al shop →</Link>
         </div>
       </div>
     </section>

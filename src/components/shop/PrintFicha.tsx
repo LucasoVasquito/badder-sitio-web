@@ -293,14 +293,14 @@ function Ficha({ print, onClose }: { print: Product; onClose: () => void }) {
 
           <ScaleCompare sizes={sizes} size={size} />
 
-          <div style={{ fontFamily: "'Anton',sans-serif", fontSize: "clamp(3rem,6vw,5rem)", lineHeight: 1, color: RED, margin: "22px 0 14px", textTransform: "uppercase" }}>{price ? formatPrice(price) : "Consultar"}</div>
+          <div style={{ fontFamily: "'Roboto Condensed Bold',sans-serif", fontSize: "clamp(3rem,6vw,5rem)", lineHeight: 1, color: RED, margin: "22px 0 14px", textTransform: "uppercase" }}>{price ? formatPrice(price) : "Consultar"}</div>
 
           {forSale ? (
-            <button type="button" onClick={add} style={{ all: "unset", cursor: "pointer", boxSizing: "border-box", width: "100%", minHeight: 56, display: "grid", placeItems: "center", background: RED, color: INK, fontFamily: "'Anton',sans-serif", fontSize: 26, textTransform: "uppercase" }}>
+            <button type="button" onClick={add} style={{ all: "unset", cursor: "pointer", boxSizing: "border-box", width: "100%", minHeight: 56, display: "grid", placeItems: "center", background: RED, color: INK, fontFamily: "'Roboto Condensed Bold',sans-serif", fontSize: 26, textTransform: "uppercase" }}>
               Agregar
             </button>
           ) : (
-            <a href={contact.instagramUrl} target="_blank" rel="noreferrer" style={{ boxSizing: "border-box", width: "100%", minHeight: 56, display: "grid", placeItems: "center", background: RED, color: INK, fontFamily: "'Anton',sans-serif", fontSize: 26, textTransform: "uppercase" }}>
+            <a href={contact.instagramUrl} target="_blank" rel="noreferrer" style={{ boxSizing: "border-box", width: "100%", minHeight: 56, display: "grid", placeItems: "center", background: RED, color: INK, fontFamily: "'Roboto Condensed Bold',sans-serif", fontSize: 26, textTransform: "uppercase" }}>
               Consultar por Instagram
             </a>
           )}

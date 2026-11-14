@@ -66,7 +66,7 @@ export default function StudioSection() {
       <div aria-hidden style={{ position: "absolute", left: "-8%", bottom: "-12%", width: "60%", height: "70%", backgroundImage: `radial-gradient(${INK} 1.2px,transparent 1.8px)`, backgroundSize: "8px 8px", WebkitMaskImage: "radial-gradient(circle at 20% 80%,#000 0,transparent 65%)", maskImage: "radial-gradient(circle at 20% 80%,#000 0,transparent 65%)", opacity: 0.5 }} />
 
       <div style={{ position: "relative", display: "flex", flexWrap: "wrap", alignItems: "flex-end", justifyContent: "space-between", gap: 24 }}>
-        <h2 {...title.bind} style={{ margin: 0, cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 400, fontSize: "clamp(64px,12vw,210px)", lineHeight: 0.85, textTransform: "uppercase", color: PAPER, textShadow: `6px 6px 0 ${INK}`, transform: "rotate(-2deg)", transformOrigin: "left bottom" }}>Studio</h2>
+        <h2 {...title.bind} className="t-studio" style={{ margin: 0, cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 400, fontSize: "clamp(64px,12vw,210px)", lineHeight: 0.85, textTransform: "uppercase", color: PAPER, textShadow: `6px 6px 0 ${INK}`, transform: "rotate(-2deg)", transformOrigin: "left bottom" }}>Studio</h2>
         <p style={{ margin: 0, maxWidth: "34ch", fontFamily: "'Newsreader',serif", fontStyle: "italic", fontSize: "clamp(20px,1.8vw,26px)", lineHeight: 1.3, textWrap: "pretty" }}>
           Sonido, imagen y diseño para artistas, sellos y proyectos: lo mismo que hacemos para BADDER.
         </p>
@@ -104,7 +104,7 @@ export default function StudioSection() {
           >
             <span style={{ fontFamily: MONO, fontSize: 13, letterSpacing: ".1em" }}>{String(i + 1).padStart(2, "0")}</span>
             <span>
-              <span className="hv-svc-name" style={{ display: "block", fontFamily: "'Anton',sans-serif", fontSize: "clamp(26px,2.6vw,40px)", lineHeight: 1, textTransform: "uppercase", color: active === s.id ? PAPER : INK }}>{s.name}</span>
+              <span className="hv-svc-name" style={{ display: "block", fontFamily: "'Roboto Condensed Bold',sans-serif", fontSize: "clamp(26px,2.6vw,40px)", lineHeight: 1, textTransform: "uppercase", color: active === s.id ? PAPER : INK }}>{s.name}</span>
               <span style={{ display: "block", marginTop: 4, fontFamily: "'Newsreader',serif", fontStyle: "italic", fontSize: 18, lineHeight: 1.3 }}>{s.brief}</span>
             </span>
           </button>
@@ -140,7 +140,7 @@ export default function StudioSection() {
           to="/studio"
           className="hv-sello"
           aria-label="Ir a Studio"
-          style={{ width: "clamp(150px,16vw,190px)", aspectRatio: "1/1", borderRadius: "50%", background: PAPER, color: INK, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Anton',sans-serif", fontSize: "clamp(30px,3vw,40px)", textTransform: "uppercase", transform: "rotate(-10deg)", boxShadow: `6px 6px 0 ${INK}`, border: `3px solid ${INK}` }}
+          style={{ width: "clamp(150px,16vw,190px)", aspectRatio: "1/1", borderRadius: "50%", background: PAPER, color: INK, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Roboto Condensed Bold',sans-serif", fontSize: "clamp(30px,3vw,40px)", textTransform: "uppercase", transform: "rotate(-10deg)", boxShadow: `6px 6px 0 ${INK}`, border: `3px solid ${INK}` }}
         >
           Studio →
         </Link>

@@ -7,6 +7,8 @@ const CREW: [string, string][] = [
   ["Uriel Galeano", "Música"],
   ["Francisco Anguis", "Música"],
   ["Javier Almiron", "Diseño"],
+  ["Facundo Coppa", "Diseño"],
+  ["Nahuel Bengochea", "Diseño · motion"],
 ];
 
 // 08 About + Crew — tal cual la maqueta. El bloque Crew conserva el ancla #crew (enlaces de créditos).
@@ -26,7 +28,7 @@ export default function AboutSection() {
           <span style={{ fontFamily: MONO, fontSize: 13, letterSpacing: ".16em", textTransform: "uppercase", padding: "14px 0", borderBottom: "1px solid #0A0A09" }}>Crew</span>
           {CREW.map(([n, r]) => (
             <div key={n} className="hv-crew" style={{ display: "flex", justifyContent: "space-between", gap: 16, padding: "14px 0", borderBottom: "1px solid #0A0A09" }}>
-              <span style={{ fontFamily: "'Anton',sans-serif", fontSize: 26, textTransform: "uppercase" }}>{n}</span>
+              <span style={{ fontFamily: "'Roboto Condensed Bold',sans-serif", fontSize: 26, textTransform: "uppercase" }}>{n}</span>
               <span style={{ fontFamily: MONO, fontSize: 13, textAlign: "right" }}>{r}</span>
             </div>
           ))}

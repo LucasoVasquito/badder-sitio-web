@@ -54,7 +54,7 @@ function Stage({ p, flipped, onClick, playOnMount = false }: { p: Product; flipp
       <span aria-hidden style={{ position: "absolute", top: 14, right: -6, width: 96, height: 24, background: "var(--tape)", transform: "rotate(38deg)", zIndex: 3 }} />
       <span
         aria-hidden
-        style={{ position: "absolute", left: -10, bottom: 28, width: 92, height: 92, borderRadius: "9999px", background: RED, color: INK, border: `2px solid ${INK}`, display: "grid", placeItems: "center", textAlign: "center", fontFamily: "'Anton',sans-serif", fontSize: 20, lineHeight: 1, transform: "rotate(-8deg)", zIndex: 3, padding: 6 }}
+        style={{ position: "absolute", left: -10, bottom: 28, width: 92, height: 92, borderRadius: "9999px", background: RED, color: INK, border: `2px solid ${INK}`, display: "grid", placeItems: "center", textAlign: "center", fontFamily: "'Roboto Condensed Bold',sans-serif", fontSize: 20, lineHeight: 1, transform: "rotate(-8deg)", zIndex: 3, padding: 6 }}
       >
         {priceText(p)}
       </span>
@@ -164,7 +164,7 @@ export default function LineUp({ items }: { items: Product[] }) {
               return (
                 <Fragment key={p.id}>
                   {i > 0 && (
-                    <li aria-hidden style={{ color: RED, fontFamily: "'Anton',sans-serif", fontSize: mobile ? 22 : 30, lineHeight: 1, margin: mobile ? "2px 0" : "4px 0", paddingLeft: "6%" }}>
+                    <li aria-hidden style={{ color: RED, fontFamily: "'Roboto Condensed Bold',sans-serif", fontSize: mobile ? 22 : 30, lineHeight: 1, margin: mobile ? "2px 0" : "4px 0", paddingLeft: "6%" }}>
                       {SEPS[(i - 1) % SEPS.length]}
                     </li>
                   )}
@@ -185,7 +185,7 @@ export default function LineUp({ items }: { items: Product[] }) {
                           all: "unset",
                           cursor: "pointer",
                           minHeight: 44,
-                          fontFamily: "'Anton',sans-serif",
+                          fontFamily: "'Roboto Condensed Bold',sans-serif",
                           textTransform: "uppercase",
                           fontSize,
                           lineHeight: 0.95,

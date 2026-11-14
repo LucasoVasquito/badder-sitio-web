@@ -28,7 +28,7 @@ export default function FromTheArchive() {
       </div>
 
       <section id="archive" data-screen-label="04 From the Archive" style={{ position: "relative", padding: "clamp(60px,8vw,120px) clamp(16px,3vw,40px)", background: "repeating-conic-gradient(#0E0E0D 0 25%,#161614 0 50%) 0 0/120px 120px", overflow: "hidden" }}>
-        <h2 {...title.bind} className="hv-hard" style={{ position: "relative", zIndex: 3, margin: 0, cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 400, fontSize: "clamp(64px,11vw,190px)", lineHeight: 0.85, color: "#F2EFE6", textShadow: `6px 6px 0 ${A}`, transform: "rotate(2deg)" }}>From the Archive</h2>
+        <h2 {...title.bind} className="hv-hard t-archive" style={{ position: "relative", zIndex: 3, margin: 0, cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 400, fontSize: "clamp(64px,11vw,190px)", lineHeight: 0.85, color: "#F2EFE6", textShadow: `6px 6px 0 ${A}`, transform: "rotate(2deg)" }}>From the Archive</h2>
         <div style={{ position: "relative", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,250px),1fr))", gap: "clamp(20px,3vw,40px)", marginTop: "clamp(32px,4vw,60px)", alignItems: "start" }}>
           <Link to="/archive/rosset" className="hv-arch" style={{ position: "relative", display: "block", transform: "rotate(-3deg)" }}>
             <img src="/img/f-4.webp" width={720} height={1280} alt="Flyer Badder Showcase Rosset" loading="lazy" className="fx-blur" style={{ height: "auto", width: "100%", display: "block", ["--fx" as string]: "saturate(1.2)" }} />
@@ -59,7 +59,7 @@ export default function FromTheArchive() {
           </Link>
         </div>
         <div style={{ position: "relative", display: "flex", justifyContent: "flex-end", marginTop: "clamp(40px,5vw,72px)" }}>
-          <Link to="/archive" style={{ fontFamily: "'Anton',sans-serif", fontSize: "clamp(28px,3vw,44px)", textTransform: "uppercase", borderBottom: `4px solid ${A}`, paddingBottom: 4 }}>Ver archivo completo →</Link>
+          <Link to="/archive" style={{ fontFamily: "'Roboto Condensed Bold',sans-serif", fontSize: "clamp(28px,3vw,44px)", textTransform: "uppercase", borderBottom: `4px solid ${A}`, paddingBottom: 4 }}>Ver archivo completo →</Link>
         </div>
       </section>
     </>

@@ -76,7 +76,7 @@ export const collections = [
   {
     id: 3,
     name: "DROP 3",
-    season: "SS25",
+    season: "SS26",
     pieces: 40,
     img: drop3,
     logo: "/drop3/foto (28).webp",

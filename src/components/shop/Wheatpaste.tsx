@@ -42,7 +42,7 @@ function Cartela({ p, rot }: { p: Product; rot: number }) {
   const [w, h] = PRINT_SIZES_CM[size];
   return (
     <div style={{ position: "relative", zIndex: 3, transform: `rotate(${-rot * 1.6}deg)`, background: INK, color: PAPER, padding: "12px 16px 12px", marginTop: -16, marginLeft: 14, marginRight: 14 }}>
-      <div style={{ fontFamily: "'Anton',sans-serif", fontSize: 30, lineHeight: 1, textTransform: "uppercase" }}>{p.name}</div>
+      <div style={{ fontFamily: "'Roboto Condensed Bold',sans-serif", fontSize: 30, lineHeight: 1, textTransform: "uppercase" }}>{p.name}</div>
       <div style={{ marginTop: 6, fontFamily: MONO, fontSize: 12, letterSpacing: ".06em", textTransform: "uppercase" }}>
         {p.collection?.season ?? "—"} · {techniqueOf(p)} · {size} {w}×{h}
       </div>

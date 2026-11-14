@@ -7,7 +7,7 @@ export const DISPLAY_FONTS = [
   { key: "ethno", cls: "f-ethno", name: "Ethnocentric" },
   { key: "wet", cls: "f-wet", name: "Rubik Wet Paint" },
   { key: "micro", cls: "f-micro", name: "Microgramma" },
-  { key: "anton", cls: "f-anton", name: "Anton" },
+  { key: "anton", cls: "f-anton", name: "Roboto Condensed" },
   { key: "rye", cls: "f-rye", name: "Rye" },
   { key: "unifraktur", cls: "f-unifraktur", name: "UnifrakturMaguntia" },
   { key: "pirata", cls: "f-pirata", name: "Pirata One" },
