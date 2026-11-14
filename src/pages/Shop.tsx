@@ -2,10 +2,14 @@ import { Link } from "react-router-dom";
 import PageHeader from "@/components/site/PageHeader";
 import Notice from "@/components/site/Notice";
 import SmartImage from "@/components/site/SmartImage";
+import LineUp from "@/components/shop/LineUp";
+import Wheatpaste from "@/components/shop/Wheatpaste";
 import { publicProducts, isForSale, displayStatus, formatPrice, commerce } from "@/lib/commerce";
 import { contact } from "@/data/site";
 import { usePageMeta } from "@/lib/usePageMeta";
 import type { Product } from "@/data/products";
+
+const MONO = "'IBM Plex Mono',monospace";
 
 function ProductCard({ product }: { product: Product }) {
   const forSale = isForSale(product);
@@ -27,80 +31,71 @@ function ProductCard({ product }: { product: Product }) {
 }
 
 const grid = "grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 md:gap-x-6 gap-y-12";
+// Primero el drop más reciente.
+const byDrop = (a: Product, b: Product) => (b.collection?.name ?? "").localeCompare(a.collection?.name ?? "");
 
+// Shop v3: remeras en un perchero interactivo y cuadros en una pared de galería.
 export default function Shop() {
-  usePageMeta({ title: "Indumentaria", description: "Prendas y objetos de BADDER, y archivo de prendas de drops anteriores." });
+  usePageMeta({ title: "Indumentaria", description: "Prendas, cuadros y objetos de BADDER, y archivo de prendas de drops anteriores." });
 
   const all = publicProducts();
-  const forSale = all.filter(isForSale);
-  const upcoming = all.filter((p) => !isForSale(p) && p.status !== "ARCHIVE");
-  const archive = all.filter((p) => p.status === "ARCHIVE");
+  const tees = all.filter((p) => p.format === "tee").sort(byDrop);
+  const prints = all.filter((p) => p.format === "print");
+  const others = all.filter((p) => !p.format);
+  const anyForSale = all.some(isForSale);
 
   return (
-    <main data-accent="lime" className="bg-background min-h-screen pt-10 md:pt-16 pb-16 overflow-hidden">
+    <main data-accent="lime" className="bg-background min-h-svh-fb pt-10 md:pt-16 overflow-hidden">
       <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
-        <PageHeader kicker="Prendas y objetos" title="Indumentaria" />
-
-        {/* Disponibles */}
-        <section aria-labelledby="shop-available" className="mb-20">
-          <h2 id="shop-available" className="label border-b-2 border-border pb-3 mb-8 flex justify-between">
-            <span>Disponible ahora</span>
-            <span className="text-muted-foreground">{forSale.length}</span>
-          </h2>
-
-          {forSale.length > 0 ? (
-            <ul className={grid}>
-              {forSale.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </ul>
-          ) : (
+        <PageHeader kicker="Prendas, cuadros y objetos" title="Indumentaria" />
+        {!anyForSale && (
+          <div className="mb-12">
             <Notice title="Nuevo drop en preparación">
-              Por ahora no hay prendas a la venta en la web. Las próximas remeras de BADDER se van a publicar acá. Para consultas escribinos a{" "}
+              Por ahora no hay prendas a la venta en la web: lo que ves en el line-up y en la pared es archivo de drops anteriores. Para consultas escribinos a{" "}
               <a className="underline underline-offset-4 decoration-2" href={contact.instagramUrl} target="_blank" rel="noreferrer">
                 {contact.instagramHandle}
               </a>
               .
             </Notice>
-          )}
+          </div>
+        )}
+        {anyForSale && !commerce.checkoutEnabled && (
+          <p className="mb-12 label text-muted-foreground">Las compras online todavía no están habilitadas: consultá disponibilidad por Instagram o mail.</p>
+        )}
+      </div>
 
-          {forSale.length > 0 && !commerce.checkoutEnabled && (
-            <p className="mt-8 label text-muted-foreground">Las compras online todavía no están habilitadas: consultá disponibilidad por Instagram o mail.</p>
-          )}
+      {/* Remeras: line-up de la fiesta */}
+      {tees.length > 0 && (
+        <section aria-label="Remeras: line-up" style={{ position: "relative" }}>
+          <LineUp items={tees} />
         </section>
+      )}
 
-        {upcoming.length > 0 && (
-          <section aria-labelledby="shop-upcoming" className="mb-20">
-            <h2 id="shop-upcoming" className="label border-b-2 border-border pb-3 mb-8">
-              Próximamente
-            </h2>
+      {/* Cuadros: afiches pegados en la pared */}
+      {prints.length > 0 && (
+        <section aria-label="Cuadros: wheatpaste" style={{ position: "relative" }}>
+          <Wheatpaste prints={prints} />
+        </section>
+      )}
+
+      <div className="px-5 md:px-12 max-w-[1440px] mx-auto pb-16">
+        {others.length > 0 && (
+          <section aria-labelledby="shop-others" className="mt-20">
+            <h2 id="shop-others" className="label border-b-2 border-border pb-3 mb-8">Otros</h2>
             <ul className={grid}>
-              {upcoming.map((p) => (
+              {others.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
             </ul>
           </section>
         )}
 
-        {/* Archivo de prendas */}
-        {archive.length > 0 && (
-          <section aria-labelledby="shop-archive">
-            <div className="border-b-2 border-border pb-3 mb-6 flex flex-wrap items-center justify-between gap-2">
-              <h2 id="shop-archive" className="label">
-                Archivo de prendas
-              </h2>
-              <Link to="/archive?filter=collections" className="label inline-flex items-center min-h-[44px] underline underline-offset-4 decoration-2 hover:bg-accent">
-                Ver colecciones completas →
-              </Link>
-            </div>
-            <p className="text-lg mb-8 max-w-[56ch]">Piezas de drops anteriores. Se conservan como registro; no están a la venta.</p>
-            <ul className={grid}>
-              {archive.map((p) => (
-                <ProductCard key={p.id} product={p} />
-              ))}
-            </ul>
-          </section>
-        )}
+        <div className="mt-16 border-t-2 border-border pt-4 flex flex-wrap items-center justify-between gap-2">
+          <span className="label">Archivo de prendas: piezas de drops anteriores, conservadas como registro.</span>
+          <Link to="/archive?filter=collections" className="label inline-flex items-center min-h-[44px] underline underline-offset-4 decoration-2">
+            Ver colecciones completas →
+          </Link>
+        </div>
       </div>
     </main>
   );

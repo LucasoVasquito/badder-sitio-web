@@ -9,7 +9,7 @@ const NotFound = () => {
   usePageMeta({ title: "No encontrado" });
 
   return (
-    <main data-accent="red" className="bg-background min-h-screen pt-10 md:pt-16 pb-16">
+    <main data-accent="red" className="bg-background min-h-svh-fb pt-10 md:pt-16 pb-16">
       <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
         <PageHeader kicker={`Error 404 · ${pathname}`} title="Página no encontrada" intro="Esta página no existe o se movió. Probá desde alguna de las secciones." />
         <div className="flex flex-wrap gap-3">

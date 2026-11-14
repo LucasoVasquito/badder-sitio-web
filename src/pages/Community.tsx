@@ -41,7 +41,7 @@ export default function Community() {
   usePageMeta({ title: "Participar", description: "Cómo participar en BADDER: demos, colaboraciones, sesiones y proyectos culturales." });
 
   return (
-    <main data-accent="red" className="bg-background min-h-screen pt-10 md:pt-16 pb-16 overflow-hidden">
+    <main data-accent="red" className="bg-background min-h-svh-fb pt-10 md:pt-16 pb-16 overflow-hidden">
       <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
         <PageHeader
           kicker="Comunidad"

@@ -42,7 +42,7 @@ export default function ProductDetail() {
   };
 
   return (
-    <main data-accent="lime" className="bg-background min-h-screen pt-10 md:pt-14 pb-16 overflow-hidden">
+    <main data-accent="lime" className="bg-background min-h-svh-fb pt-10 md:pt-14 pb-16 overflow-hidden">
       <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
         <Link to="/shop" className="inline-flex items-center min-h-[44px] mb-6 label underline underline-offset-4 decoration-2 hover:bg-accent">
           ← Indumentaria

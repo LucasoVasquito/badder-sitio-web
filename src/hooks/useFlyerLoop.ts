@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { useFlyerStore } from "@/store/flyerStore";
+import { isIOS } from "@/lib/device";
 
 export const reducedMotion = () => typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -13,6 +14,7 @@ export function useFlyerLoop() {
   useEffect(() => {
     const m = { x: 0, y: 0, cx: 0, cy: 0, px: 0, py: 0 };
     const finePointer = window.matchMedia("(pointer: fine)").matches;
+    const ios = isIOS();
     let vel = 0;
     let lastY = window.scrollY;
     let marq = 0;
@@ -77,10 +79,13 @@ export function useFlyerLoop() {
         }
       }
 
+      // Distorsión por scroll: en iOS el filtro está apagado por CSS (html.is-ios); en táctil se baja la intensidad.
       const wm = document.getElementById("warpMap");
-      if (wm) {
+      if (wm && !ios) {
         const on = useFlyerStore.getState().distorsion && !reduced;
-        wm.setAttribute("scale", on ? (10 + Math.sin(t / 700) * 6 + Math.min(80, vel * 3)).toFixed(1) : "0");
+        const k = finePointer ? 1 : 0.4;
+        const next = on ? ((10 + Math.sin(t / 700) * 6 + Math.min(80, vel * 3)) * k).toFixed(1) : "0";
+        if (wm.getAttribute("scale") !== next) wm.setAttribute("scale", next);
       }
     };
     raf = requestAnimationFrame(loop);

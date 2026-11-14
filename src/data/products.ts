@@ -47,7 +47,34 @@ export interface Product {
   stock?: number;
   /** Texto original del catálogo anterior, sin verificar. No se muestra. */
   unverifiedNotes?: string;
+
+  // --- v4: Line-up (remeras) y Wheatpaste (cuadros) ---
+  /** Dónde se exhibe en /shop: 'tee' = line-up, 'print' = pared de afiches. Sin valor = no se exhibe ahí. */
+  format?: "tee" | "print";
+  /** Remeras: las destacadas van primero en el line-up (headliner). */
+  featured?: boolean;
+  /**
+   * Remeras: foto de frente / espalda (idealmente PNG recortado). TODO: faltan.
+   * Mientras no existan, el escenario usa `images[0]` / `images[1]`; sin espalda se muestra "FALTA ARCHIVO".
+   */
+  imageFront?: string;
+  imageBack?: string;
+  /** Cuadros: medidas disponibles (la primera es la que se muestra en la pared). */
+  sizes?: PrintSize[];
+  /** Cuadros: precio por medida en ARS. Sin precio se muestra "CONSULTAR". */
+  sizePrices?: Partial<Record<PrintSize, number>>;
+  /** Cuadros: variantes de marco (la primera es la de la pared). */
+  frames?: PrintFrame[];
+  /** Cuadros: foto REAL del cuadro colgado. Si no existe no se muestra la pestaña "Visto en la pared". */
+  imageInSitu?: string;
+  /** Datos provisorios: se muestran con la marca TODO hasta que BADDER los confirme. */
+  todo?: boolean;
 }
+
+export type PrintSize = "A4" | "A3" | "50×70";
+export type PrintFrame = "negro" | "blanco" | "sin marco";
+/** Medidas reales en cm (ancho × alto, vertical). */
+export const PRINT_SIZES_CM: Record<PrintSize, [number, number]> = { A4: [21, 29.7], A3: [29.7, 42], "50×70": [50, 70] };
 
 export const products: Product[] = [
   // --- Prendas de drops anteriores (archivo) ---
@@ -62,6 +89,9 @@ export const products: Product[] = [
     images: ["/drop3/foto (4).webp"],
     collection: { name: "DROP 3", season: "SS25" },
     credits: "Lucas Nicolas Bengochea",
+    format: "tee",
+    featured: true,
+    // TODO: PNG recortados de frente y espalda (imageFront / imageBack).
     unverifiedNotes:
       "Catálogo anterior: SOLD OUT, $25.000. Remera de algodón pesado 24/1. Corte boxy fit, hombros caídos. Estampa en serigrafía en frente y espalda. Grifa lateral tejida. Talles del S al XL.",
   },
@@ -76,6 +106,8 @@ export const products: Product[] = [
     images: ["/drop3/foto (31).webp"],
     collection: { name: "DROP 3", season: "SS25" },
     credits: "Lucas Nicolas Bengochea",
+    format: "tee",
+    // TODO: PNG recortados de frente y espalda (imageFront / imageBack).
     unverifiedNotes:
       "Catálogo anterior: COMING SOON, $48.000. Buzo canguro de frisa invisible premium. Estampa en serigrafía de alto relieve en el frente. Capucha forrada y grifa lateral.",
   },
@@ -90,6 +122,8 @@ export const products: Product[] = [
     images: ["/drop2/foto (11).webp", "/drop2/foto (1).webp", "/drop2/foto (21).webp"],
     collection: { name: "DROP 2", season: "FW24" },
     credits: "Javier Almiron",
+    format: "tee",
+    // TODO: PNG recortados de frente y espalda (imageFront / imageBack).
     unverifiedNotes:
       "Catálogo anterior: AVAILABLE, $22.000. Remera de algodón 24/1. Corte regular. Estampa en serigrafía al agua, tacto cero. Diseño inspirado en la gráfica de los 90s.",
   },
@@ -104,6 +138,8 @@ export const products: Product[] = [
     images: ["/drop3/foto (28).webp", "/drop3/foto (27).webp"],
     collection: { name: "DROP 3", season: "SS25" },
     credits: "Juan Francisco Arias - Lucas Nicolas Bengochea",
+    format: "tee",
+    // TODO: PNG recortados de frente y espalda (imageFront / imageBack).
     unverifiedNotes:
       "Catálogo anterior: SOLD OUT, $65.000. Buzo tejido de hilo de algodón. Diseño custom-fit con intarsia en el frente y espalda. Producido en unidades ultra limitadas.",
   },
@@ -155,6 +191,76 @@ export const products: Product[] = [
     listed: false,
     images: ["/drop3/foto (40).webp"],
     unverifiedNotes: "Catálogo anterior: UNAVAILABLE. Pack de texturas y assets visuales para VJs y diseñadores.",
+  },
+
+  // --- Cuadros (pared de galería). TODO: diseños provisorios tomados de public/img; sin precio ni ficha real.
+  //     Confirmar título, año, técnica, medidas y precio (`sizePrices`), sacar `todo`, y cargar la foto real del cuadro colgado en `imageInSitu`.
+  {
+    id: 20,
+    name: "DJ AZUL",
+    kind: "physical",
+    category: "PRINT",
+    status: "COMING SOON",
+    verified: false,
+    listed: true,
+    images: ["/img/d3-dj-azul.webp"],
+    collection: { name: "DROP 3", season: "SS25" },
+    credits: "Lucas Nicolas Bengochea",
+    printing: "TODO: técnica",
+    format: "print",
+    sizes: ["50×70", "A3", "A4"],
+    frames: ["negro", "blanco", "sin marco"],
+    todo: true,
+  },
+  {
+    id: 21,
+    name: "PERRITO",
+    kind: "physical",
+    category: "PRINT",
+    status: "COMING SOON",
+    verified: false,
+    listed: true,
+    images: ["/img/p-drop3.webp"],
+    collection: { name: "DROP 3", season: "SS25" },
+    credits: "Lucas Nicolas Bengochea",
+    printing: "TODO: técnica",
+    format: "print",
+    sizes: ["A3", "A4", "50×70"],
+    frames: ["blanco", "negro", "sin marco"],
+    todo: true,
+  },
+  {
+    id: 22,
+    name: "THE SHOWCASE",
+    kind: "physical",
+    category: "PRINT",
+    status: "COMING SOON",
+    verified: false,
+    listed: true,
+    images: ["/img/d3-showcase.webp"],
+    collection: { name: "DROP 3", season: "SS25" },
+    credits: "Lucas Nicolas Bengochea",
+    printing: "TODO: técnica",
+    format: "print",
+    sizes: ["A4", "A3", "50×70"],
+    frames: ["negro", "blanco", "sin marco"],
+    todo: true,
+  },
+  {
+    id: 23,
+    name: "EMERGENT",
+    kind: "physical",
+    category: "PRINT",
+    status: "COMING SOON",
+    verified: false,
+    listed: true,
+    images: ["/img/f-2.webp"],
+    collection: { name: "Emergent x Badder", season: "2024" },
+    printing: "TODO: técnica",
+    format: "print",
+    sizes: ["A3", "50×70", "A4"],
+    frames: ["negro", "blanco", "sin marco"],
+    todo: true,
   },
 
   // --- Remeras nuevas: completar con datos reales y pasar verified a true ---

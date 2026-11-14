@@ -20,7 +20,7 @@ export default function FloatingPlayer() {
     <div
       role="region"
       aria-label="Reproductor BADDER"
-      style={{ position: "fixed", left: 16, bottom: 16, zIndex: 85, display: "flex", alignItems: "center", gap: 10, background: "#0A0A09", border: "1px solid var(--a-c,#FF2B1C)", padding: 6, maxWidth: "calc(100vw - 32px)", color: "#F2EFE6" }}
+      style={{ position: "fixed", left: "calc(16px + env(safe-area-inset-left, 0px))", bottom: "calc(16px + env(safe-area-inset-bottom, 0px))", zIndex: 85, display: "flex", alignItems: "center", gap: 10, background: "#0A0A09", border: "1px solid var(--a-c,#FF2B1C)", padding: 6, maxWidth: "calc(100vw - 32px - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px))", color: "#F2EFE6" }}
     >
       <audio
         ref={audioRef}

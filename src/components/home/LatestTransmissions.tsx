@@ -32,7 +32,7 @@ export default function LatestTransmissions() {
     <section id="music" data-screen-label="02 Latest Transmissions" style={{ position: "relative", background: "#0A0A09", padding: "clamp(72px,9vw,140px) clamp(16px,3vw,40px) clamp(72px,8vw,120px)", overflow: "hidden" }}>
       <div style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(0deg,rgba(242,239,230,.045) 0 1px,transparent 1px 4px)", pointerEvents: "none" }} />
       <h2
-        onClick={title.onClick}
+        {...title.bind}
         className="hv-glitch"
         style={{ position: "relative", margin: 0, cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 900, fontSize: "clamp(40px,8.6vw,160px)", lineHeight: 0.86, textTransform: "uppercase", color: A, textShadow: "4px 0 0 rgba(0,255,240,.35),-4px 0 0 rgba(255,0,90,.35)" }}
       >
@@ -43,7 +43,7 @@ export default function LatestTransmissions() {
         <div style={{ position: "relative", transform: "rotate(-2.5deg)", maxWidth: 560 }}>
           <div style={{ position: "relative", padding: 22 }}>
             {THORN(24)}
-            <img src="/img/cover-not-rules.webp" alt="Not Rules EP" style={{ width: "100%", aspectRatio: "1/1", objectFit: "cover", display: "block", filter: "contrast(1.15)" }} />
+            <img src="/img/cover-not-rules.webp" width={500} height={500} alt="Not Rules EP" style={{ height: "auto", width: "100%", aspectRatio: "1/1", objectFit: "cover", display: "block", filter: "contrast(1.15)" }} />
           </div>
           <button
             type="button"

@@ -1,29 +1,31 @@
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { MotionConfig } from "framer-motion";
 import Home from "./pages/Home";
-import NotFound from "./pages/NotFound";
 import ScrollToTop from "./components/ScrollToTop";
 import Navigation from "./components/Navigation";
 import FloatingPlayer from "./components/FloatingPlayer";
 import Footer from "./components/Footer";
-import Music from "./pages/Music";
-import Shop from "./pages/Shop";
-import Archivo from "./pages/Archivo";
-import Journal from "./pages/Journal";
-import CultureArticle from "./pages/CultureArticle";
-import ArchiveProject from "./pages/ArchiveProject";
-import Services from "./pages/Services";
-import Community from "./pages/Community";
-import Contact from "./pages/Contact";
-import ProductDetail from "./pages/ProductDetail";
-import Cart from "./pages/Cart";
-import Sistema from "./pages/Sistema";
 import { SvgDefs, GrainOverlay, CursorDot } from "./components/flyer";
 import TouchBlur from "./components/flyer/TouchBlur";
 import { useFlyerLoop } from "./hooks/useFlyerLoop";
 import { useFlyerStore } from "./store/flyerStore";
 import { PALETAS } from "./config/flyer";
-import { useEffect } from "react";
+import { lazy, Suspense, useEffect } from "react";
+
+// Páginas interiores: se cargan por ruta (code-splitting).
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Music = lazy(() => import("./pages/Music"));
+const Shop = lazy(() => import("./pages/Shop"));
+const Archivo = lazy(() => import("./pages/Archivo"));
+const Journal = lazy(() => import("./pages/Journal"));
+const CultureArticle = lazy(() => import("./pages/CultureArticle"));
+const ArchiveProject = lazy(() => import("./pages/ArchiveProject"));
+const Services = lazy(() => import("./pages/Services"));
+const Community = lazy(() => import("./pages/Community"));
+const Contact = lazy(() => import("./pages/Contact"));
+const ProductDetail = lazy(() => import("./pages/ProductDetail"));
+const Cart = lazy(() => import("./pages/Cart"));
+const Sistema = lazy(() => import("./pages/Sistema"));
 
 // Redirige conservando ?query y #hash (ej: /journal?post=post-01 → /culture?post=post-01)
 function Redirect({ to }: { to: string }) {
@@ -55,6 +57,8 @@ function App() {
         <ScrollToTop />
         <Navigation />
 
+        {/* Las páginas interiores se cargan por ruta (code-splitting): la home baja menos JS. */}
+        <Suspense fallback={<div className="min-h-svh-fb" aria-busy="true" />}>
         <Routes>
           <Route path="/" element={<Home />} />
 
@@ -85,6 +89,7 @@ function App() {
 
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </Suspense>
 
         {/* Persistentes: un solo reproductor para todo el sitio */}
         <FloatingPlayer />

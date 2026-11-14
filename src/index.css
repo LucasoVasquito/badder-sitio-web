@@ -3,12 +3,13 @@
 @tailwind utilities;
 
 /* Fuentes display del repo (public/). Las de Google Fonts se cargan en index.html. */
-@font-face { font-family: 'Akira'; src: url('/Akira Expanded Demo.otf') format('opentype'); font-display: swap; }
-@font-face { font-family: 'Seagram'; src: url('/Seagram tfb.ttf') format('truetype'); font-display: swap; }
-@font-face { font-family: 'HitMePunk'; src: url('/Hit me, punk! 01.ttf') format('truetype'); font-display: swap; }
-@font-face { font-family: 'Microgramma'; src: url('/Microgramma D Extended Bold.otf') format('opentype'); font-display: swap; }
-@font-face { font-family: 'Ethnocentric'; src: url('/Ethnocentric-Regular.otf') format('opentype'); font-display: swap; }
-@font-face { font-family: 'DashEarly'; src: url('/DASH-Early.ttf') format('truetype'); font-display: swap; }
+/* WOFF2 (public/fonts, ~70 % menos peso) con el archivo original de respaldo. */
+@font-face { font-family: 'Akira'; src: url('/fonts/akira.woff2') format('woff2'), url('/Akira Expanded Demo.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Seagram'; src: url('/fonts/seagram.woff2') format('woff2'), url('/Seagram tfb.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'HitMePunk'; src: url('/fonts/hitmepunk.woff2') format('woff2'), url('/Hit me, punk! 01.ttf') format('truetype'); font-display: swap; }
+@font-face { font-family: 'Microgramma'; src: url('/fonts/microgramma.woff2') format('woff2'), url('/Microgramma D Extended Bold.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'Ethnocentric'; src: url('/fonts/ethnocentric.woff2') format('woff2'), url('/Ethnocentric-Regular.otf') format('opentype'); font-display: swap; }
+@font-face { font-family: 'DashEarly'; src: url('/fonts/dash-early.woff2') format('woff2'), url('/DASH-Early.ttf') format('truetype'); font-display: swap; }
 
 /*
   Sistema BADDER — "flyer vivo".
@@ -129,7 +130,11 @@
   }
 
   ::selection { background: var(--a-c); color: #0A0A09; }
-  :where(a):hover { color: var(--a-c); }
+  @media (hover: hover) and (pointer: fine) {
+    :where(a):hover { color: var(--a-c); }
+  }
+  /* Sin resaltado gris al tocar en iOS: el feedback lo dan los estados [data-active]. */
+  html { -webkit-tap-highlight-color: transparent; -webkit-text-size-adjust: 100%; }
   a { color: inherit; text-decoration: none; }
 
   /* Foco visible: 2 px con contraste contra la superficie. */
@@ -197,17 +202,23 @@
   }
   /* Glitch RGB; se abre al hover/foco */
   .t-glitch { text-shadow: 4px 0 rgba(0, 255, 240, 0.35), -4px 0 rgba(255, 0, 90, 0.35); transition: text-shadow 0.2s; }
-  .t-glitch:hover, a:hover .t-glitch, a:focus-visible .t-glitch { text-shadow: 8px 0 rgba(0, 255, 240, 0.5), -8px 0 rgba(255, 0, 90, 0.5); }
+  a:focus-visible .t-glitch, .t-glitch[data-active] { text-shadow: 8px 0 rgba(0, 255, 240, 0.5), -8px 0 rgba(255, 0, 90, 0.5); }
+  @media (hover: hover) and (pointer: fine) {
+    .t-glitch:hover, a:hover .t-glitch { text-shadow: 8px 0 rgba(0, 255, 240, 0.5), -8px 0 rgba(255, 0, 90, 0.5); }
+  }
   .t-hard { text-shadow: 6px 6px 0 hsl(var(--a)); }
   .shadow-hard { box-shadow: 6px 6px 0 hsl(var(--a)); }
 
   /* Imagen desenfocada: se enfoca con hover/foco o al entrar en viewport (touch) */
   .blur-img { filter: blur(var(--blur, 4px)); transition: filter 0.4s; }
-  .blur-host:hover .blur-img, .blur-host:focus-within .blur-img, .blur-host[data-clear] .blur-img, a:hover .blur-img, a:focus-visible .blur-img { filter: none; }
+  .blur-host:focus-within .blur-img, .blur-host[data-clear] .blur-img, .blur-host[data-active] .blur-img, a:focus-visible .blur-img { filter: none; }
+  @media (hover: hover) and (pointer: fine) {
+    .blur-host:hover .blur-img, a:hover .blur-img { filter: none; }
+  }
 
-  /* Tarjetas-recorte: se enderezan al hover */
+  /* Tarjetas-recorte: se enderezan al hover (puntero fino) o al tocar (ver bloque de hovers al final) */
   .cut { transition: transform 0.25s ease, z-index 0s; }
-  .cut:hover, .cut:focus-within { transform: rotate(0deg) scale(1.03) !important; z-index: 20; }
+  .cut:focus-within { transform: rotate(0deg) scale(1.03) !important; z-index: 20; }
 }
 
 @layer base {
@@ -229,23 +240,67 @@
   }
 }
 
-/* Hovers de la maqueta (style-hover). Sin transiciones: solo el cursor transiciona. */
-.hv-shift:hover { transform: translateX(12px); }
-.hv-glitch:hover { text-shadow: 10px 0 0 rgba(0,255,240,.6), -10px 0 0 rgba(255,0,90,.6) !important; }
-.hv-sello:hover { transform: rotate(-6deg) scale(1.06) !important; }
-.hv-culture:hover { transform: rotate(-1deg) skewX(-6deg) !important; }
-.hv-card:hover { transform: rotate(0deg) scale(1.02) !important; }
-.hv-arch:hover { transform: rotate(0deg) scale(1.04) !important; z-index: 5; }
-.hv-hard:hover { text-shadow: -8px 8px 0 var(--b-c) !important; }
-.hv-motion:hover { background: var(--a-c) !important; color: #0A0A09 !important; }
-.hv-red:hover { color: var(--a-c) !important; }
-.hv-thumb:hover { transform: rotate(0) scale(1.1) !important; }
-.hv-cta:hover { background: #F2EFE6 !important; color: #0A0A09 !important; }
-.hv-ig:hover { background: #F2EFE6 !important; color: #0A0A09 !important; }
-.hv-mail:hover { background: #0A0A09 !important; color: #F2EFE6 !important; }
-.hv-crew:hover { background: var(--a-c); }
+/*
+  Hovers de la maqueta (style-hover). Sin transiciones: solo el cursor transiciona.
+  Solo se aplican con puntero fino; en táctil el mismo efecto se activa con un tap (atributo [data-active],
+  lo pone TouchBlur.tsx y lo saca al tocar otra cosa).
+*/
+@media (hover: hover) and (pointer: fine) {
+  .hv-shift:hover { transform: translateX(12px); }
+  .hv-glitch:hover { text-shadow: 10px 0 0 rgba(0,255,240,.6), -10px 0 0 rgba(255,0,90,.6) !important; }
+  .hv-sello:hover { transform: rotate(-6deg) scale(1.06) !important; }
+  .hv-culture:hover { transform: rotate(-1deg) skewX(-6deg) !important; }
+  .hv-card:hover { transform: rotate(0deg) scale(1.02) !important; }
+  .hv-arch:hover { transform: rotate(0deg) scale(1.04) !important; z-index: 5; }
+  .hv-hard:hover { text-shadow: -8px 8px 0 var(--b-c) !important; }
+  .hv-motion:hover { background: var(--a-c) !important; color: #0A0A09 !important; }
+  .hv-red:hover { color: var(--a-c) !important; }
+  .hv-thumb:hover { transform: rotate(0) scale(1.1) !important; }
+  .hv-cta:hover { background: #F2EFE6 !important; color: #0A0A09 !important; }
+  .hv-ig:hover { background: #F2EFE6 !important; color: #0A0A09 !important; }
+  .hv-mail:hover { background: #0A0A09 !important; color: #F2EFE6 !important; }
+  .hv-crew:hover { background: var(--a-c); }
+  .hv-svc:hover { transform: translateX(10px); }
+  .hv-svc:hover .hv-svc-name { color: #F2EFE6; }
+  .fx-blur:hover { filter: none !important; }
+  .cut:hover { transform: rotate(0deg) scale(1.03) !important; z-index: 20; }
+}
+.hv-shift[data-active] { transform: translateX(12px); }
+.hv-glitch[data-active] { text-shadow: 10px 0 0 rgba(0,255,240,.6), -10px 0 0 rgba(255,0,90,.6) !important; }
+.hv-sello[data-active] { transform: rotate(-6deg) scale(1.06) !important; }
+.hv-culture[data-active] { transform: rotate(-1deg) skewX(-6deg) !important; }
+.hv-card[data-active] { transform: rotate(0deg) scale(1.02) !important; }
+.hv-arch[data-active] { transform: rotate(0deg) scale(1.04) !important; z-index: 5; }
+.hv-hard[data-active] { text-shadow: -8px 8px 0 var(--b-c) !important; }
+.hv-motion[data-active] { background: var(--a-c) !important; color: #0A0A09 !important; }
+.hv-red[data-active] { color: var(--a-c) !important; }
+.hv-thumb[data-active] { transform: rotate(0) scale(1.1) !important; }
+.hv-crew[data-active] { background: var(--a-c); }
+.hv-svc[data-active] { transform: translateX(10px); }
+.hv-svc[data-active] .hv-svc-name { color: #F2EFE6; }
+.cut[data-active] { transform: rotate(0deg) scale(1.03) !important; z-index: 20; }
 .fx-blur { filter: blur(var(--blur, 4px)) var(--fx, ); }
-.fx-blur:hover, .fx-blur[data-clear] { filter: none !important; }
+.fx-blur[data-clear], .fx-blur[data-active] { filter: none !important; }
 .stretch::after { content: ""; position: absolute; inset: 0; }
+
+/* Alto de pantalla estable en iOS: 100vh de respaldo, 100svh donde existe (no salta con la barra de Safari). */
+.min-h-svh-fb { min-height: 100vh; min-height: 100svh; }
+
+/* Zonas seguras (notch / home indicator). */
+.safe-pb { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+/* iOS: sin zoom al enfocar campos (Safari hace zoom con font-size < 16 px). */
+input, select, textarea { font-size: max(16px, 1em); }
+
+/*
+  iOS: los filtros SVG animados (feTurbulence + feDisplacementMap) son caros en WebKit móvil.
+  html.is-ios los desactiva y el grano pasa a un PNG estático (ver GrainOverlay).
+*/
+html.is-ios [style*="url(#warp)"] { filter: none !important; }
+
+/* Movimiento reducido: sin distorsiones, marquees ni balanceo. */
+@media (prefers-reduced-motion: reduce) {
+  [style*="url(#warp)"] { filter: none !important; }
+}
 
 button:focus-visible, a:focus-visible, h2:focus-visible { outline: 2px solid var(--a-c) !important; outline-offset: 3px; }

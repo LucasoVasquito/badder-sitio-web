@@ -59,7 +59,7 @@ export default function Cart() {
 
   if (confirmed) {
     return (
-      <main data-accent="red" className="bg-background min-h-screen pt-10 md:pt-16 pb-16">
+      <main data-accent="red" className="bg-background min-h-svh-fb pt-10 md:pt-16 pb-16">
         <div className="px-5 md:px-12 max-w-3xl mx-auto">
           <PageHeader kicker="Pedido recibido" title="Gracias" />
           <Notice title="Recibimos tu pedido" tone="success">
@@ -72,7 +72,7 @@ export default function Cart() {
   }
 
   return (
-    <main data-accent="red" className="bg-background min-h-screen pt-10 md:pt-16 pb-16 overflow-hidden">
+    <main data-accent="red" className="bg-background min-h-svh-fb pt-10 md:pt-16 pb-16 overflow-hidden">
       <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
         <PageHeader kicker={`Carrito / ${rows.length} ítem${rows.length === 1 ? "" : "s"}`} title="Carrito" />
 

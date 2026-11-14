@@ -17,7 +17,7 @@ export default function AboutSection() {
       <div style={{ position: "absolute", left: 0, top: 0, width: "100%", height: "100%", backgroundImage: "radial-gradient(#0A0A09 1px,transparent 1.5px)", backgroundSize: "6px 6px", WebkitMaskImage: "linear-gradient(90deg,transparent 55%,#000)", maskImage: "linear-gradient(90deg,transparent 55%,#000)", opacity: 0.4 }} />
       <div style={{ position: "relative", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(min(100%,380px),1fr))", gap: "clamp(32px,6vw,96px)", alignItems: "start" }}>
         <div style={{ display: "flex", flexDirection: "column", gap: 28 }}>
-          <h2 onClick={title.onClick} style={{ margin: 0, cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 400, fontSize: "clamp(54px,7vw,120px)", lineHeight: 0.9, textTransform: "uppercase" }}>About</h2>
+          <h2 {...title.bind} style={{ margin: 0, cursor: "pointer", fontFamily: title.fontFamily, fontWeight: 400, fontSize: "clamp(54px,7vw,120px)", lineHeight: 0.9, textTransform: "uppercase" }}>About</h2>
           <p style={{ margin: 0, fontFamily: "'Newsreader',serif", fontSize: "clamp(24px,2.3vw,34px)", lineHeight: 1.3, maxWidth: "30ch", textWrap: "pretty" }}>
             Espacio creativo multidisciplinario nacido alrededor de la música electrónica underground. <i>Música, cultura de club, diseño, fotografía, audiovisual e indumentaria</i> desde La Plata.
           </p>

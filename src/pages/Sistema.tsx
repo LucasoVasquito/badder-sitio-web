@@ -33,7 +33,7 @@ export default function Sistema() {
   const { paleta, textura, distorsion, difusas, set } = useFlyerStore();
 
   return (
-    <main className="bg-background min-h-screen pt-10 md:pt-16 pb-24 overflow-hidden">
+    <main className="bg-background min-h-svh-fb pt-10 md:pt-16 pb-24 overflow-hidden">
       <div className="px-5 md:px-12 max-w-[1440px] mx-auto">
         <PageHeader kicker="Interno · no enlazado" title="Sistema" intro="Texturas, marcos, stickers, títulos, botones y tarjetas del rediseño “flyer vivo”. Cambiá la paleta A/B con los botones." />
 
